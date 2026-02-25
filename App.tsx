@@ -1,33 +1,56 @@
+import React, { useCallback } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { APP_TEXTS } from '@/constants/app';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
+import {
+  Martel_400Regular,
+  Martel_600SemiBold,
+  Martel_700Bold,
+} from '@expo-google-fonts/martel';
+import AppNavigator from '@/navigation/AppNavigator';
 import { theme } from '@/theme';
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    MedievalSharp: MedievalSharp_400Regular,
+    Martel: Martel_400Regular,
+    'Martel-SemiBold': Martel_600SemiBold,
+    'Martel-Bold': Martel_700Bold,
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={theme.colors.gold} />
+        <StatusBar style="light" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{APP_TEXTS.appName}</Text>
-      <Text style={styles.subtitle}>Fundação completa — Fase 1 ✓</Text>
+    <SafeAreaProvider onLayout={onLayoutRootView}>
+      <AppNavigator />
       <StatusBar style="light" />
-    </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loading: {
     flex: 1,
     backgroundColor: theme.colors.headerBg,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#FFFFFF',
   },
 });

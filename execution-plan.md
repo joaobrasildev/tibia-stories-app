@@ -14,7 +14,7 @@
 | 0    | Setup do Projeto              | —          | 6        | ✅     |
 | 1    | Fundação (theme, types, DB)   | 0          | 14       | ✅     |
 | 2    | Componentes Base              | 1          | 11       | ✅     |
-| 3    | Shell de Navegação            | 2          | 5        | ⬜     |
+| 3    | Shell de Navegação            | 2          | 5        | ✅     |
 | 4    | Feature: Itens                | 3          | 9        | ⬜     |
 | 5    | Feature: Chars (leitura)      | 3          | 9        | ⬜     |
 | 6    | Feature: Depot (Home)         | 4, 5       | 4        | ⬜     |
