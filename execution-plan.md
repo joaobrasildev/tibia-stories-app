@@ -13,7 +13,7 @@
 | ---- | ----------------------------- | ---------- | -------- | ------ |
 | 0    | Setup do Projeto              | —          | 6        | ✅     |
 | 1    | Fundação (theme, types, DB)   | 0          | 14       | ✅     |
-| 2    | Componentes Base              | 1          | 11       | ⬜     |
+| 2    | Componentes Base              | 1          | 11       | ✅     |
 | 3    | Shell de Navegação            | 2          | 5        | ⬜     |
 | 4    | Feature: Itens                | 3          | 9        | ⬜     |
 | 5    | Feature: Chars (leitura)      | 3          | 9        | ⬜     |
@@ -167,8 +167,9 @@
 - Props interface → Componente funcional → `StyleSheet.create` (theme tokens) → `export default React.memo`.
 - **Zero** imports de stores, services, repositories.
 - **Zero** inline styles. Tudo via `theme`.
+- **Zero cores hex/rgb hardcoded** nos componentes — toda cor DEVE vir de `theme.colors.*`. Se a cor não existir no theme, **primeiro adicione o token em `theme/index.ts`** e depois referencie. Nunca usar `'#XXXXXX'` direto no StyleSheet ou variantStyles.
 - Props apenas primitivas (string, number, boolean, callback).
-- Visual de referência: `prototype/styles.css` (paleta, bordas, fontes).
+- Visual de referência: `prototype/styles.css` (paleta, bordas, fontes). Ao portar cores do CSS, criar o token correspondente no theme.
 
 ### Critério de "done"
 

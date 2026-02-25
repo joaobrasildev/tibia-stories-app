@@ -45,7 +45,7 @@ export const theme = {
         btnDanger: '#C0392B',
         btnSuccess: '#1B7A2E',
 
-        // Badges
+        // Badges — rarity accent colors
         badgeLegendary: '#FF8C00',
         badgeVeryRare: '#9B59B6',
         badgeRare: '#3498DB',
@@ -54,6 +54,19 @@ export const theme = {
         badgeED: '#8E44AD',
         badgeMS: '#2980B9',
         badgeMO: '#D4A66A',
+
+        // Badge variant backgrounds / borders / text (prototype/styles.css)
+        badgeVocationBg: '#E8C0C0',
+        badgeVocationBorder: '#C08080',
+        badgeVocationText: '#8B1A1A',
+        badgeStatusBg: '#C0E8C8',
+        badgeStatusBorder: '#80C090',
+        badgeStatusText: '#1A6B2A',
+        badgeWorldBg: '#C0D8E8',
+        badgeWorldBorder: '#80A8C0',
+        badgeWorldText: '#1A4060',
+        badgeLevelBg: '#E8D8B0',
+        badgeLevelBorder: '#C0A870',
     },
 
     fonts: {
