@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Tibia Stories",
+    "slug": "tibia-stories",
+    "version": "1.0.0",
+    "scheme": "tibiastories",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "backgroundColor": "#8B2020"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin",
+      "expo-apple-authentication",
+      "react-native-google-mobile-ads"
+    ],
+    "android": {
+      "package": "com.tibiastories.app",
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#8B2020"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "ios": {
+      "bundleIdentifier": "com.tibiastories.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "REVERSED_CLIENT_ID_FROM_GOOGLE_SERVICES"
+            ]
+          }
+        ]
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

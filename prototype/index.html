@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tibia Stories — Protótipo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Martel:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- ========== HEADER FIXO ========== -->
+        <header id="main-header">
+            <div class="header-border-top"></div>
+            <div class="header-content">
+                <div class="header-ornament left">⚔</div>
+                <h1 class="header-title">Tibia Stories</h1>
+                <div class="header-ornament right">⚔</div>
+            </div>
+            <div class="header-border-bottom"></div>
+        </header>
+
+        <!-- Sub-header dinâmico (título da página atual) -->
+        <div id="page-subtitle" class="page-subtitle">Personagens em Destaque</div>
+
+        <!-- ========== BOTÃO VOLTAR (oculto na home) ========== -->
+        <button id="btn-back" class="btn-back" onclick="goBack()" style="display:none;">
+            ◄ Voltar
+        </button>
+
+        <!-- ========== ÁREA DE CONTEÚDO ========== -->
+        <main id="content-area">
+            <!-- As telas são renderizadas aqui via JS -->
+        </main>
+
+        <!-- ========== BANNER ADMOB MOCKADO ========== -->
+        <div id="ad-banner" class="ad-banner">
+            <span class="ad-label">📢 Anúncio</span>
+            <span class="ad-text">Tibia Coins — Compre agora no site oficial!</span>
+        </div>
+
+        <!-- ========== TAB NAVIGATION ========== -->
+        <nav id="tab-bar">
+            <button class="tab-item active" data-tab="home" onclick="navigateTo('home')">
+                <span class="tab-icon"><img src="icons/castle.png" alt="Depot"
+                        style="width:20px;height:20px;vertical-align:middle;"></span>
+                <span class="tab-label">Depot</span>
+            </button>
+            <button class="tab-item" data-tab="items" onclick="navigateTo('items')">
+                <span class="tab-icon"><img src="icons/armor.png" alt="Loot"
+                        style="width:20px;height:20px;vertical-align:middle;"></span>
+                <span class="tab-label">Itens</span>
+            </button>
+            <button class="tab-item" data-tab="characters" onclick="navigateTo('characters')">
+                <span class="tab-icon"><img src="icons/history-book.png" alt="Chars"
+                        style="width:20px;height:20px;vertical-align:middle;"></span>
+                <span class="tab-label">Chars</span>
+            </button>
+            <button class="tab-item" data-tab="account" onclick="navigateTo('account')">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">Conta</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
