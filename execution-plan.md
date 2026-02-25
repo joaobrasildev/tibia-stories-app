@@ -12,7 +12,7 @@
 | Fase | Nome                          | Depende de | Arquivos | Status |
 | ---- | ----------------------------- | ---------- | -------- | ------ |
 | 0    | Setup do Projeto              | —          | 6        | ✅     |
-| 1    | Fundação (theme, types, DB)   | 0          | 14       | ⬜     |
+| 1    | Fundação (theme, types, DB)   | 0          | 14       | ✅     |
 | 2    | Componentes Base              | 1          | 11       | ⬜     |
 | 3    | Shell de Navegação            | 2          | 5        | ⬜     |
 | 4    | Feature: Itens                | 3          | 9        | ⬜     |
