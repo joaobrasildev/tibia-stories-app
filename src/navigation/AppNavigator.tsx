@@ -5,13 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppHeader from '@/components/composed/AppHeader';
 import TopTabNavigator from '@/navigation/TopTabNavigator';
 import ItemDetailScreen from '@/screens/ItemDetailScreen';
+import CharStoryScreen from '@/screens/CharStoryScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
     MainTabs: undefined;
     ItemDetail: { id: number };
-    // Future stack screens (Fase 5+):
-    // CharStory: { charId: string };
+    CharStory: { charId: string };
+    // Future stack screens (Fase 7+):
     // Login: undefined;
     // Register: undefined;
     // AddChar: undefined;
@@ -40,6 +41,22 @@ function AppNavigator() {
                         options={{
                             headerShown: true,
                             headerTitle: 'Detalhe do Item',
+                            headerStyle: {
+                                backgroundColor: theme.colors.panel,
+                            },
+                            headerTintColor: theme.colors.textPrimary,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="CharStory"
+                        component={CharStoryScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'História do Char',
                             headerStyle: {
                                 backgroundColor: theme.colors.panel,
                             },

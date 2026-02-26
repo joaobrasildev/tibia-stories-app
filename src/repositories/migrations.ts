@@ -45,6 +45,9 @@ export function runMigrations(): void {
 
   // Seed de itens (somente se tabela estiver vazia)
   seedItemsIfEmpty();
+
+  // Seed de chars (desenvolvimento — será removido na Fase 11)
+  seedCharsIfEmpty();
 }
 
 function seedItemsIfEmpty(): void {
@@ -132,6 +135,157 @@ function seedItemsIfEmpty(): void {
     database.runSync(
       'INSERT INTO items (name, rarity, history, myths) VALUES (?, ?, ?, ?)',
       [item.name, item.rarity, item.history, item.myths],
+    );
+  }
+}
+
+function seedCharsIfEmpty(): void {
+  const result = database.getFirstSync<{ count: number }>(
+    'SELECT COUNT(*) as count FROM characters',
+  );
+  if (result && result.count > 0) return;
+
+  const seedChars: {
+    id: string;
+    user_token: string;
+    name: string;
+    world: string;
+    vocation: string;
+    level: number;
+    is_verified: number;
+    is_highlighted: number;
+    highlight_until: string | null;
+    story_title: string;
+    story_content: string;
+    avatar_url: string;
+    created_at: string;
+  }[] = [
+      {
+        id: 'char-1',
+        user_token: 'TS-f47ac10b-58cc',
+        name: 'Eternal Flame',
+        world: 'Antica',
+        vocation: 'Elite Knight',
+        level: 1250,
+        is_verified: 1,
+        is_highlighted: 1,
+        highlight_until: '2027-12-31T00:00:00Z',
+        story_title: 'A Chama que Nunca se Apaga',
+        story_content: `Minha jornada começou em 2005, quando eu era apenas um garoto curioso que descobriu Tibia através de um amigo na escola. Criei meu personagem em Antica, o servidor mais antigo e populoso, sem saber que aquele dia mudaria minha vida.\n\nOs primeiros dias foram de pura descoberta. Morri para ratos em Rookgaard mais vezes do que gostaria de admitir. Mas cada morte era uma lição, cada nível conquistado era uma vitória épica.\n\nQuando finalmente cheguei ao mainland, o mundo se abriu diante dos meus olhos. Thais era uma cidade imensa e cheia de vida. Jogadores corriam de um lado para o outro, merchants gritavam seus preços no depot, e eu ali, um cavaleiro nível 8, olhando tudo com admiração.\n\nA primeira vez que enfrentei um Dragon foi inesquecível. Eu tinha nível 45 e um grupo de amigos da guild me convenceu a ir para a Darashia Dragon Lair. Meu coração disparou quando vi aquela criatura enorme cuspindo fogo. Sobrevivi — por pouco — e a partir daquele dia, eu sabia que queria ser o cavaleiro mais forte de Antica.\n\nAo longo dos anos, participei de guerras entre guilds, explorei dungeons misteriosas, e fiz amizades que duram até hoje. Tibia não é apenas um jogo para mim — é uma segunda casa, um lugar onde forjei memórias que carregarei para sempre.\n\nHoje, com nível 1250, olho para trás e vejo cada cicatriz, cada conquista, cada momento de desespero e triunfo. A chama do meu personagem nunca se apagou, e enquanto Tibia existir, ela continuará ardendo.`,
+        avatar_url: '🔥',
+        created_at: '2024-06-15T00:00:00Z',
+      },
+      {
+        id: 'char-2',
+        user_token: 'TS-f47ac10b-58cc',
+        name: 'Shadow Weaver',
+        world: 'Secura',
+        vocation: 'Royal Paladin',
+        level: 980,
+        is_verified: 1,
+        is_highlighted: 1,
+        highlight_until: '2027-12-31T00:00:00Z',
+        story_title: 'Flechas na Escuridão',
+        story_content: `Eles dizem que paladinos são a vocação mais versátil de Tibia. Concordo. Mas ser versátil não significa ser fácil.\n\nCriei Shadow Weaver em 2010, quando já era veterano no jogo. Queria um desafio diferente — e encontrei. A vida de um paladino é solitária. Enquanto cavaleiros formam frontlines e magos devastam hordas, nós ficamos nas sombras, calculando cada flecha, cada passo.\n\nMinha história mais marcante aconteceu durante uma war contra a guild "Dark Legion" em Secura. Éramos superados em número 3 para 1. A maioria do nosso time havia sido eliminada, e eu era um dos últimos de pé.\n\nMe escondi em uma passagem estreita da dungeon e, um por um, embosquei os inimigos que entravam. Foram 47 kills naquela noite. Quando o sol virtual nasceu, a Dark Legion havia recuado, e meu nome estava gravado na história de Secura.\n\nDesde aquele dia, me tornei conhecido como o "Fantasma de Secura" — você nunca me vê, mas minhas flechas sempre encontram o alvo.`,
+        avatar_url: '🏹',
+        created_at: '2024-09-22T00:00:00Z',
+      },
+      {
+        id: 'char-3',
+        user_token: 'TS-f47ac10b-58cc',
+        name: 'Arcane Tempest',
+        world: 'Luminera',
+        vocation: 'Master Sorcerer',
+        level: 1100,
+        is_verified: 1,
+        is_highlighted: 1,
+        highlight_until: '2027-12-31T00:00:00Z',
+        story_title: 'O Mago da Tempestade',
+        story_content: `Fogo. Gelo. Energia. Morte. Os quatro elementos da destruição, e eu os domino todos.\n\nComecei como um simples sorcerer em Luminera em 2012. O que me atraiu para esta vocação foi a promessa de poder puro — a capacidade de destruir hordas inteiras de inimigos com um único feitiço.\n\nA realidade foi mais dura do que eu esperava. Sorcerers são frágeis como cristal nos níveis baixos. Morri incontáveis vezes antes de aprender a arte de posicionar-me, de controlar o ritmo da batalha, de saber quando atacar e quando recuar.\n\nO ponto de virada foi quando aprendi o "Rage of the Skies". A primeira vez que lancei esse feitiço em um grupo de 30 monstros e vi todos caírem simultaneamente... foi como ser um deus por um instante.\n\nHoje sou respeitado como um dos sorcerers mais fortes de Luminera. Mas nunca esqueço de onde vim: um mago nível 8 em Rookgaard, tentando matar um rato com uma varinha que fazia menos dano que um tapa.`,
+        avatar_url: '⚡',
+        created_at: '2025-01-10T00:00:00Z',
+      },
+      {
+        id: 'char-4',
+        user_token: 'TS-a1b2c3d4-0001',
+        name: 'Emerald Healer',
+        world: 'Antica',
+        vocation: 'Elder Druid',
+        level: 870,
+        is_verified: 1,
+        is_highlighted: 0,
+        highlight_until: null,
+        story_title: 'A Guardiã da Floresta',
+        story_content: `Sempre me disseram que druidas são apenas "curandeiros". Que nosso papel é ficar atrás do time, spammando "exura sio" e rezando para ninguém morrer. Eles estão errados.\n\nSou Emerald Healer, e esta é a história de como uma druid mudou o destino de guerras inteiras em Antica.\n\nComecei minha jornada em 2008. Na época, druids eram subvalorizados. Todos queriam ser sorcerers pelo dano, ou knights pela resistência. Mas eu vi algo que outros não viam: o poder de manter um exército inteiro vivo.\n\nMinha fama começou na Grande Guerra de Antica de 2015, quando nossa guild estava à beira da derrota. Os knights caíam, os paladinos ficavam sem munição, os sorcerers sem mana. Mas eu mantive todos vivos. Por três horas seguidas, minha mana nunca zerou, meus heals nunca falharam.\n\nQuando a poeira baixou, tínhamos vencido. E todos sabiam: a vitória tinha um nome, e era o meu.`,
+        avatar_url: '🌿',
+        created_at: '2024-08-05T00:00:00Z',
+      },
+      {
+        id: 'char-5',
+        user_token: 'TS-a1b2c3d4-0002',
+        name: 'Blazing Fury',
+        world: 'Quintera',
+        vocation: 'Elite Knight',
+        level: 750,
+        is_verified: 1,
+        is_highlighted: 0,
+        highlight_until: null,
+        story_title: 'Do Rook ao Inferno',
+        story_content: `Minha história não é de glória. É de teimosia.\n\nComecei Tibia em 2014 sem saber absolutamente nada. Não falava inglês, não conhecia ninguém no jogo, e escolhi ser knight porque a descrição dizia "é a vocação mais fácil para iniciantes". Mentira.\n\nPassei meses morrendo. Para trolls, para cyclops, para aquelas malditas amazonas em Venore. Meu level ia e voltava como maré. Mas eu nunca desisti.\n\nO momento que definiu minha jornada foi quando, no level 150, decidi ir sozinho para a Inquisiton Quest. Todo mundo disse que era impossível solo. Levei 4 horas, morri 6 vezes, gastei toda minha gold em potions. Mas completei.\n\nDesde aquele dia, "impossível" deixou de existir no meu vocabulário. Se existe um desafio em Tibia, eu vou enfrentar — mesmo que leve 100 tentativas.`,
+        avatar_url: '🔥',
+        created_at: '2025-02-01T00:00:00Z',
+      },
+      {
+        id: 'char-6',
+        user_token: 'TS-a1b2c3d4-0003',
+        name: 'Moonlit Arrow',
+        world: 'Premia',
+        vocation: 'Royal Paladin',
+        level: 620,
+        is_verified: 1,
+        is_highlighted: 0,
+        highlight_until: null,
+        story_title: 'Caçadora da Lua',
+        story_content: `Em Premia, as noites são mais perigosas que os dias. Pelo menos era o que eu acreditava quando era novata.\n\nCriei Moonlit Arrow numa madrugada de insônia em 2016. O nome veio naturalmente — eu estava olhando pela janela, vi a lua, e pensei: "quero ser como uma flecha guiada pela luz da lua. Silenciosa, precisa, inevitável."\n\nMinha história é sobre paciência. Paladinos não são sobre força bruta ou magia devastadora. Somos sobre precisão. Cada flecha conta, cada passo é calculado.\n\nMe especializei em caçar bosses raros. Conheço os spawns, os timers, os patterns de todos os bosses de Premia. Sou a primeira a chegar e a última a sair.\n\nJá encontrei itens que muitos jogadores só viram em screenshots. E cada um deles tem uma história, uma noite acordada, uma batalha silenciosa sob a luz da lua.`,
+        avatar_url: '🌙',
+        created_at: '2025-01-20T00:00:00Z',
+      },
+      {
+        id: 'char-7',
+        user_token: 'TS-a1b2c3d4-0004',
+        name: 'Iron Fist Zara',
+        world: 'Antica',
+        vocation: 'Monk',
+        level: 410,
+        is_verified: 1,
+        is_highlighted: 0,
+        highlight_until: null,
+        story_title: 'Punhos de Ferro',
+        story_content: `Quando a vocação Monk chegou a Tibia, muitos riram. "Lutar sem arma? Sem magia? Boa sorte." Eu fui a primeira a provar que estavam errados.\n\nSou Iron Fist Zara, e minha arma é meu próprio corpo.\n\nCriei minha Monk no primeiro dia que a vocação foi liberada. Enquanto todos testavam builds e reclamavam da falta de dano, eu estudava. Cada combo, cada esquiva, cada timing de contra-ataque.\n\nO segredo do Monk não é força bruta — é ritmo. É sentir o momento exato de desviar, o frame perfeito para contra-atacar. É uma dança, não uma briga.\n\nMinha fama veio quando venci um Elite Knight level 800 num duelo em Antica. Ele ria antes da luta. Não ria mais quando acordou no templo.\n\nDesde então, carrego o título com orgulho: a primeira Monk a provar que os punhos são mais letais que qualquer lâmina.`,
+        avatar_url: '🥋',
+        created_at: '2025-12-10T00:00:00Z',
+      },
+    ];
+
+  for (const char of seedChars) {
+    database.runSync(
+      `INSERT INTO characters (id, user_token, name, world, vocation, level, is_verified, is_highlighted, highlight_until, story_title, story_content, avatar_url, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      [
+        char.id,
+        char.user_token,
+        char.name,
+        char.world,
+        char.vocation,
+        char.level,
+        char.is_verified,
+        char.is_highlighted,
+        char.highlight_until,
+        char.story_title,
+        char.story_content,
+        char.avatar_url,
+        char.created_at,
+      ],
     );
   }
 }
