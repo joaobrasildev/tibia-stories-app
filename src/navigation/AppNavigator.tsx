@@ -4,12 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppHeader from '@/components/composed/AppHeader';
 import TopTabNavigator from '@/navigation/TopTabNavigator';
+import ItemDetailScreen from '@/screens/ItemDetailScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
     MainTabs: undefined;
-    // Future stack screens (Fase 4+):
-    // ItemDetail: { itemId: string };
+    ItemDetail: { id: number };
+    // Future stack screens (Fase 5+):
     // CharStory: { charId: string };
     // Login: undefined;
     // Register: undefined;
@@ -33,6 +34,22 @@ function AppNavigator() {
                     }}
                 >
                     <Stack.Screen name="MainTabs" component={TopTabNavigator} />
+                    <Stack.Screen
+                        name="ItemDetail"
+                        component={ItemDetailScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Detalhe do Item',
+                            headerStyle: {
+                                backgroundColor: theme.colors.panel,
+                            },
+                            headerTintColor: theme.colors.textPrimary,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
                 </Stack.Navigator>
             </View>
         </NavigationContainer>

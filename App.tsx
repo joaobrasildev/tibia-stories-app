@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -11,11 +11,15 @@ import {
   Martel_700Bold,
 } from '@expo-google-fonts/martel';
 import AppNavigator from '@/navigation/AppNavigator';
+import { openDatabase } from '@/repositories/database';
+import { runMigrations } from '@/repositories/migrations';
 import { theme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [dbReady, setDbReady] = useState(false);
+
   const [fontsLoaded, fontError] = useFonts({
     MedievalSharp: MedievalSharp_400Regular,
     Martel: Martel_400Regular,
@@ -23,13 +27,24 @@ export default function App() {
     'Martel-Bold': Martel_700Bold,
   });
 
+  useEffect(() => {
+    try {
+      openDatabase();
+      runMigrations();
+      setDbReady(true);
+    } catch (error) {
+      console.error('Failed to initialize database:', error);
+      setDbReady(true); // Continue even on error to show UI
+    }
+  }, []);
+
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
+    if ((fontsLoaded || fontError) && dbReady) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, dbReady]);
 
-  if (!fontsLoaded && !fontError) {
+  if ((!fontsLoaded && !fontError) || !dbReady) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color={theme.colors.gold} />

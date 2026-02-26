@@ -9,9 +9,9 @@ import CharsScreen from '@/screens/CharsScreen';
 import AccountScreen from '@/screens/AccountScreen';
 import { theme } from '@/theme';
 
-const castleIcon = require('../../../assets/icons/castle.png');
-const armorIcon = require('../../../assets/icons/armor.png');
-const historyBookIcon = require('../../../assets/icons/history-book.png');
+const castleIcon = require('../../assets/icons/castle.png');
+const armorIcon = require('../../assets/icons/armor.png');
+const historyBookIcon = require('../../assets/icons/history-book.png');
 
 const Tab = createMaterialTopTabNavigator();
 
