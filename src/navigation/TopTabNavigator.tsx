@@ -9,9 +9,9 @@ import CharsScreen from '@/screens/CharsScreen';
 import AccountScreen from '@/screens/AccountScreen';
 import { theme } from '@/theme';
 
-const castleIcon = require('../../assets/icons/castle.png');
-const armorIcon = require('../../assets/icons/armor.png');
-const historyBookIcon = require('../../assets/icons/history-book.png');
+const depotIcon = require('../../assets/icons/depot.png');
+const itemIcon = require('../../assets/icons/item.png');
+const charIcon = require('../../assets/icons/char2.png');
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -52,7 +52,7 @@ function TopTabNavigator() {
                 component={DepotScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <TibiaIcon source={castleIcon} size={20} tintColor={color} />
+                        <TibiaIcon source={depotIcon} size={20} tintColor={color} />
                     ),
                 }}
             />
@@ -61,7 +61,7 @@ function TopTabNavigator() {
                 component={ItemsScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <TibiaIcon source={armorIcon} size={20} tintColor={color} />
+                        <TibiaIcon source={itemIcon} size={20} tintColor={color} />
                     ),
                 }}
             />
@@ -70,7 +70,7 @@ function TopTabNavigator() {
                 component={CharsScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <TibiaIcon source={historyBookIcon} size={20} tintColor={color} />
+                        <TibiaIcon source={charIcon} size={20} tintColor={color} />
                     ),
                 }}
             />

@@ -58,6 +58,7 @@ export default function ItemsScreen() {
                     <ItemCard
                         name={item.name}
                         emoji={ITEM_EMOJIS[item.name] ?? '📦'}
+                        imageUrl={item.image_url}
                         rarity={item.rarity}
                         onPress={() => handleItemPress(item.id)}
                     />

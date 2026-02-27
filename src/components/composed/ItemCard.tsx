@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import TibiaText from '@/components/base/TibiaText';
 import TibiaBadge from '@/components/base/TibiaBadge';
@@ -8,12 +8,14 @@ import { getRarityColor } from '@/constants/rarities';
 interface ItemCardProps {
     name: string;
     emoji: string;
+    imageUrl: string | null;
     rarity: string;
     onPress: () => void;
 }
 
-function ItemCard({ name, emoji, rarity, onPress }: ItemCardProps) {
+function ItemCard({ name, emoji, imageUrl, rarity, onPress }: ItemCardProps) {
     const rarityColor = getRarityColor(rarity);
+    const [imageError, setImageError] = useState(false);
 
     return (
         <TouchableOpacity
@@ -22,7 +24,16 @@ function ItemCard({ name, emoji, rarity, onPress }: ItemCardProps) {
             activeOpacity={0.7}
         >
             <View style={styles.sprite}>
-                <TibiaText style={styles.emoji}>{emoji}</TibiaText>
+                {imageUrl && !imageError ? (
+                    <Image
+                        source={{ uri: imageUrl }}
+                        style={styles.image}
+                        resizeMode="contain"
+                        onError={() => setImageError(true)}
+                    />
+                ) : (
+                    <TibiaText style={styles.emoji}>{emoji}</TibiaText>
+                )}
             </View>
             <View style={styles.info}>
                 <TibiaText style={styles.name}>{name}</TibiaText>
@@ -61,6 +72,10 @@ const styles = StyleSheet.create({
     },
     emoji: {
         fontSize: 22,
+    },
+    image: {
+        width: 28,
+        height: 28,
     },
     info: {
         flex: 1,

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Image, StyleSheet } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { theme } from '@/theme';
@@ -30,13 +30,23 @@ export default function ItemDetailScreen() {
 
     const rarityColor = getRarityColor(item.rarity);
     const emoji = ITEM_EMOJIS[item.name] ?? '📦';
+    const [imageError, setImageError] = useState(false);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Hero Section */}
             <View style={styles.hero}>
                 <View style={styles.heroImage}>
-                    <TibiaText style={styles.heroEmoji}>{emoji}</TibiaText>
+                    {item.image_url && !imageError ? (
+                        <Image
+                            source={{ uri: item.image_url }}
+                            style={styles.heroItemImage}
+                            resizeMode="contain"
+                            onError={() => setImageError(true)}
+                        />
+                    ) : (
+                        <TibiaText style={styles.heroEmoji}>{emoji}</TibiaText>
+                    )}
                 </View>
                 <TibiaText style={styles.heroName}>{item.name}</TibiaText>
                 <View style={styles.heroBadges}>
@@ -133,6 +143,10 @@ const styles = StyleSheet.create({
     },
     heroEmoji: {
         fontSize: 64,
+    },
+    heroItemImage: {
+        width: 64,
+        height: 64,
     },
     heroName: {
         fontFamily: theme.fonts.title,
