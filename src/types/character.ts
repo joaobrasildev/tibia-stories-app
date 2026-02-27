@@ -1,4 +1,4 @@
-export type Vocation = 'Elite Knight' | 'Royal Paladin' | 'Elder Druid' | 'Master Sorcerer' | 'Monk';
+export type Vocation = 'Elite Knight' | 'Royal Paladin' | 'Elder Druid' | 'Master Sorcerer' | 'Monk' | 'Knight' | 'Paladin' | 'Druid' | 'Sorcerer';
 export type VocationAbbr = 'EK' | 'RP' | 'ED' | 'MS' | 'MO';
 
 export interface Character {

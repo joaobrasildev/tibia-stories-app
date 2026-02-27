@@ -86,7 +86,8 @@ export default function CharsScreen() {
                         vocation={item.vocation}
                         world={item.world}
                         storyTitle={item.story_title}
-                        avatarEmoji={item.avatar_url}
+                        avatarEmoji={null}
+                        avatarUrl={item.avatar_url}
                         isHighlighted={item.is_highlighted}
                         onPress={() => handleCharPress(item.id)}
                     />

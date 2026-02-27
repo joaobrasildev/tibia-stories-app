@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Image, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { theme } from '@/theme';
@@ -13,6 +13,28 @@ import TibiaEmpty from '@/components/base/TibiaEmpty';
 import type { RootStackParamList } from '@/navigation/AppNavigator';
 
 type CharStoryRouteProp = RouteProp<RootStackParamList, 'CharStory'>;
+
+function HeroAvatar({ avatarUrl }: { avatarUrl: string | null }) {
+    const [imageError, setImageError] = useState(false);
+    const hasImage = avatarUrl && avatarUrl.startsWith('http') && !imageError;
+
+    if (!hasImage && !avatarUrl) return null;
+
+    return (
+        <View style={styles.heroImage}>
+            {hasImage ? (
+                <Image
+                    source={{ uri: avatarUrl }}
+                    style={styles.heroAvatarImage}
+                    resizeMode="contain"
+                    onError={() => setImageError(true)}
+                />
+            ) : avatarUrl ? (
+                <TibiaText style={styles.heroEmoji}>{avatarUrl}</TibiaText>
+            ) : null}
+        </View>
+    );
+}
 
 export default function CharStoryScreen() {
     const route = useRoute<CharStoryRouteProp>();
@@ -35,11 +57,7 @@ export default function CharStoryScreen() {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Hero Section */}
             <View style={styles.hero}>
-                {char.avatar_url ? (
-                    <View style={styles.heroImage}>
-                        <TibiaText style={styles.heroEmoji}>{char.avatar_url}</TibiaText>
-                    </View>
-                ) : null}
+                <HeroAvatar avatarUrl={char.avatar_url} />
                 <TibiaText style={styles.heroName}>{char.name}</TibiaText>
                 <View style={styles.heroBadges}>
                     <TibiaBadge
@@ -135,6 +153,10 @@ const styles = StyleSheet.create({
     },
     heroEmoji: {
         fontSize: 48,
+    },
+    heroAvatarImage: {
+        width: 64,
+        height: 64,
     },
     heroName: {
         fontFamily: theme.fonts.title,

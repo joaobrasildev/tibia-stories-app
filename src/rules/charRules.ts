@@ -14,9 +14,10 @@ export function filterChars(chars: Character[], filter: CharFilter): Character[]
         );
     }
 
-    // Filter by vocation
+    // Filter by vocation (match base and promoted vocations via abbreviation)
     if (filter.vocation !== 'all') {
-        result = result.filter((c) => c.vocation === filter.vocation);
+        const filterAbbr = getVocationAbbr(filter.vocation);
+        result = result.filter((c) => getVocationAbbr(c.vocation) === filterAbbr);
     }
 
     // Filter by world

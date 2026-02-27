@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import TibiaText from '@/components/base/TibiaText';
 import TibiaBadge from '@/components/base/TibiaBadge';
@@ -12,6 +12,7 @@ interface CharCardProps {
     world: string;
     storyTitle: string | null;
     avatarEmoji: string | null;
+    avatarUrl: string | null;
     isHighlighted: boolean;
     onPress: () => void;
 }
@@ -23,11 +24,15 @@ function CharCard({
     world,
     storyTitle,
     avatarEmoji,
+    avatarUrl,
     isHighlighted,
     onPress,
 }: CharCardProps) {
     const vocAbbr = getVocationAbbr(vocation);
     const vocColor = getVocationColor(vocation);
+    const [imageError, setImageError] = useState(false);
+
+    const hasImage = avatarUrl && avatarUrl.startsWith('http') && !imageError;
 
     return (
         <TouchableOpacity
@@ -35,11 +40,18 @@ function CharCard({
             onPress={onPress}
             activeOpacity={0.7}
         >
-            {avatarEmoji ? (
-                <View style={styles.avatar}>
+            <View style={styles.avatar}>
+                {hasImage ? (
+                    <Image
+                        source={{ uri: avatarUrl }}
+                        style={styles.avatarImage}
+                        resizeMode="contain"
+                        onError={() => setImageError(true)}
+                    />
+                ) : avatarEmoji ? (
                     <TibiaText style={styles.avatarEmoji}>{avatarEmoji}</TibiaText>
-                </View>
-            ) : null}
+                ) : null}
+            </View>
             <View style={styles.info}>
                 <View style={styles.header}>
                     <TibiaText style={styles.name} numberOfLines={1}>{name}</TibiaText>
@@ -95,6 +107,10 @@ const styles = StyleSheet.create({
     },
     avatarEmoji: {
         fontSize: 22,
+    },
+    avatarImage: {
+        width: 32,
+        height: 32,
     },
     info: {
         flex: 1,
