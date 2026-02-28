@@ -64,10 +64,12 @@ export default function ItemsScreen() {
                     />
                 )}
                 ListHeaderComponent={
-                    <TibiaHeader
-                        title={`${APP_TEXTS.items.panelTitle} (${filteredItems.length})`}
-                        icon="📦"
-                    />
+                    <View style={styles.listHeader}>
+                        <TibiaHeader
+                            title={`${APP_TEXTS.items.panelTitle} (${filteredItems.length})`}
+                            icon="📦"
+                        />
+                    </View>
                 }
                 ListEmptyComponent={
                     <TibiaEmpty message={APP_TEXTS.items.empty} icon="📦" />
@@ -86,5 +88,8 @@ const styles = StyleSheet.create({
     list: {
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.xxl,
+    },
+    listHeader: {
+        marginBottom: 6,
     },
 });

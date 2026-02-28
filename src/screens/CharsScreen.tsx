@@ -93,10 +93,12 @@ export default function CharsScreen() {
                     />
                 )}
                 ListHeaderComponent={
-                    <TibiaHeader
-                        title={`${APP_TEXTS.chars.panelTitle} (${filteredChars.length})`}
-                        icon="📖"
-                    />
+                    <View style={styles.listHeader}>
+                        <TibiaHeader
+                            title={`${APP_TEXTS.chars.panelTitle} (${filteredChars.length})`}
+                            icon="📖"
+                        />
+                    </View>
                 }
                 ListEmptyComponent={
                     <TibiaEmpty message={APP_TEXTS.chars.empty} icon="📖" />
@@ -122,5 +124,8 @@ const styles = StyleSheet.create({
     list: {
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.xxl,
+    },
+    listHeader: {
+        marginBottom: 6,
     },
 });
