@@ -503,6 +503,77 @@ import { firebaseConfig } from '@/config/firebaseConfig';
 
 ---
 
+## ⚠️ Ajustes de Tema — Padrões Visuais Consolidados (pós Fase 7)
+
+> **Estas decisões foram ajustadas manualmente pelo usuário e são INVIOLÁVEIS.**
+> Qualquer tela ou componente criado a partir daqui DEVE seguir estes padrões.
+
+### 1. Headers de Stack Screens (NativeStack)
+
+Todas as telas que usam `headerShown: true` no `AppNavigator.tsx` devem seguir:
+
+```typescript
+options={{
+    headerShown: true,
+    headerTitle: 'Nome da Tela',
+    headerStyle: {
+        backgroundColor: theme.colors.headerBg,      // '#8B2020' — vermelho escuro
+    },
+    headerTintColor: theme.colors.textOnHeader,       // '#FFF2DB' — creme claro
+    headerTitleStyle: {
+        fontFamily: theme.fonts.title,                // MedievalSharp
+        fontSize: theme.fontSizes.lg,                 // 16
+    },
+}}
+```
+
+**Regras:**
+- `headerStyle.backgroundColor` → sempre `theme.colors.headerBg` (`#8B2020`).
+- `headerTintColor` → sempre `theme.colors.textOnHeader` (`#FFF2DB`). Isso controla a cor da seta de voltar E do título.
+- `headerTitleStyle.fontFamily` → sempre `theme.fonts.title` (MedievalSharp).
+- **NÃO usar** `theme.colors.panel`, `theme.colors.textPrimary` ou qualquer outra cor para headers de stack.
+
+### 2. Background de Telas (ScrollView / View raiz)
+
+Todas as telas, containers e navigators usam `theme.colors.panel` (`#FFF2DB`) como background, **nunca** `theme.colors.background` (`#FFFFFF`).
+
+Isso inclui:
+- `ScrollView` / `View` raiz de todas as screens.
+- `contentStyle` do `Stack.Navigator` no `AppNavigator.tsx`.
+- Container do `TopTabNavigator.tsx`.
+
+```typescript
+scrollView: {
+    flex: 1,
+    backgroundColor: theme.colors.panel,   // '#FFF2DB' — pergaminho
+},
+// OU para telas sem scroll:
+container: {
+    flex: 1,
+    backgroundColor: theme.colors.panel,
+},
+```
+
+**Única exceção:** `TibiaInput` usa `theme.colors.background` (`#FFFFFF`) no campo de input, pois o branco garante contraste para digitação. Isso é intencional e **não deve ser alterado**.
+
+### 3. AppHeader (Header fixo do app)
+
+- Gradiente removido: as 3 cores do `LinearGradient` são `theme.colors.headerBg` (cor sólida `#8B2020`).
+- `borderTop` decorativo está comentado/removido.
+- **NÃO restaurar** o gradiente (`headerGradientStart`/`headerGradientEnd`) nem o `borderTop` sem instrução explícita do usuário.
+
+### 4. Resumo rápido de tokens de referência
+
+| Contexto                    | Token                            | Valor     |
+| --------------------------- | -------------------------------- | --------- |
+| Header stack bg             | `theme.colors.headerBg`          | `#8B2020` |
+| Header stack text/seta      | `theme.colors.textOnHeader`      | `#FFF2DB` |
+| Header stack font           | `theme.fonts.title`              | MedievalSharp |
+| Background de telas         | `theme.colors.panel`             | `#FFF2DB` |
+| AppHeader (bar fixa)        | `theme.colors.headerBg` (sólido) | `#8B2020` |
+
+---
+
 ## Fase 8 — Feature: Conta + Meus Chars
 
 **Objetivo:** Implementar a tela Conta completa com lista de "Meus Chars" e ações.
@@ -523,6 +594,7 @@ import { firebaseConfig } from '@/config/firebaseConfig';
 
 ### Regras
 
+- **⚠️ Seguir os padrões da seção "Ajustes de Tema" acima** — headers com `headerBg` + `textOnHeader`, backgrounds com `theme.colors.panel`.
 - **Não logado**: exibe tela de login (redireciona para `LoginScreen`).
 - **Logado**: exibe seções:
   1. **"🔑 Meu Token de Verificação"**: `TokenDisplay` com token e botão copiar.
@@ -567,6 +639,7 @@ import { firebaseConfig } from '@/config/firebaseConfig';
 
 ### Regras
 
+- **⚠️ Seguir os padrões da seção "Ajustes de Tema"** — headers com `headerBg` + `textOnHeader`, backgrounds com `theme.colors.panel`.
 - **AddCharScreen ("Exiva — Localizar Char")**:
   - Input: nome do char. Placeholder: `"Ex: Bubble, Kharsek..."`.
   - Botão `"🔍 Exiva!"`.
@@ -620,8 +693,7 @@ import { firebaseConfig } from '@/config/firebaseConfig';
 | 03 | Atualizar `src/repositories/charsRepository.ts` | Adicionar `upsertCharacter`          |
 
 ### Regras
-
-- Campo "Título da História": placeholder `"Ex: A Lenda de Antica..."`.
+- **⚠️ Seguir os padrões da seção "Ajustes de Tema"** — headers com `headerBg` + `textOnHeader`, backgrounds com `theme.colors.panel`.- Campo "Título da História": placeholder `"Ex: A Lenda de Antica..."`.
 - Campo "Sua História" (textarea): placeholder `"Conte as aventuras do seu char..."`.
 - Nota: `"✍️ Escreva com calma! Você pode editar sua história quantas vezes quiser."`.
 - Botão "💾 Salvar História".
@@ -697,6 +769,7 @@ import { firebaseConfig } from '@/config/firebaseConfig';
 
 ### Regras
 
+- **⚠️ Seguir os padrões da seção "Ajustes de Tema"** — headers com `headerBg` + `textOnHeader`, backgrounds com `theme.colors.panel`.
 - **Elegibilidade** (`highlightRules.canHighlight`): char vinculado + tem história (RN-06).
 - **Preço**: R$ 5,00 por 7 dias.
 - **Produto consumível** (pode comprar múltiplas vezes).

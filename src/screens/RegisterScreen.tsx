@@ -192,7 +192,7 @@ function RegisterScreen() {
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.panel,
     },
     container: {
         padding: theme.spacing.xl,

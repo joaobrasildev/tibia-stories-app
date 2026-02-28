@@ -94,7 +94,7 @@ function TopTabNavigator() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.panel,
     },
     emojiIcon: {
         fontSize: theme.fontSizes.xl,

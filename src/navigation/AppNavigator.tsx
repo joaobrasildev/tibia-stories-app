@@ -29,7 +29,7 @@ function AppNavigator() {
             <Stack.Navigator
                 screenOptions={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: theme.colors.background },
+                    contentStyle: { backgroundColor: theme.colors.panel },
                 }}
             >
                 <Stack.Screen name="MainTabs" component={TopTabNavigator} />
@@ -90,7 +90,7 @@ function AppNavigator() {
                         headerStyle: {
                             backgroundColor: theme.colors.headerBg,
                         },
-                        headerTintColor: theme.colors.textPrimary,
+                        headerTintColor: theme.colors.textOnHeader,
                         headerTitleStyle: {
                             fontFamily: theme.fonts.title,
                             fontSize: theme.fontSizes.lg,
