@@ -18,7 +18,7 @@
 | 4    | Feature: Itens                | 3          | 9        | ✅     |
 | 5    | Feature: Chars (leitura)      | 3          | 9        | ✅     |
 | 6    | Feature: Depot (Home)         | 4, 5       | 4        | ✅     |
-| 7    | Firebase + Auth               | 3          | 8        | ⬜     |
+| 7    | Firebase + Auth               | 3          | 9+       | ⬜     |
 | 8    | Feature: Conta + Meus Chars   | 7          | 7        | ⬜     |
 | 9    | Feature: Exiva + Vínculo      | 8          | 6        | ⬜     |
 | 10   | Feature: Editar História      | 9          | 3        | ⬜     |
@@ -361,57 +361,145 @@ Adicionar seed temporário de chars em `migrations.ts`:
 
 ## Fase 7 — Firebase + Autenticação
 
-**Objetivo:** Configurar Firebase e implementar login completo (e-mail + Google + Apple).
+**Objetivo:** Configurar Firebase (JS SDK) via `.env`, implementar login completo (e-mail + Google + Apple).
 
 **Depende de:** Fase 3 (shell de navegação).
 
-> ⚠️ Esta fase requer **Dev Client** (não funciona no Expo Go por causa do Firebase nativo).
+> ✅ Esta fase usa o **Firebase JS SDK** (modular v10), que funciona com Expo Go e sem Dev Client.
+> Os pacotes nativos (`@react-native-firebase/*`) foram removidos em favor do SDK JS.
 
 ### Pré-requisitos manuais (fora do código)
 
 1. Criar projeto no [Firebase Console](https://console.firebase.google.com).
-2. Habilitar Authentication (Email/Password, Google, Apple).
-3. Criar Firestore database (modo teste inicialmente).
-4. Baixar `google-services.json` (Android) e `GoogleService-Info.plist` (iOS).
-5. Configurar Google Sign-In no Google Cloud Console.
+2. Registrar um **Web app** no projeto (para obter as config keys do JS SDK).
+3. Habilitar Authentication → Sign-in providers: **Email/Password**, **Google**, **Apple**.
+4. Criar Firestore database (modo teste inicialmente).
+5. No [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials:
+   - Criar OAuth 2.0 Client ID tipo **Web application** → copiar `GOOGLE_WEB_CLIENT_ID`.
+   - Criar OAuth 2.0 Client ID tipo **iOS** → copiar `GOOGLE_IOS_CLIENT_ID`.
+6. Preencher o arquivo **`.env`** na raiz do projeto com os valores obtidos acima.
+   - Referência: `.env.example` (já commitado no git).
+
+### Passo 0 — Instalar dependências
+
+```bash
+# Firebase JS SDK (modular)
+npm install firebase
+
+# Persistência de auth em React Native
+npm install @react-native-async-storage/async-storage
+
+# Google Sign-In via OAuth (Expo managed)
+npm install expo-auth-session expo-crypto expo-web-browser
+```
+
+### Passo 1 — Configurar `.env`
+
+O arquivo `.env` (já criado na raiz, ignorado pelo git) contém:
+
+```
+# Firebase JS SDK Config
+EXPO_PUBLIC_FIREBASE_API_KEY=...
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=...
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+EXPO_PUBLIC_FIREBASE_APP_ID=...
+
+# Google Sign-In OAuth
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=...
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=...
+```
+
+> **Como funciona:** O Expo (SDK 49+) lê automaticamente o `.env` no build/start e injeta variáveis `EXPO_PUBLIC_*` via `process.env`. Não precisa de `app.config.ts` para isso.
 
 ### Arquivos a criar
 
-| #  | Arquivo                                            | Referência                               |
-| -- | -------------------------------------------------- | ---------------------------------------- |
-| 01 | `src/services/firebaseService.ts`                  | `architecture.md` seção 7.3              |
-| 02 | `src/services/authService.ts`                      | `architecture.md` seção 7.4              |
-| 03 | `src/rules/authRules.ts`                           | `architecture.md` seção 6.1 (authRules)  |
-| 04 | `src/stores/useAuthStore.ts`                       | `architecture.md` seção 5.2 (AuthState)  |
-| 05 | `src/components/composed/SocialLoginButtons.tsx`   | Botões Google + Apple                    |
-| 06 | `src/screens/LoginScreen.tsx`                      | `general-plan.md` seção 8.2 (Tela 4.0a) |
-| 07 | `src/screens/RegisterScreen.tsx`                   | `general-plan.md` seção 8.2 (Tela 4.0b) |
-| 08 | `src/repositories/userConfigRepository.ts`         | `architecture.md` seção 8.6              |
+| #  | Arquivo                                            | Referência / Descrição                                         |
+| -- | -------------------------------------------------- | -------------------------------------------------------------- |
+| 01 | `src/config/firebaseConfig.ts`                     | Lê `process.env.EXPO_PUBLIC_*` e exporta `firebaseConfig` obj  |
+| 02 | `src/services/firebaseService.ts`                  | `initializeApp(config)`, `getAuth()`, `getFirestore()`         |
+| 03 | `src/services/authService.ts`                      | Login email, Google (expo-auth-session), Apple, logout, reset  |
+| 04 | `src/rules/authRules.ts`                           | `architecture.md` seção 6.1 (validações puras)                |
+| 05 | `src/stores/useAuthStore.ts`                       | `architecture.md` seção 5.2 (AuthState)                       |
+| 06 | `src/components/composed/SocialLoginButtons.tsx`   | Botões Google + Apple (props only, sem store)                  |
+| 07 | `src/screens/LoginScreen.tsx`                      | `general-plan.md` seção 8.2 (Tela 4.0a)                      |
+| 08 | `src/screens/RegisterScreen.tsx`                   | `general-plan.md` seção 8.2 (Tela 4.0b)                      |
+| 09 | `src/repositories/userConfigRepository.ts`         | `architecture.md` seção 8.6                                    |
+
+### Detalhes de implementação
+
+#### `src/config/firebaseConfig.ts`
+```typescript
+// Lê as variáveis de ambiente EXPO_PUBLIC_* injetadas pelo Expo
+export const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY!,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID!,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID!,
+};
+```
+
+#### `src/services/firebaseService.ts`
+```typescript
+import { initializeApp, getApps } from 'firebase/app';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firebaseConfig } from '@/config/firebaseConfig';
+
+// Inicializa Firebase App (singleton)
+// Inicializa Auth com persistência via AsyncStorage
+// Inicializa Firestore
+// Exporta instâncias: app, auth, db
+```
+
+#### `src/services/authService.ts`
+```typescript
+// signInWithEmailAndPassword (Firebase Auth JS SDK)
+// createUserWithEmailAndPassword (Firebase Auth JS SDK)
+// Google Sign-In via expo-auth-session:
+//   1. useAuthRequest() com Google.useAuthRequest({ webClientId, iosClientId })
+//   2. Recebe id_token → GoogleAuthProvider.credential(id_token)
+//   3. signInWithCredential(auth, credential)
+// Apple Sign-In via expo-apple-authentication:
+//   1. AppleAuthentication.signInAsync() → recebe identityToken + nonce
+//   2. OAuthProvider.credential('apple.com', id_token, nonce)
+//   3. signInWithCredential(auth, credential)
+// signOut, sendPasswordResetEmail
+// ensureUserToken(uid): busca/cria token TS-xxx no Firestore (collection 'users')
+```
 
 ### Regras
 
 - **LoginScreen**: E-mail + Senha + "Entrar" + "Esqueceu a senha?" + Google + Apple + "Criar Conta".
 - **RegisterScreen**: Nome (opcional) + E-mail + Senha + Confirmar + "Criar Conta" + Google + Apple + "Já tem conta?".
 - `authRules.ts`: funções puras de validação (e-mail, senha, match). **Zero** Firebase imports.
-- `authService.ts`: wrapper do Firebase Auth (login, register, social, logout, resetPassword, ensureUserToken).
+- `authService.ts`: wrapper do Firebase Auth JS SDK (login, register, social, logout, resetPassword, ensureUserToken).
 - `useAuthStore.ts`: user, userToken, isLoggedIn + actions que chamam authService.
 - Após login/registro bem-sucedido: `authService.ensureUserToken(uid)` → cria/busca token UUID no Firestore.
 - Feedback de login: `"✅ Login realizado com sucesso! Entrando em mainland..."`.
 - Feedback de registro: `"✅ Conta criada com sucesso!"`.
 - Textos exatos: ver `general-plan.md` seção 8.2 (Telas 4.0a e 4.0b).
+- Consultar protótipo (`prototype/app.js`) para layout e estrutura visual das telas de login/registro.
 
 ### Critério de "done"
 
-- [ ] Firebase inicializa sem erros
+- [ ] `.env` preenchido com valores reais do Firebase Console
+- [ ] Firebase inicializa sem erros (`firebaseService.ts` + `firebaseConfig.ts`)
 - [ ] Login com e-mail/senha funciona
 - [ ] Registro com e-mail/senha funciona
-- [ ] Login com Google funciona
-- [ ] Login com Apple funciona (iOS)
+- [ ] Login com Google funciona (via expo-auth-session)
+- [ ] Login com Apple funciona (iOS, via expo-apple-authentication)
 - [ ] "Esqueceu a senha?" envia e-mail de reset
 - [ ] Após login, `useAuthStore` tem user + userToken
-- [ ] Token UUID (TS-xxx) é criado no Firestore vinculado ao uid
+- [ ] Token UUID (TS-xxx) é criado no Firestore (collection `users`) vinculado ao uid
+- [ ] Auth persiste entre reinícios do app (AsyncStorage)
 - [ ] Logout limpa estado
 - [ ] Validações (authRules) impedem submit de form inválido
+- [ ] Funciona no Expo Go (sem Dev Client)
 
 ---
 
