@@ -18,7 +18,7 @@
 | 4    | Feature: Itens                | 3          | 9        | ✅     |
 | 5    | Feature: Chars (leitura)      | 3          | 9        | ✅     |
 | 6    | Feature: Depot (Home)         | 4, 5       | 4        | ✅     |
-| 7    | Firebase + Auth               | 3          | 9+       | ⬜     |
+| 7    | Firebase + Auth               | 3          | 9+       | ✅     |
 | 8    | Feature: Conta + Meus Chars   | 7          | 7        | ⬜     |
 | 9    | Feature: Exiva + Vínculo      | 8          | 6        | ⬜     |
 | 10   | Feature: Editar História      | 9          | 3        | ⬜     |

@@ -13,7 +13,8 @@
       "backgroundColor": "#8B2020"
     },
     "plugins": [
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-web-browser"
     ],
     "android": {
       "package": "com.tibiastories.app",

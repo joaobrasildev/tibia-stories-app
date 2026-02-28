@@ -13,6 +13,8 @@ import {
 import AppNavigator from '@/navigation/AppNavigator';
 import { openDatabase } from '@/repositories/database';
 import { runMigrations } from '@/repositories/migrations';
+import { initializeFirebase } from '@/services/firebaseService';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { theme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -31,12 +33,20 @@ export default function App() {
     try {
       openDatabase();
       runMigrations();
+      initializeFirebase();
       setDbReady(true);
     } catch (error) {
-      console.error('Failed to initialize database:', error);
+      console.error('Failed to initialize:', error);
       setDbReady(true); // Continue even on error to show UI
     }
   }, []);
+
+  useEffect(() => {
+    if (dbReady) {
+      const unsubscribe = useAuthStore.getState().initAuthListener();
+      return unsubscribe;
+    }
+  }, [dbReady]);
 
   const onLayoutRootView = useCallback(async () => {
     if ((fontsLoaded || fontError) && dbReady) {

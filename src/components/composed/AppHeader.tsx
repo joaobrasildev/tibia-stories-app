@@ -13,13 +13,13 @@ function AppHeader() {
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <LinearGradient
                 colors={[
-                    theme.colors.headerGradientStart,
                     theme.colors.headerBg,
-                    theme.colors.headerGradientEnd,
+                    theme.colors.headerBg,
+                    theme.colors.headerBg,
                 ]}
                 style={styles.gradient}
             >
-                <View style={styles.borderTop} />
+                {/* <View style={styles.borderTop} /> */}
                 <View style={styles.content}>
                     <TibiaText style={styles.ornament}>⚔</TibiaText>
                     <TibiaText style={styles.title}>{APP_TEXTS.appName}</TibiaText>

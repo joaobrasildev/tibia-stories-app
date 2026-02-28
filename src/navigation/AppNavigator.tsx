@@ -4,15 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TopTabNavigator from '@/navigation/TopTabNavigator';
 import ItemDetailScreen from '@/screens/ItemDetailScreen';
 import CharStoryScreen from '@/screens/CharStoryScreen';
+import LoginScreen from '@/screens/LoginScreen';
+import RegisterScreen from '@/screens/RegisterScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
     MainTabs: undefined;
     ItemDetail: { id: number };
     CharStory: { charId: string };
-    // Future stack screens (Fase 7+):
-    // Login: undefined;
-    // Register: undefined;
+    Login: undefined;
+    Register: undefined;
+    // Future stack screens (Fase 8+):
     // AddChar: undefined;
     // VerifyChar: { charId: string };
     // EditStory: { charId: string };
@@ -38,9 +40,9 @@ function AppNavigator() {
                         headerShown: true,
                         headerTitle: 'Detalhe do Item',
                         headerStyle: {
-                            backgroundColor: theme.colors.panel,
+                            backgroundColor: theme.colors.headerBg,
                         },
-                        headerTintColor: theme.colors.textPrimary,
+                        headerTintColor: theme.colors.textOnHeader,
                         headerTitleStyle: {
                             fontFamily: theme.fonts.title,
                             fontSize: theme.fontSizes.lg,
@@ -54,7 +56,39 @@ function AppNavigator() {
                         headerShown: true,
                         headerTitle: 'História do Char',
                         headerStyle: {
-                            backgroundColor: theme.colors.panel,
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Login',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="Register"
+                    component={RegisterScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Criar Conta',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
                         },
                         headerTintColor: theme.colors.textPrimary,
                         headerTitleStyle: {
