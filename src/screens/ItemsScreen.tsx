@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -37,20 +37,33 @@ export default function ItemsScreen() {
         navigation.navigate('ItemDetail', { id: itemId });
     }, [navigation]);
 
+    const listHeader = useMemo(() => (
+        <View>
+            <View style={styles.filtersWrapper}>
+                <ItemSearchBar
+                    query={searchQuery}
+                    onQueryChange={setSearchQuery}
+                />
+                <RarityFilter
+                    activeFilter={rarityFilter}
+                    onFilterChange={setRarityFilter}
+                />
+                <ItemSortSelector
+                    activeSort={sort}
+                    onSortChange={setSort}
+                />
+            </View>
+            <View style={styles.listHeader}>
+                <TibiaHeader
+                    title={`${APP_TEXTS.items.panelTitle} (${filteredItems.length})`}
+                    icon="📦"
+                />
+            </View>
+        </View>
+    ), [searchQuery, setSearchQuery, rarityFilter, setRarityFilter, sort, setSort, filteredItems.length]);
+
     return (
         <View style={styles.container}>
-            <ItemSearchBar
-                query={searchQuery}
-                onQueryChange={setSearchQuery}
-            />
-            <RarityFilter
-                activeFilter={rarityFilter}
-                onFilterChange={setRarityFilter}
-            />
-            <ItemSortSelector
-                activeSort={sort}
-                onSortChange={setSort}
-            />
             <FlatList
                 data={filteredItems}
                 keyExtractor={(item) => String(item.id)}
@@ -63,14 +76,7 @@ export default function ItemsScreen() {
                         onPress={() => handleItemPress(item.id)}
                     />
                 )}
-                ListHeaderComponent={
-                    <View style={styles.listHeader}>
-                        <TibiaHeader
-                            title={`${APP_TEXTS.items.panelTitle} (${filteredItems.length})`}
-                            icon="📦"
-                        />
-                    </View>
-                }
+                ListHeaderComponent={listHeader}
                 ListEmptyComponent={
                     <TibiaEmpty message={APP_TEXTS.items.empty} icon="📦" />
                 }
@@ -88,6 +94,9 @@ const styles = StyleSheet.create({
     list: {
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.xxl,
+    },
+    filtersWrapper: {
+        marginHorizontal: -theme.spacing.lg,
     },
     listHeader: {
         marginBottom: 6,

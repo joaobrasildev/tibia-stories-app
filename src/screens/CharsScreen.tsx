@@ -52,30 +52,43 @@ export default function CharsScreen() {
         ...worlds.map((w) => ({ key: w, label: w })),
     ], [worlds]);
 
-    return (
-        <View style={styles.container}>
-            <CharSearchBar
-                query={searchQuery}
-                onQueryChange={setSearchQuery}
-            />
-            <VocationFilter
-                activeFilter={vocationFilter}
-                onFilterChange={setVocationFilter}
-            />
-            <View style={styles.sortRow}>
-                <SortSelector<string>
-                    label="Mundo:"
-                    options={worldOptions}
-                    activeSort={worldFilter}
-                    onSortChange={setWorldFilter}
+    const listHeader = useMemo(() => (
+        <View>
+            <View style={styles.filtersWrapper}>
+                <CharSearchBar
+                    query={searchQuery}
+                    onQueryChange={setSearchQuery}
                 />
-                <SortSelector<CharSort>
-                    label="Ordenar:"
-                    options={SORT_OPTIONS}
-                    activeSort={sort}
-                    onSortChange={setSort}
+                <VocationFilter
+                    activeFilter={vocationFilter}
+                    onFilterChange={setVocationFilter}
+                />
+                <View style={styles.sortRow}>
+                    <SortSelector<string>
+                        label="Mundo:"
+                        options={worldOptions}
+                        activeSort={worldFilter}
+                        onSortChange={setWorldFilter}
+                    />
+                    <SortSelector<CharSort>
+                        label="Ordenar:"
+                        options={SORT_OPTIONS}
+                        activeSort={sort}
+                        onSortChange={setSort}
+                    />
+                </View>
+            </View>
+            <View style={styles.listHeader}>
+                <TibiaHeader
+                    title={`${APP_TEXTS.chars.panelTitle} (${filteredChars.length})`}
+                    icon="📖"
                 />
             </View>
+        </View>
+    ), [searchQuery, setSearchQuery, vocationFilter, setVocationFilter, worldOptions, worldFilter, setWorldFilter, sort, setSort, filteredChars.length]);
+
+    return (
+        <View style={styles.container}>
             <FlatList
                 data={filteredChars}
                 keyExtractor={(item) => item.id}
@@ -92,14 +105,7 @@ export default function CharsScreen() {
                         onPress={() => handleCharPress(item.id)}
                     />
                 )}
-                ListHeaderComponent={
-                    <View style={styles.listHeader}>
-                        <TibiaHeader
-                            title={`${APP_TEXTS.chars.panelTitle} (${filteredChars.length})`}
-                            icon="📖"
-                        />
-                    </View>
-                }
+                ListHeaderComponent={listHeader}
                 ListEmptyComponent={
                     <TibiaEmpty message={APP_TEXTS.chars.empty} icon="📖" />
                 }
@@ -124,6 +130,9 @@ const styles = StyleSheet.create({
     list: {
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.xxl,
+    },
+    filtersWrapper: {
+        marginHorizontal: -theme.spacing.lg,
     },
     listHeader: {
         marginBottom: 6,
