@@ -14,8 +14,8 @@ export type RootStackParamList = {
     CharStory: { charId: string };
     Login: undefined;
     Register: undefined;
-    // Future stack screens (Fase 8+):
-    // AddChar: undefined;
+    AddChar: undefined;
+    // Future stack screens (Fase 9+):
     // VerifyChar: { charId: string };
     // EditStory: { charId: string };
     // Highlight: { charId: string };

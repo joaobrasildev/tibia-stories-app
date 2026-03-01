@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -11,16 +11,13 @@ import {
   Martel_700Bold,
 } from '@expo-google-fonts/martel';
 import AppNavigator from '@/navigation/AppNavigator';
-import { openDatabase } from '@/repositories/database';
-import { runMigrations } from '@/repositories/migrations';
-import { initializeFirebase } from '@/services/firebaseService';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useInitApp } from '@/hooks/useInitApp';
 import { theme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [dbReady, setDbReady] = useState(false);
+  const { isReady } = useInitApp();
 
   const [fontsLoaded, fontError] = useFonts({
     MedievalSharp: MedievalSharp_400Regular,
@@ -29,32 +26,13 @@ export default function App() {
     'Martel-Bold': Martel_700Bold,
   });
 
-  useEffect(() => {
-    try {
-      openDatabase();
-      runMigrations();
-      initializeFirebase();
-      setDbReady(true);
-    } catch (error) {
-      console.error('Failed to initialize:', error);
-      setDbReady(true); // Continue even on error to show UI
-    }
-  }, []);
-
-  useEffect(() => {
-    if (dbReady) {
-      const unsubscribe = useAuthStore.getState().initAuthListener();
-      return unsubscribe;
-    }
-  }, [dbReady]);
-
   const onLayoutRootView = useCallback(async () => {
-    if ((fontsLoaded || fontError) && dbReady) {
+    if ((fontsLoaded || fontError) && isReady) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError, dbReady]);
+  }, [fontsLoaded, fontError, isReady]);
 
-  if ((!fontsLoaded && !fontError) || !dbReady) {
+  if ((!fontsLoaded && !fontError) || !isReady) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color={theme.colors.gold} />

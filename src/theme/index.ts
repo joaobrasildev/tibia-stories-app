@@ -78,6 +78,24 @@ export const theme = {
         badgeWorldText: '#1A4060',
         badgeLevelBg: '#E8D8B0',
         badgeLevelBorder: '#C0A870',
+
+        // Badge pending (different from status/verified)
+        badgePendingBg: '#E8DCC0',
+        badgePendingBorder: '#C0A870',
+        badgePendingText: '#8A6A20',
+
+        // Token box
+        tokenBg: '#DEBB9D',
+        tokenBorder: '#8B5E2A',
+        tokenText: '#3A1800',
+        tokenLabelText: '#7A4A20',
+        tokenCopiedBg: '#C0E8C8',
+        tokenCopiedBorder: '#80C090',
+        tokenCopiedText: '#1A6B2A',
+
+        // Logout button
+        logoutBg: '#8B2020',
+        logoutBorder: '#5A1010',
     },
 
     fonts: {
