@@ -734,7 +734,9 @@ container: {
 - **Boot flow** segue EXATAMENTE os 10 passos da `architecture.md` seção 12.
 - **Sync na abertura**: Firestore → SQLite (upsert por ID, `updated_at` resolve conflitos).
 - **Write-through**: toda escrita vai para Firestore E SQLite.
-- **Offline**: usa dados locais do SQLite (app funciona sem internet para leitura).
+- **Offline (leitura)**: usa dados locais do SQLite (app funciona sem internet para leitura). Ver `general-plan.md` seção 6.3 e regras RN-16 a RN-20.
+- **Offline (escrita)**: BLOQUEADA. Todo dado deve ser criado no Firebase primeiro. `syncService.requireOnline()` deve ser chamado antes de qualquer operação de escrita. Exibir `"⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."` se offline.
+- **Sem fila offline**: Não há queue/retry de escritas. O usuário reconecta e tenta novamente.
 - **Pull-to-refresh**: disponível em DepotScreen e CharsScreen para re-sync manual.
 - **Expiração de destaques**: `charsRepository.expireHighlights()` no boot.
 - Ver estratégia completa em `general-plan.md` seção 6.
@@ -745,7 +747,9 @@ container: {
 - [ ] App abre com splash até boot completo
 - [ ] Sync Firestore → SQLite funciona na abertura
 - [ ] Dados de chars criados por outros usuários aparecem após sync
-- [ ] App funciona offline (dados do SQLite)
+- [ ] App funciona offline para leitura (dados do SQLite)
+- [ ] Operações de escrita exibem erro amigável se offline
+- [ ] Nenhum dado é criado localmente — tudo passa pelo Firebase primeiro
 - [ ] Destaques expirados são removidos no boot
 - [ ] Pull-to-refresh atualiza dados
 

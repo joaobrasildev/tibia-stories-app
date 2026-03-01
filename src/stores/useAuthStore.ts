@@ -157,7 +157,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                     saveUserTokenLocally(token);
                     set({ user, userToken: token, isLoggedIn: true });
                 } catch {
-                    set({ user, isLoggedIn: true });
+                    const localToken = getUserToken();
+                    set({ user, userToken: localToken, isLoggedIn: true });
                 }
             } else {
                 set({ user: null, userToken: null, isLoggedIn: false });

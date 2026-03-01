@@ -398,7 +398,7 @@ interface AuthState {
   setUserToken: (token: string | null) => void;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, displayName?: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;  // idToken vem do expo-auth-session no componente
   loginWithApple: () => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -641,7 +641,7 @@ export async function loginWithEmail(email: string, password: string): Promise<U
 export async function registerWithEmail(email: string, password: string, displayName?: string): Promise<User>;
 
 // Login com Google
-export async function loginWithGoogle(): Promise<User>;
+export async function loginWithGoogle(idToken: string): Promise<User>;  // idToken do expo-auth-session
 
 // Login com Apple
 export async function loginWithApple(): Promise<User>;
@@ -699,12 +699,22 @@ export async function syncFromFirestore(): Promise<void>;
 // Sync incremental: só registros alterados desde lastSync
 export async function syncIncremental(lastSyncAt: string): Promise<void>;
 
-// Escreve no Firestore e atualiza SQLite local
+// Escreve no Firestore e atualiza SQLite local (requer internet — ver requireOnline)
 export async function writeAndSync(collection: string, data: any): Promise<string>;
 
 // Verifica conectividade
 export async function checkConnectivity(): Promise<boolean>;
+
+// Guard de conectividade — lança erro se offline.
+// Deve ser chamado no início de TODA operação de escrita (criar char, vincular, salvar história, comprar destaque, login, registro).
+// Mensagem padrão: "⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."
+export function requireOnline(): void;
 ```
+
+> **Política offline (ver `general-plan.md` seção 6.3 e 11.4):**
+> - **Leitura:** funciona offline via SQLite (dados da última sincronização).
+> - **Escrita:** bloqueada offline. Todo dado deve ser criado no Firebase primeiro, depois sincronizado localmente. Sem fila de escrita offline.
+> - `requireOnline()` deve ser chamado por stores/services antes de qualquer operação de escrita. Se `useAppStore.isOnline === false`, lança erro com mensagem amigável.
 
 ### 7.8 `adService.ts`
 
@@ -1464,6 +1474,7 @@ CharsScreen
 ```
 LoginScreen
   → authRules.validateEmail() + validatePassword()
+  → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
   → useAuthStore.login()
     → authService.loginWithEmail()
       → Firebase Auth signInWithEmailAndPassword
@@ -1480,6 +1491,7 @@ LoginScreen
 AddCharScreen
   → Input: nome do char
   → charRules.validateCharName()
+  → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
   → tibiaDataService.fetchCharacter(name)
     → GET https://api.tibiadata.com/v4/character/{name}
   → Se encontrado: exibe dados na tela
@@ -1496,6 +1508,7 @@ AddCharScreen
 VerifyCharScreen
   → Exibe token do usuário (useAuthStore.userToken)
   → Botão "Vincular Agora"
+    → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
     → tibiaDataService.fetchCharacter(charName)
     → verificationRules.isTokenInComment(comment, token)
     → Se TRUE:
@@ -1513,6 +1526,7 @@ VerifyCharScreen
 EditStoryScreen
   → Input: título + conteúdo
   → Botão "Salvar"
+    → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
     → firestoreService.updateCharacter(id, { story_title, story_content, updated_at })
     → charsRepository.upsertCharacter({...char atualizado})
     → useCharsStore.loadChars() (re-carrega lista pública)
@@ -1524,6 +1538,7 @@ EditStoryScreen
 ```
 HighlightScreen
   → highlightRules.canHighlight(char) → verifica: vinculado + tem história
+  → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
   → Botão "Comprar Destaque — R$5"
     → purchaseService.purchaseHighlight()
       → IAP da store (Google Play / Apple)

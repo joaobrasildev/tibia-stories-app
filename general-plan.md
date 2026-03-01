@@ -272,6 +272,42 @@ App Aberto
 - **Destaques expirados:** Verificados localmente; `is_highlighted` volta a `0` se `highlight_until < now`.
 - **Otimização futura:** Usar `updated_at` como cursor para sync incremental (só trazer registros alterados desde a última sync).
 
+### 6.3 Política Offline — Regras Invioláveis
+
+> **Premissa fundamental:** Nenhum dado é criado localmente. Todo dado novo (char, história, destaque, conta) **deve ser criado no Firebase primeiro** e depois sincronizado para o SQLite local. O SQLite é cache de leitura, nunca fonte de escrita.
+
+#### Leitura offline (permitido)
+- O app **funciona offline** para leitura usando os dados locais do SQLite.
+- Abas **Depot**, **Itens** e **Chars** exibem os dados da última sincronização.
+- Detalhes de itens e histórias de chars já sincronizados são acessíveis normalmente.
+- Não deve haver mensagem de erro ao navegar por telas de leitura offline.
+
+#### Escrita offline (bloqueado com feedback)
+- Features que requerem internet **devem verificar conectividade antes de executar** e exibir mensagem de erro amigável se offline.
+- **Nenhuma operação de escrita deve ser enfileirada localmente** (sem queue/retry automático).
+- O usuário deve reconectar e tentar novamente manualmente.
+
+#### Features que requerem internet
+
+| Feature | Motivo |
+| ------- | ------ |
+| Login / Registro | Firebase Auth |
+| Login social (Google/Apple) | OAuth + Firebase Auth |
+| Esqueceu a senha | Firebase Auth sendPasswordResetEmail |
+| Adicionar char (Exiva) | TibiaData API + criação no Firestore |
+| Quest de Vínculo (verificar token) | TibiaData API + atualização no Firestore |
+| Escrever/Editar história | Escrita no Firestore |
+| Comprar destaque | IAP + Firestore |
+| Sync manual (pull-to-refresh) | Firestore |
+
+#### Mensagem de erro padrão (offline)
+
+```
+"⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."
+```
+
+> Cada tela pode complementar com contexto específico (ex: "Conecte-se para adicionar um char"), mas a mensagem padrão deve sempre estar presente como fallback.
+
 ---
 
 ## 7. Design & Identidade Visual
@@ -739,6 +775,16 @@ tibia-stories-app/
 | RN-13 | Itens são somente leitura para os usuários. |
 | RN-14 | Itens são pré-populados no SQLite via seed (pelo desenvolvedor). |
 | RN-15 | Atualizações de itens vêm via atualização do app na store. |
+
+### 11.4 Offline & Conectividade
+
+| Regra | Descrição |
+| ----- | --------- |
+| RN-16 | O app deve funcionar offline para **leitura** usando dados locais do SQLite (última sincronização). |
+| RN-17 | **Nenhum dado pode ser criado localmente.** Todo dado novo (char, história, conta, destaque) deve ser criado no Firebase primeiro e depois sincronizado para o SQLite. |
+| RN-18 | Features que requerem internet (login, criar char, vincular, escrever história, comprar destaque) devem verificar conectividade antes de executar e exibir erro amigável se offline. |
+| RN-19 | Mensagem de erro padrão offline: `"⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."` |
+| RN-20 | Não há fila de escrita offline (sem queue/retry automático). O usuário deve reconectar e tentar novamente. |
 
 ---
 
