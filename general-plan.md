@@ -308,6 +308,14 @@ App Aberto
 
 > Cada tela pode complementar com contexto específico (ex: "Conecte-se para adicionar um char"), mas a mensagem padrão deve sempre estar presente como fallback.
 
+#### Detecção de conectividade
+
+- Usa **`@react-native-community/netinfo`** com listener contínuo (`NetInfo.addEventListener`).
+- `syncService.startConnectivityListener()` é chamado no boot flow (passo 4.5) e atualiza `useAppStore.isOnline` em tempo real.
+- Quando o app volta online, **não há sync automático** — o usuário faz pull-to-refresh manualmente.
+- Um **banner visual "Modo offline"** (`OfflineBanner`) é exibido de forma persistente no topo da tela enquanto `isOnline === false`.
+- O banner desaparece automaticamente quando a conexão é restaurada.
+
 ---
 
 ## 7. Design & Identidade Visual

@@ -84,6 +84,9 @@ react-native-reanimated
 react-native-gesture-handler
 expo-clipboard
 
+# Conectividade
+@react-native-community/netinfo
+
 # Path Alias
 babel-plugin-module-resolver
 ```
@@ -135,6 +138,7 @@ tibia-stories-app/
 │   │       ├── HighlightedCharCard.tsx # Card de char em destaque (glow dourado)
 │   │       ├── QuestSteps.tsx         # Painel com instruções da Quest de Vínculo
 │   │       ├── SocialLoginButtons.tsx # Botões Google + Apple
+│   │       ├── OfflineBanner.tsx      # 🆕 Banner "Modo offline" (visível quando isOnline=false)
 │   │       ├── AdBanner.tsx           # Banner AdMob encapsulado
 │   │       └── AppHeader.tsx          # Header fixo "⚔ TIBIA STORIES ⚔"
 │   │
@@ -702,11 +706,18 @@ export async function syncIncremental(lastSyncAt: string): Promise<void>;
 // Escreve no Firestore e atualiza SQLite local (requer internet — ver requireOnline)
 export async function writeAndSync(collection: string, data: any): Promise<string>;
 
-// Verifica conectividade
+// Verifica conectividade (pontual — usa NetInfo.fetch())
 export async function checkConnectivity(): Promise<boolean>;
+
+// Inicia listener contínuo de conectividade via @react-native-community/netinfo.
+// Deve ser chamado UMA VEZ no boot flow (passo 4.5, após initializeFirebase, antes de syncIfOnline).
+// Atualiza useAppStore.isOnline em tempo real sempre que a rede muda.
+// Retorna unsubscribe para cleanup.
+export function startConnectivityListener(): () => void;
 
 // Guard de conectividade — lança erro se offline.
 // Deve ser chamado no início de TODA operação de escrita (criar char, vincular, salvar história, comprar destaque, login, registro).
+// Lê useAppStore.isOnline (atualizado em tempo real pelo listener).
 // Mensagem padrão: "⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."
 export function requireOnline(): void;
 ```
@@ -715,6 +726,12 @@ export function requireOnline(): void;
 > - **Leitura:** funciona offline via SQLite (dados da última sincronização).
 > - **Escrita:** bloqueada offline. Todo dado deve ser criado no Firebase primeiro, depois sincronizado localmente. Sem fila de escrita offline.
 > - `requireOnline()` deve ser chamado por stores/services antes de qualquer operação de escrita. Se `useAppStore.isOnline === false`, lança erro com mensagem amigável.
+>
+> **Detecção de conectividade:**
+> - Usa `@react-native-community/netinfo` com listener contínuo (`addEventListener`).
+> - `startConnectivityListener()` é chamado no boot flow e atualiza `useAppStore.setOnline()` em tempo real.
+> - Quando `isOnline` muda para `true` após estar `false`, o app **não faz sync automático** — o usuário pode puxar pull-to-refresh.
+> - Componente `OfflineBanner` lê `useAppStore.isOnline` e exibe banner visual "Modo offline" quando `false`.
 
 ### 7.8 `adService.ts`
 
@@ -1415,6 +1432,12 @@ App.tsx monta → useInitApp() dispara → initService.initializeApp()
 │
 ├── 4. initializeFirebase()
 │   └── Firebase App init (automático via google-services.json)
+│
+├── 4.5. startConnectivityListener()
+│   └── syncService.startConnectivityListener()
+│   └── Inicia listener contínuo via @react-native-community/netinfo
+│   └── Atualiza useAppStore.isOnline em tempo real
+│   └── Retorna unsubscribe (guardado para cleanup)
 │
 ├── 5. checkAuthState()
 │   └── Firebase Auth onAuthStateChanged

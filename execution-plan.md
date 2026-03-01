@@ -724,14 +724,17 @@ container: {
 
 | #  | Arquivo                                      | Referência                                |
 | -- | -------------------------------------------- | ----------------------------------------- |
-| 01 | `src/services/syncService.ts`                | `architecture.md` seção 7.7              |
+| 01 | `src/services/syncService.ts`                | `architecture.md` seção 7.7 (inclui `startConnectivityListener` e `requireOnline`) |
 | 02 | `src/services/initService.ts`                | `architecture.md` seção 7.2 e 12         |
 | 03 | `src/hooks/useSync.ts`                       | Hook de sync (pull-to-refresh)            |
-| 04 | Atualizar `src/hooks/useInitApp.ts`          | Boot flow completo (10 passos)            |
+| 04 | Atualizar `src/hooks/useInitApp.ts`          | Boot flow completo (10 passos + passo 4.5 conectividade) |
+| 05 | `src/components/composed/OfflineBanner.tsx`   | Banner "Modo offline" visível quando `isOnline === false` |
 
 ### Regras
 
-- **Boot flow** segue EXATAMENTE os 10 passos da `architecture.md` seção 12.
+- **Boot flow** segue EXATAMENTE os 10 passos da `architecture.md` seção 12 (incluindo passo 4.5: `startConnectivityListener`).
+- **Listener de conectividade**: `syncService.startConnectivityListener()` usa `@react-native-community/netinfo` para atualizar `useAppStore.isOnline` em tempo real. Iniciado no boot flow (passo 4.5).
+- **Banner "Modo offline"**: `OfflineBanner` (composed/) lê `useAppStore.isOnline` e exibe banner persistente no topo da tela enquanto offline. Desaparece automaticamente ao reconectar. Renderizado no `AppNavigator` ou `TopTabNavigator`, acima do conteúdo.
 - **Sync na abertura**: Firestore → SQLite (upsert por ID, `updated_at` resolve conflitos).
 - **Write-through**: toda escrita vai para Firestore E SQLite.
 - **Offline (leitura)**: usa dados locais do SQLite (app funciona sem internet para leitura). Ver `general-plan.md` seção 6.3 e regras RN-16 a RN-20.
@@ -748,7 +751,9 @@ container: {
 - [ ] Sync Firestore → SQLite funciona na abertura
 - [ ] Dados de chars criados por outros usuários aparecem após sync
 - [ ] App funciona offline para leitura (dados do SQLite)
-- [ ] Operações de escrita exibem erro amigável se offline
+- [ ] Listener de conectividade atualiza `isOnline` em tempo real (NetInfo)
+- [ ] Banner "Modo offline" aparece quando sem conexão e desaparece ao reconectar
+- [ ] Operações de escrita exibem erro amigável se offline (`requireOnline()`)
 - [ ] Nenhum dado é criado localmente — tudo passa pelo Firebase primeiro
 - [ ] Destaques expirados são removidos no boot
 - [ ] Pull-to-refresh atualiza dados
