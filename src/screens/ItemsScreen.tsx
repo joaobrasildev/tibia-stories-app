@@ -99,6 +99,6 @@ const styles = StyleSheet.create({
         marginHorizontal: -theme.spacing.lg,
     },
     listHeader: {
-        marginBottom: 6,
+        marginBottom: theme.spacing.gap,
     },
 });

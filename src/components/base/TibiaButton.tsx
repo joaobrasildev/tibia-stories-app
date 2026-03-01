@@ -32,8 +32,7 @@ const styles = StyleSheet.create({
         borderRadius: theme.radius.sm,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
+        ...theme.borders.panelInner,
     },
     primary: {
         backgroundColor: theme.colors.btnPrimary,
@@ -43,16 +42,12 @@ const styles = StyleSheet.create({
     },
     outline: {
         backgroundColor: 'transparent',
-        borderWidth: 2,
+        ...theme.borders.panel,
         borderColor: theme.colors.borderGold,
     },
     glow: {
         backgroundColor: theme.colors.gold,
-        shadowColor: theme.colors.highlightGlow,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 1,
-        shadowRadius: 12,
-        elevation: 8,
+        ...theme.shadows.glow,
     },
     disabled: {
         opacity: 0.5,

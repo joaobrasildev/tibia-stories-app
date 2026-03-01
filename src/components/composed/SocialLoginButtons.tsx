@@ -43,7 +43,7 @@ function SocialLoginButtons({ mode, onGooglePress, onApplePress, disabled = fals
 
 const styles = StyleSheet.create({
     container: {
-        gap: 10,
+        gap: theme.spacing.cardGap,
     },
     button: {
         flexDirection: 'row',
@@ -52,15 +52,15 @@ const styles = StyleSheet.create({
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.xl,
         borderRadius: theme.radius.sm,
-        borderWidth: 1,
+        ...theme.borders.panelInner,
     },
     googleButton: {
         backgroundColor: theme.colors.btnPrimary,
-        borderColor: '#DADCE0',
+        borderColor: theme.colors.socialBorder,
     },
     appleButton: {
         backgroundColor: theme.colors.btnPrimary,
-        borderColor: '#DADCE0',
+        borderColor: theme.colors.socialBorder,
     },
     disabled: {
         opacity: 0.5,
@@ -68,24 +68,24 @@ const styles = StyleSheet.create({
     googleIcon: {
         fontFamily: theme.fonts.bodySemiBold,
         fontSize: theme.fontSizes.lg,
-        color: '#4285F4',
+        color: theme.colors.socialGoogleIcon,
         marginRight: theme.spacing.sm,
     },
     googleLabel: {
         fontFamily: theme.fonts.bodySemiBold,
         fontSize: theme.fontSizes.md,
-        color: '#3C4043',
+        color: theme.colors.socialGoogleText,
     },
     appleIcon: {
         fontFamily: theme.fonts.body,
         fontSize: theme.fontSizes.xl,
-        color: '#FFFFFF',
+        color: theme.colors.textWhite,
         marginRight: theme.spacing.sm,
     },
     appleLabel: {
         fontFamily: theme.fonts.bodySemiBold,
         fontSize: theme.fontSizes.md,
-        color: '#FFFFFF',
+        color: theme.colors.textWhite,
     },
 });
 

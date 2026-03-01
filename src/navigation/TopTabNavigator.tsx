@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     },
     emojiIcon: {
         fontSize: theme.fontSizes.xl,
-        lineHeight: 22,
+        lineHeight: theme.lineHeights.body,
     },
 });
 

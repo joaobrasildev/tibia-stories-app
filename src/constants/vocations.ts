@@ -1,4 +1,5 @@
 import type { Vocation, VocationAbbr } from '@/types/character';
+import { theme } from '@/theme';
 
 export interface VocationInfo {
     full: Vocation;
@@ -8,15 +9,15 @@ export interface VocationInfo {
 }
 
 export const VOCATIONS: VocationInfo[] = [
-    { full: 'Elite Knight', abbr: 'EK', label: 'EK', color: '#C0392B' },
-    { full: 'Royal Paladin', abbr: 'RP', label: 'RP', color: '#27AE60' },
-    { full: 'Elder Druid', abbr: 'ED', label: 'ED', color: '#8E44AD' },
-    { full: 'Master Sorcerer', abbr: 'MS', label: 'MS', color: '#2980B9' },
-    { full: 'Monk', abbr: 'MO', label: 'MO', color: '#D4A66A' },
-    { full: 'Knight', abbr: 'EK', label: 'EK', color: '#C0392B' },
-    { full: 'Paladin', abbr: 'RP', label: 'RP', color: '#27AE60' },
-    { full: 'Druid', abbr: 'ED', label: 'ED', color: '#8E44AD' },
-    { full: 'Sorcerer', abbr: 'MS', label: 'MS', color: '#2980B9' },
+    { full: 'Elite Knight', abbr: 'EK', label: 'EK', color: theme.colors.badgeEK },
+    { full: 'Royal Paladin', abbr: 'RP', label: 'RP', color: theme.colors.badgeRP },
+    { full: 'Elder Druid', abbr: 'ED', label: 'ED', color: theme.colors.badgeED },
+    { full: 'Master Sorcerer', abbr: 'MS', label: 'MS', color: theme.colors.badgeMS },
+    { full: 'Monk', abbr: 'MO', label: 'MO', color: theme.colors.badgeMO },
+    { full: 'Knight', abbr: 'EK', label: 'EK', color: theme.colors.badgeEK },
+    { full: 'Paladin', abbr: 'RP', label: 'RP', color: theme.colors.badgeRP },
+    { full: 'Druid', abbr: 'ED', label: 'ED', color: theme.colors.badgeED },
+    { full: 'Sorcerer', abbr: 'MS', label: 'MS', color: theme.colors.badgeMS },
 ];
 
 export function getVocationInfo(vocation: string): VocationInfo | undefined {
@@ -32,7 +33,7 @@ export function getVocationAbbr(vocation: string): VocationAbbr {
 
 export function getVocationColor(vocation: string): string {
     const info = getVocationInfo(vocation);
-    return info?.color ?? '#D4A66A';
+    return info?.color ?? theme.colors.badgeMO;
 }
 
 // Imagens de outfit (male, addon 1+2) do Tibia Wiki — uma por vocação

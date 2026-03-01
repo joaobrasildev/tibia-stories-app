@@ -46,10 +46,10 @@ function TibiaBadge({
 
 const styles = StyleSheet.create({
     badge: {
-        paddingVertical: 2,
+        paddingVertical: theme.spacing.xxs,
         paddingHorizontal: theme.spacing.sm,
         borderRadius: theme.radius.sm,
-        borderWidth: 1,
+        ...theme.borders.panelInner,
         alignSelf: 'flex-start',
     },
     label: {

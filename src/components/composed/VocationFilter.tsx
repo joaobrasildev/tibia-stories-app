@@ -55,16 +55,15 @@ function VocationFilter({ activeFilter, onFilterChange }: VocationFilterProps) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        gap: 6,
+        gap: theme.spacing.gap,
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.sm,
     },
     btn: {
-        paddingVertical: 5,
+        paddingVertical: theme.spacing.chipY,
         paddingHorizontal: theme.spacing.md,
         backgroundColor: theme.colors.panel,
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
+        ...theme.borders.panelInner,
         borderRadius: theme.radius.sm,
     },
     btnActive: {
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontFamily: theme.fonts.bodySemiBold,
-        fontSize: 11,
+        fontSize: theme.fontSizes.xxs,
         color: theme.colors.textSecondary,
     },
     btnTextActive: {

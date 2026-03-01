@@ -1,6 +1,7 @@
 import type { ItemRarity } from '@/types/item';
 import { getRarityColor } from '@/constants/rarities';
 import { getVocationInfo } from '@/constants/vocations';
+import { theme } from '@/theme';
 
 export function formatLevel(level: number): string {
     return `Level ${level}`;
@@ -34,7 +35,7 @@ export function formatVocation(vocation: string): { abbr: string; color: string 
     const info = getVocationInfo(vocation);
     return {
         abbr: info?.abbr ?? vocation,
-        color: info?.color ?? '#D4A66A',
+        color: info?.color ?? theme.colors.badgeMO,
     };
 }
 

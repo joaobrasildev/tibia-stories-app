@@ -53,12 +53,12 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        gap: theme.spacing.cardGap,
         padding: theme.spacing.md,
         backgroundColor: theme.colors.cardBg,
         ...theme.borders.card,
         borderRadius: theme.radius.sm,
-        marginBottom: 6,
+        marginBottom: theme.spacing.gap,
     },
     sprite: {
         width: 32,
@@ -66,12 +66,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.colors.panelAlt,
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
-        borderRadius: 2,
+        ...theme.borders.panelInner,
+        borderRadius: theme.radius.xs,
     },
     emoji: {
-        fontSize: 22,
+        fontSize: theme.fontSizes.xxl,
     },
     image: {
         width: 28,
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     },
     info: {
         flex: 1,
-        gap: 2,
+        gap: theme.spacing.xxs,
     },
     name: {
         fontFamily: theme.fonts.title,

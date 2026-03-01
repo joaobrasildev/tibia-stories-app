@@ -74,15 +74,11 @@ const styles = StyleSheet.create({
     },
     multiline: {
         minHeight: 180,
-        lineHeight: 22,
+        lineHeight: theme.lineHeights.body,
     },
     focused: {
         borderColor: theme.colors.borderOuter,
-        shadowColor: theme.colors.borderOuter,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.15,
-        shadowRadius: 6,
-        elevation: 2,
+        ...theme.shadows.inputFocus,
     },
     error: {
         borderColor: theme.colors.accentRed,

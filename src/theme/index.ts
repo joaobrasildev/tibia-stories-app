@@ -8,6 +8,11 @@ export const theme = {
         headerGradientStart: '#A02828',
         headerGradientEnd: '#6E1818',
         subtitleBg: '#D4A66A',
+        overlay: 'rgba(0, 0, 0, 0.3)',
+
+        // Feedback
+        feedbackErrorBg: '#FDECEC',
+        feedbackSuccessBg: '#ECF9EC',
 
         // Text
         textPrimary: '#5A2800',
@@ -15,6 +20,7 @@ export const theme = {
         textMuted: '#9A7A50',
         textDark: '#3A1800',
         textOnHeader: '#FFF2DB',
+        textWhite: '#FFFFFF',
 
         // Borders
         borderOuter: '#5A2800',
@@ -44,6 +50,11 @@ export const theme = {
         btnPrimaryPressed: '#C49658',
         btnDanger: '#C0392B',
         btnSuccess: '#1B7A2E',
+
+        // Social login
+        socialGoogleIcon: '#4285F4',
+        socialGoogleText: '#3C4043',
+        socialBorder: '#DADCE0',
 
         // Badges — rarity accent colors
         badgeLegendary: '#FF8C00',
@@ -78,19 +89,32 @@ export const theme = {
 
     fontSizes: {
         xs: 10,
+        xxs: 11,
         sm: 12,
+        paragraph: 13,
         md: 14,
         lg: 16,
+        sectionTitle: 17,
         xl: 18,
         xxl: 22,
         title: 26,
         header: 20,
+        emoji: 48,
+        emojiHero: 64,
+    },
+
+    lineHeights: {
+        body: 22,
     },
 
     spacing: {
+        xxs: 2,
         xs: 4,
+        chipY: 5,
         sm: 8,
+        gap: 6,
         md: 12,
+        cardGap: 10,
         lg: 16,
         xl: 20,
         xxl: 24,
@@ -98,6 +122,7 @@ export const theme = {
     },
 
     radius: {
+        xs: 2,
         sm: 4,
         md: 8,
         lg: 12,
@@ -125,6 +150,33 @@ export const theme = {
             shadowOpacity: 0.3,
             shadowRadius: 8,
             elevation: 8,
+        },
+        glow: {
+            shadowColor: '#D4A66A',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 1,
+            shadowRadius: 12,
+            elevation: 8,
+        },
+        goldenGlow: {
+            shadowColor: '#D4A66A',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.4,
+            shadowRadius: 8,
+            elevation: 6,
+        },
+        highlightGlow: {
+            shadowColor: 'rgba(255, 200, 50, 0.3)',
+            shadowOpacity: 0.8,
+            shadowRadius: 10,
+            elevation: 6,
+        },
+        inputFocus: {
+            shadowColor: '#5A2800',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.15,
+            shadowRadius: 6,
+            elevation: 2,
         },
     },
 

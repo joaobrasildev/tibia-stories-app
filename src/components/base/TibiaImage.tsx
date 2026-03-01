@@ -23,7 +23,7 @@ function TibiaImage({ source, size = 96, style }: TibiaImageProps) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: theme.colors.panel,
-        borderWidth: 2,
+        ...theme.borders.panel,
         borderColor: theme.colors.borderInner,
         borderRadius: theme.radius.md,
         alignItems: 'center',

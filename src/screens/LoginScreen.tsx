@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
         paddingVertical: theme.spacing.xl,
     },
     icon: {
-        fontSize: 48,
+        fontSize: theme.fontSizes.emoji,
         marginBottom: theme.spacing.sm,
     },
     title: {
@@ -238,8 +238,8 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     errorContainer: {
-        backgroundColor: '#FDECEC',
-        borderWidth: 1,
+        backgroundColor: theme.colors.feedbackErrorBg,
+        ...theme.borders.panelInner,
         borderColor: theme.colors.accentRed,
         borderRadius: theme.radius.sm,
         padding: theme.spacing.md,
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
         color: theme.colors.accentRed,
     },
     successContainer: {
-        backgroundColor: '#ECF9EC',
-        borderWidth: 1,
+        backgroundColor: theme.colors.feedbackSuccessBg,
+        ...theme.borders.panelInner,
         borderColor: theme.colors.accentGreen,
         borderRadius: theme.radius.sm,
         padding: theme.spacing.md,

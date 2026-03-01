@@ -47,16 +47,15 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 6,
+        gap: theme.spacing.gap,
         paddingHorizontal: theme.spacing.lg,
         marginBottom: theme.spacing.sm,
     },
     button: {
-        paddingVertical: 5,
+        paddingVertical: theme.spacing.chipY,
         paddingHorizontal: theme.spacing.md,
         backgroundColor: theme.colors.panelAlt,
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
+        ...theme.borders.panelInner,
         borderRadius: theme.radius.sm,
     },
     buttonActive: {
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontFamily: theme.fonts.body,
-        fontSize: 11,
+        fontSize: theme.fontSizes.xxs,
         color: theme.colors.textPrimary,
     },
     labelActive: {

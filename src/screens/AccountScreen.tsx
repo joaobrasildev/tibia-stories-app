@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     icon: {
-        fontSize: 48,
+        fontSize: theme.fontSizes.emoji,
         marginBottom: theme.spacing.md,
     },
     welcomeTitle: {

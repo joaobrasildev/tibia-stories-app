@@ -80,20 +80,17 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        gap: theme.spacing.cardGap,
         padding: theme.spacing.md,
         backgroundColor: theme.colors.cardBg,
         ...theme.borders.card,
         borderRadius: theme.radius.sm,
-        marginBottom: 6,
+        marginBottom: theme.spacing.gap,
     },
     highlighted: {
+        ...theme.borders.panel,
         borderColor: theme.colors.gold,
-        borderWidth: 2,
-        shadowColor: theme.colors.highlightGlow,
-        shadowOpacity: 0.8,
-        shadowRadius: 10,
-        elevation: 6,
+        ...theme.shadows.highlightGlow,
     },
     avatar: {
         width: 36,
@@ -101,12 +98,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.colors.panelAlt,
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
+        ...theme.borders.panelInner,
         borderRadius: theme.radius.sm,
     },
     avatarEmoji: {
-        fontSize: 22,
+        fontSize: theme.fontSizes.xxl,
     },
     avatarImage: {
         width: 32,
@@ -114,7 +110,7 @@ const styles = StyleSheet.create({
     },
     info: {
         flex: 1,
-        gap: 2,
+        gap: theme.spacing.xxs,
     },
     header: {
         flexDirection: 'row',
@@ -137,7 +133,7 @@ const styles = StyleSheet.create({
         fontFamily: theme.fonts.body,
         fontSize: theme.fontSizes.sm,
         color: theme.colors.textMuted,
-        marginTop: 2,
+        marginTop: theme.spacing.xxs,
     },
     arrow: {
         fontSize: theme.fontSizes.lg,

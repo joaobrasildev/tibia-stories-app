@@ -84,20 +84,16 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        gap: theme.spacing.cardGap,
         padding: theme.spacing.md,
         backgroundColor: theme.colors.cardBg,
         borderRadius: theme.radius.sm,
-        marginBottom: 6,
+        marginBottom: theme.spacing.gap,
         // Golden highlight border — matches prototype .char-card.highlighted
-        borderWidth: 2,
+        ...theme.borders.panel,
         borderColor: theme.colors.borderGold,
         // Golden glow shadow — matches prototype highlight-glow
-        shadowColor: theme.colors.gold,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 6,
+        ...theme.shadows.goldenGlow,
     },
     starBadge: {
         position: 'absolute',
@@ -106,7 +102,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     starText: {
-        fontSize: 16,
+        fontSize: theme.fontSizes.lg,
     },
     avatar: {
         width: 48,
@@ -114,12 +110,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.colors.panelAlt,
-        borderWidth: 1,
-        borderColor: theme.colors.borderInner,
+        ...theme.borders.panelInner,
         borderRadius: theme.radius.sm,
     },
     avatarEmoji: {
-        fontSize: 26,
+        fontSize: theme.fontSizes.title,
     },
     avatarImage: {
         width: 44,
@@ -127,7 +122,7 @@ const styles = StyleSheet.create({
     },
     info: {
         flex: 1,
-        gap: 2,
+        gap: theme.spacing.xxs,
     },
     header: {
         flexDirection: 'row',
@@ -150,7 +145,7 @@ const styles = StyleSheet.create({
         fontFamily: theme.fonts.body,
         fontSize: theme.fontSizes.sm,
         color: theme.colors.textMuted,
-        marginTop: 2,
+        marginTop: theme.spacing.xxs,
     },
     arrow: {
         fontSize: theme.fontSizes.lg,

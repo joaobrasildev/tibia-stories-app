@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     sortRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 16,
+        gap: theme.spacing.lg,
         paddingHorizontal: theme.spacing.lg,
         marginBottom: theme.spacing.md,
     },
@@ -135,6 +135,6 @@ const styles = StyleSheet.create({
         marginHorizontal: -theme.spacing.lg,
     },
     listHeader: {
-        marginBottom: 6,
+        marginBottom: theme.spacing.gap,
     },
 });

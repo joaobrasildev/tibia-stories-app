@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: theme.spacing.xl,
     },
     icon: {
-        fontSize: 48,
+        fontSize: theme.fontSizes.emoji,
         marginBottom: theme.spacing.md,
         opacity: 0.5,
     },
