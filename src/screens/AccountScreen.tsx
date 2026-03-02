@@ -115,6 +115,7 @@ function AccountScreen() {
                                 vocation={char.vocation}
                                 level={char.level}
                                 world={char.world}
+                                avatarUrl={char.avatar_url}
                                 isVerified={char.is_verified}
                                 hasStory={!!char.story_content}
                                 isAlternate={index % 2 === 1}

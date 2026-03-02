@@ -134,7 +134,7 @@ tibia-stories-app/
 │   │       ├── VocationFilter.tsx     # Filtro por vocação (EK, RP, ED, MS, MO)
 │   │       ├── RarityFilter.tsx       # Filtro por raridade (Legendary, Very Rare, Rare)
 │   │       ├── SortSelector.tsx       # Dropdown de ordenação
-│   │       ├── MyCharItem.tsx         # Item de char na lista "Meus Chars" (com ações)
+│   │       ├── MyCharItem.tsx         # Item de char na lista "Meus Chars" (avatar + ações)
 │   │       ├── HighlightedCharCard.tsx # Card de char em destaque (glow dourado)
 │   │       ├── QuestSteps.tsx         # Painel com instruções da Quest de Vínculo
 │   │       ├── SocialLoginButtons.tsx # Botões Google + Apple

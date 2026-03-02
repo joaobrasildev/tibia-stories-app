@@ -507,6 +507,7 @@ Tab Navigator (Bottom Tabs)
   - Seção **"🔑 Meu Token de Verificação"**: Exibe o token UUID do usuário com botão de copiar.
   - Instruções de como usar o token para vincular chars.
   - Seção **"⚔️ Meus Chars"**: Lista dos chars vinculados ao usuário.
+    - Cada char exibe avatar (imagem via URL ou fallback 🛡️), consistente com a aba Chars.
     - Cada char com status: `✅ Vinculado` / `⏳ Pendente`.
     - Botões de ação: **Vincular**, **Escrever** (história), **Editar**, **⭐** (destacar).
   - Botão **"➕ Adicionar Char"**.

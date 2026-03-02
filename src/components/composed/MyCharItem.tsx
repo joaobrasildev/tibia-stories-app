@@ -1,15 +1,16 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import TibiaText from '@/components/base/TibiaText';
 import TibiaBadge from '@/components/base/TibiaBadge';
-import { getVocationColor, getVocationAbbr } from '@/constants/vocations';
+import { getVocationColor, getVocationAbbr, getVocationOutfitUrl } from '@/constants/vocations';
 
 interface MyCharItemProps {
     name: string;
     vocation: string;
     level: number;
     world: string;
+    avatarUrl: string | null;
     isVerified: boolean;
     hasStory: boolean;
     isAlternate: boolean;
@@ -24,6 +25,7 @@ function MyCharItem({
     vocation,
     level,
     world,
+    avatarUrl,
     isVerified,
     hasStory,
     isAlternate,
@@ -34,9 +36,24 @@ function MyCharItem({
 }: MyCharItemProps) {
     const vocAbbr = getVocationAbbr(vocation);
     const vocColor = getVocationColor(vocation);
+    const [imageError, setImageError] = useState(false);
+    const displayUrl = avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : getVocationOutfitUrl(vocation);
+    const hasImage = !!displayUrl && !imageError;
 
     return (
         <View style={[styles.container, isAlternate && styles.containerAlt]}>
+            <View style={styles.avatar}>
+                {hasImage ? (
+                    <Image
+                        source={{ uri: displayUrl }}
+                        style={styles.avatarImage}
+                        resizeMode="contain"
+                        onError={() => setImageError(true)}
+                    />
+                ) : (
+                    <TibiaText style={styles.avatarEmoji}>🛡️</TibiaText>
+                )}
+            </View>
             <View style={styles.info}>
                 <TibiaText style={styles.name}>{name}</TibiaText>
                 <View style={styles.details}>
@@ -105,6 +122,22 @@ const styles = StyleSheet.create({
     },
     containerAlt: {
         backgroundColor: theme.colors.panelAlt,
+    },
+    avatar: {
+        width: 36,
+        height: 36,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.colors.panelAlt,
+        ...theme.borders.panelInner,
+        borderRadius: theme.radius.sm,
+    },
+    avatarEmoji: {
+        fontSize: theme.fontSizes.xxl,
+    },
+    avatarImage: {
+        width: 32,
+        height: 32,
     },
     info: {
         flex: 1,

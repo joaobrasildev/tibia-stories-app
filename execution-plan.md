@@ -604,7 +604,7 @@ container: {
   5. Seção **"ℹ️ Sobre o App"**.
   6. Botão **"Sair"** (logout).
 - Estado vazio (sem chars): `"Nenhum char vinculado"`.
-- `MyCharItem` recebe props primitivas (nome, status, callbacks).
+- `MyCharItem` recebe props primitivas (nome, status, `avatarUrl`, callbacks). Exibe avatar do char (imagem via URL ou fallback emoji 🛡️), consistente com `CharCard`.
 - `useMyCharsStore` busca chars do Firestore filtrados por `user_token`.
 - Textos exatos: `general-plan.md` seção 8.2 (Tela 4).
 
