@@ -4,6 +4,7 @@ import { fetchCharactersByUser, updateCharacter } from '@/services/firestoreServ
 import { getCharsByUserToken, upsertCharacter, getCharById } from '@/repositories/charsRepository';
 import { fetchCharacter } from '@/services/tibiaDataService';
 import { isTokenInComment } from '@/rules/verificationRules';
+import { useCharsStore } from '@/stores/useCharsStore';
 
 interface MyCharsState {
     myChars: Character[];
@@ -94,9 +95,42 @@ export const useMyCharsStore = create<MyCharsState>((set, get) => ({
         }
     },
 
-    // Stub — será implementado na Fase 10 (Editar História)
-    saveStory: async (_charId: string, _title: string, _content: string) => {
-        throw new Error('Será implementado na Fase 10');
+    // Fase 10: Salva história do char (Firestore → SQLite write-through)
+    saveStory: async (charId: string, title: string, content: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const char = getCharById(charId);
+            if (!char) {
+                set({ isLoading: false, error: 'Char não encontrado localmente.' });
+                return;
+            }
+
+            if (!char.is_verified) {
+                set({ isLoading: false, error: 'Char precisa estar vinculado para editar a história.' });
+                return;
+            }
+
+            const now = new Date().toISOString();
+            const updates = { story_title: title, story_content: content, updated_at: now };
+
+            // Write-through: Firestore (fonte da verdade) → SQLite local
+            await updateCharacter(charId, updates);
+            const updatedChar: Character = { ...char, ...updates };
+            upsertCharacter(updatedChar);
+
+            // Atualiza store local (myChars)
+            set((state) => ({
+                myChars: state.myChars.map((c) =>
+                    c.id === charId ? updatedChar : c,
+                ),
+                isLoading: false,
+            }));
+
+            // Recarrega lista pública para refletir a nova história
+            useCharsStore.getState().loadChars();
+        } catch {
+            set({ isLoading: false, error: 'Erro ao salvar história. Verifique sua conexão.' });
+        }
     },
 
     // Stub — será implementado na Fase 12 (Destaque + Compra)

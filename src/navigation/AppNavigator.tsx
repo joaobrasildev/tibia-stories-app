@@ -8,6 +8,7 @@ import LoginScreen from '@/screens/LoginScreen';
 import RegisterScreen from '@/screens/RegisterScreen';
 import AddCharScreen from '@/screens/AddCharScreen';
 import VerifyCharScreen from '@/screens/VerifyCharScreen';
+import EditStoryScreen from '@/screens/EditStoryScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
@@ -18,8 +19,8 @@ export type RootStackParamList = {
     Register: undefined;
     AddChar: undefined;
     VerifyChar: { charId: string; charName: string };
-    // Future stack screens (Fase 10+):
-    // EditStory: { charId: string };
+    EditStory: { charId: string };
+    // Future stack screens (Fase 12+):
     // Highlight: { charId: string };
 };
 
@@ -121,6 +122,22 @@ function AppNavigator() {
                     options={{
                         headerShown: true,
                         headerTitle: 'Quest de Vínculo',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="EditStory"
+                    component={EditStoryScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Editar História',
                         headerStyle: {
                             backgroundColor: theme.colors.headerBg,
                         },

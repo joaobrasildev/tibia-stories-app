@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import TibiaText from '@/components/base/TibiaText';
 import TibiaBadge from '@/components/base/TibiaBadge';
-import { getVocationColor, getVocationAbbr } from '@/constants/vocations';
+import { getVocationColor, getVocationAbbr, getVocationOutfitUrl } from '@/constants/vocations';
 
 interface CharCardProps {
     name: string;
@@ -31,8 +31,8 @@ function CharCard({
     const vocAbbr = getVocationAbbr(vocation);
     const vocColor = getVocationColor(vocation);
     const [imageError, setImageError] = useState(false);
-
-    const hasImage = avatarUrl && avatarUrl.startsWith('http') && !imageError;
+    const displayUrl = avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : getVocationOutfitUrl(vocation);
+    const hasImage = !!displayUrl && !imageError;
 
     return (
         <TouchableOpacity
@@ -43,14 +43,16 @@ function CharCard({
             <View style={styles.avatar}>
                 {hasImage ? (
                     <Image
-                        source={{ uri: avatarUrl }}
+                        source={{ uri: displayUrl }}
                         style={styles.avatarImage}
                         resizeMode="contain"
                         onError={() => setImageError(true)}
                     />
                 ) : avatarEmoji ? (
                     <TibiaText style={styles.avatarEmoji}>{avatarEmoji}</TibiaText>
-                ) : null}
+                ) : (
+                    <TibiaText style={styles.avatarEmoji}>🛡️</TibiaText>
+                )}
             </View>
             <View style={styles.info}>
                 <View style={styles.header}>

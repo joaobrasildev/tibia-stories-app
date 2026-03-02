@@ -51,13 +51,13 @@ function AccountScreen() {
         navigation.navigate('VerifyChar', { charId, charName });
     }, [navigation]);
 
-    const handleWrite = useCallback((_charId: string) => {
-        // Fase 10: navigation.navigate('EditStory', { charId });
-    }, []);
+    const handleWrite = useCallback((charId: string) => {
+        navigation.navigate('EditStory', { charId });
+    }, [navigation]);
 
-    const handleEdit = useCallback((_charId: string) => {
-        // Fase 10: navigation.navigate('EditStory', { charId });
-    }, []);
+    const handleEdit = useCallback((charId: string) => {
+        navigation.navigate('EditStory', { charId });
+    }, [navigation]);
 
     const handleHighlight = useCallback((_charId: string) => {
         // Fase 12: navigation.navigate('Highlight', { charId });

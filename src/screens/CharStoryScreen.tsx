@@ -4,7 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { theme } from '@/theme';
 import { getCharById } from '@/repositories/charsRepository';
-import { getVocationColor, getVocationAbbr } from '@/constants/vocations';
+import { getVocationColor, getVocationAbbr, getVocationOutfitUrl } from '@/constants/vocations';
 import { APP_TEXTS } from '@/constants/app';
 import { formatRelativeDate } from '@/rules/formatRules';
 import TibiaText from '@/components/base/TibiaText';
@@ -14,24 +14,23 @@ import type { RootStackParamList } from '@/navigation/AppNavigator';
 
 type CharStoryRouteProp = RouteProp<RootStackParamList, 'CharStory'>;
 
-function HeroAvatar({ avatarUrl }: { avatarUrl: string | null }) {
+function HeroAvatar({ avatarUrl, vocation }: { avatarUrl: string | null; vocation: string }) {
     const [imageError, setImageError] = useState(false);
-    const hasImage = avatarUrl && avatarUrl.startsWith('http') && !imageError;
-
-    if (!hasImage && !avatarUrl) return null;
+    const displayUrl = avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : getVocationOutfitUrl(vocation);
+    const hasImage = !!displayUrl && !imageError;
 
     return (
         <View style={styles.heroImage}>
             {hasImage ? (
                 <Image
-                    source={{ uri: avatarUrl }}
+                    source={{ uri: displayUrl }}
                     style={styles.heroAvatarImage}
                     resizeMode="contain"
                     onError={() => setImageError(true)}
                 />
-            ) : avatarUrl ? (
-                <TibiaText style={styles.heroEmoji}>{avatarUrl}</TibiaText>
-            ) : null}
+            ) : (
+                <TibiaText style={styles.heroEmoji}>🛡️</TibiaText>
+            )}
         </View>
     );
 }
@@ -57,7 +56,7 @@ export default function CharStoryScreen() {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Hero Section */}
             <View style={styles.hero}>
-                <HeroAvatar avatarUrl={char.avatar_url} />
+                <HeroAvatar avatarUrl={char.avatar_url} vocation={char.vocation} />
                 <TibiaText style={styles.heroName}>{char.name}</TibiaText>
                 <View style={styles.heroBadges}>
                     <TibiaBadge
