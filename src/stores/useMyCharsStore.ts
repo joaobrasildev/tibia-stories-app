@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import type { Character } from '@/types/character';
-import { fetchCharactersByUser, createCharacter, checkCharacterExists, updateCharacter } from '@/services/firestoreService';
+import { fetchCharactersByUser, updateCharacter } from '@/services/firestoreService';
 import { getCharsByUserToken, upsertCharacter, getCharById } from '@/repositories/charsRepository';
 import { fetchCharacter } from '@/services/tibiaDataService';
 import { isTokenInComment } from '@/rules/verificationRules';
-import { useAuthStore } from '@/stores/useAuthStore';
 
 interface MyCharsState {
     myChars: Character[];
@@ -12,7 +11,6 @@ interface MyCharsState {
     error: string | null;
     // actions
     loadMyChars: (userToken: string) => Promise<void>;
-    addChar: (name: string) => Promise<Character>;
     verifyChar: (charId: string) => Promise<boolean>;
     saveStory: (charId: string, title: string, content: string) => Promise<void>;
     purchaseHighlight: (charId: string) => Promise<void>;
@@ -46,56 +44,6 @@ export const useMyCharsStore = create<MyCharsState>((set, get) => ({
                 console.error('[loadMyChars] SQLite fallback failed:', localErr);
                 set({ myChars: [], isLoading: false, error: 'Erro ao carregar seus chars.' });
             }
-        }
-    },
-
-    // Busca char na TibiaData API, cria no Firestore e sincroniza localmente
-    addChar: async (name: string) => {
-        set({ isLoading: true, error: null });
-        try {
-            const tibiaChar = await fetchCharacter(name);
-            if (!tibiaChar) {
-                set({ isLoading: false, error: 'Char não encontrado na API.' });
-                throw new Error('Char não encontrado');
-            }
-
-            // Verifica existência no Firestore
-            const existing = await checkCharacterExists(tibiaChar.name);
-            if (existing?.is_verified) {
-                set({ isLoading: false, error: 'Este char já está vinculado a outra conta.' });
-                throw new Error('Char já vinculado');
-            }
-
-            const now = new Date().toISOString();
-            const currentUserToken = useAuthStore.getState().userToken;
-            const charData = {
-                user_token: currentUserToken,
-                name: tibiaChar.name,
-                world: tibiaChar.world,
-                vocation: tibiaChar.vocation,
-                level: tibiaChar.level,
-                is_verified: false,
-                is_highlighted: false,
-                highlight_until: null,
-                story_title: null,
-                story_content: null,
-                avatar_url: null,
-                created_at: now,
-                updated_at: now,
-            };
-
-            const docId = await createCharacter(charData);
-            const char: Character = { id: docId, ...charData };
-            upsertCharacter(char);
-
-            set((state) => ({
-                myChars: [...state.myChars, char],
-                isLoading: false,
-            }));
-            return char;
-        } catch (err) {
-            set({ isLoading: false });
-            throw err;
         }
     },
 
