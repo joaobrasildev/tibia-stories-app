@@ -21,8 +21,8 @@
 | 7    | Firebase + Auth               | 3          | 9+       | ✅     |
 | 8    | Feature: Conta + Meus Chars   | 7          | 7        | ✅     |
 | 9    | Feature: Exiva + Vínculo      | 8          | 6        | ✅     |
-| 10   | Feature: Editar História      | 9          | 3        | ⬜     |
-| 11   | Sync Firebase ↔ SQLite        | 10         | 4        | ⬜     |
+| 10   | Feature: Editar História      | 9          | 3        | ✅     |
+| 11   | Sync Firebase ↔ SQLite        | 10         | 4        | ✅     |
 | 12   | Feature: Destaque + Compra    | 11         | 5        | ⬜     |
 | 13   | Anúncios (AdMob)              | 3          | 2        | ⬜     |
 | 14   | Polimento & Build             | 1–13       | 5+       | ⬜     |
@@ -716,47 +716,220 @@ container: {
 
 ## Fase 11 — Sync Firebase ↔ SQLite
 
-**Objetivo:** Implementar sincronização completa e o boot flow final.
+**Objetivo:** Implementar sincronização completa Firestore → SQLite, boot flow final com 10 passos, listener de conectividade, guard de escrita offline, banner offline e pull-to-refresh.
 
 **Depende de:** Fase 10 (todas as features de escrita no Firestore devem estar prontas).
 
 ### Arquivos a criar/atualizar
 
-| #  | Arquivo                                      | Referência                                |
-| -- | -------------------------------------------- | ----------------------------------------- |
-| 01 | `src/services/syncService.ts`                | `architecture.md` seção 7.7 (inclui `startConnectivityListener` e `requireOnline`) |
-| 02 | `src/services/initService.ts`                | `architecture.md` seção 7.2 e 12         |
-| 03 | `src/hooks/useSync.ts`                       | Hook de sync (pull-to-refresh)            |
-| 04 | Atualizar `src/hooks/useInitApp.ts`          | Boot flow completo (10 passos + passo 4.5 conectividade) |
-| 05 | `src/components/composed/OfflineBanner.tsx`   | Banner "Modo offline" visível quando `isOnline === false` |
+| #  | Arquivo                                       | Ação     | Referência                                                     |
+| -- | --------------------------------------------- | -------- | -------------------------------------------------------------- |
+| 01 | `src/services/syncService.ts`                 | Criar    | `architecture.md` seção 7.7                                    |
+| 02 | `src/hooks/useSync.ts`                        | Criar    | Hook de pull-to-refresh                                        |
+| 03 | `src/components/composed/OfflineBanner.tsx`    | Criar    | Banner "Modo offline" (`architecture.md` seção 7.7 e 10.2)     |
+| 04 | Atualizar `src/hooks/useInitApp.ts`           | Editar   | Boot flow completo (`architecture.md` seção 12)                |
+| 05 | Atualizar `src/navigation/TopTabNavigator.tsx`| Editar   | Inserir `OfflineBanner` acima do conteúdo                      |
+| 06 | Atualizar `src/screens/DepotScreen.tsx`       | Editar   | Adicionar pull-to-refresh (`RefreshControl`)                   |
+| 07 | Atualizar `src/screens/CharsScreen.tsx`       | Editar   | Adicionar pull-to-refresh (`RefreshControl`)                   |
+| 08 | Atualizar `src/stores/useAuthStore.ts`        | Editar   | Adicionar `requireOnline()` antes de login/register/loginWithGoogle/loginWithApple/resetPassword |
+| 09 | Atualizar `src/screens/AddCharScreen.tsx`     | Editar   | Adicionar `requireOnline()` antes de criar char                |
+| 10 | Atualizar `src/screens/VerifyCharScreen.tsx`  | Editar   | Adicionar `requireOnline()` antes de vincular                  |
+| 11 | Atualizar `src/screens/EditStoryScreen.tsx`   | Editar   | Adicionar `requireOnline()` antes de salvar                    |
+
+### Passo a passo
+
+#### Passo 1 — Instalar `@react-native-community/netinfo`
+
+```bash
+npx expo install @react-native-community/netinfo
+```
+
+> Necessário para detecção de conectividade em tempo real. Expo-managed — sem config nativa manual.
+
+---
+
+#### Passo 2 — Criar `src/services/syncService.ts`
+
+Referência: `architecture.md` seção 7.7.
+
+Funções a implementar:
+
+1. **`syncFromFirestore(): Promise<void>`**
+   - Chama `firestoreService.fetchAllCharacters()`.
+   - Itera sobre results e faz `charsRepository.upsertCharacter()` para cada (upsert por ID — `updated_at` mais recente vence).
+   - Atualiza `useAppStore.setSyncing(true)` antes, `setSyncing(false)` e `setLastSync(now)` depois.
+   - Try/catch: se falhar, loga erro e continua (não trava o boot).
+
+2. **`syncIfOnline(): Promise<void>`**
+   - Chama `checkConnectivity()`.
+   - Se online: `syncFromFirestore()`.
+   - Se offline: não faz nada (app usará dados locais).
+
+3. **`checkConnectivity(): Promise<boolean>`**
+   - Usa `NetInfo.fetch()` (pontual, não listener).
+   - Retorna `state.isConnected === true`.
+   - Atualiza `useAppStore.setOnline()` com o resultado.
+
+4. **`startConnectivityListener(): () => void`**
+   - Chama `NetInfo.addEventListener(state => ...)`.
+   - Callback atualiza `useAppStore.getState().setOnline(state.isConnected === true)`.
+   - Retorna o unsubscribe para cleanup.
+   - **NÃO faz sync automático quando reconecta** — o usuário usa pull-to-refresh.
+
+5. **`requireOnline(): void`**
+   - Lê `useAppStore.getState().isOnline`.
+   - Se `false`, lança `Error('⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação.')`.
+   - Síncrona. Guard chamado no início de toda operação de escrita.
+
+> **Padrão de import:** `import NetInfo from '@react-native-community/netinfo';`
+
+---
+
+#### Passo 3 — Criar `src/hooks/useSync.ts`
+
+Hook reutilizável para pull-to-refresh:
+
+```typescript
+export function useSync(): { isSyncing: boolean; onRefresh: () => Promise<void> }
+```
+
+- `isSyncing`: lê `useAppStore.isSyncing`.
+- `onRefresh`:
+  1. Chama `syncService.syncFromFirestore()`.
+  2. Após sync: `useCharsStore.getState().loadChars()` para recarregar store com dados atualizados do SQLite.
+  3. Try/catch: mostra `Alert.alert` com mensagem amigável se falhar.
+
+---
+
+#### Passo 4 — Criar `src/components/composed/OfflineBanner.tsx`
+
+Referência: `architecture.md` seção 10.2 (template de composed component).
+
+- **Componente com `React.memo`** (regra: todos composed/ são memo).
+- **NÃO acessa stores diretamente** — recebe `isOnline: boolean` como prop.
+- Se `isOnline === true`: retorna `null` (invisível).
+- Se `isOnline === false`: exibe banner fixo com:
+  - Texto: `"📡 Modo offline — dados da última sincronização"`.
+  - Fundo: `theme.colors.feedbackErrorBg` (`#FDECEC`).
+  - Texto: `theme.colors.error` (ou equivalente de texto vermelho/escuro).
+  - Borda inferior: `theme.colors.error`.
+  - Padding: `theme.spacing.sm` vertical, `theme.spacing.md` horizontal.
+  - Alinhamento: centro.
+- **Zero inline styles** — usar `StyleSheet.create` com tokens do theme.
+
+---
+
+#### Passo 5 — Atualizar `src/hooks/useInitApp.ts`
+
+Ativar os passos 4.5 e 6 que estavam como TODO:
+
+**Passo 4.5 — Connectivity listener:**
+- Importar `startConnectivityListener` de `@/services/syncService`.
+- Após `initializeFirebase()`, chamar `const unsubNet = startConnectivityListener()`.
+- Guardar unsubscribe em ref para cleanup no `useEffect` return.
+
+**Passo 6 — Sync na abertura:**
+- Importar `syncIfOnline` de `@/services/syncService`.
+- Substituir o `// TODO: syncService.syncIfOnline()` por `await syncIfOnline()`.
+- Isso garante que, se online, chars do Firestore são sincronizados antes de carregar as stores (passos 7 e 8).
+
+**Cleanup:**
+- No return do `useEffect`, chamar o unsubscribe do connectivity listener (além do auth unsub que já existe).
+
+---
+
+#### Passo 6 — Atualizar `src/navigation/TopTabNavigator.tsx`
+
+- Importar `OfflineBanner` e `useAppStore`.
+- Antes do `<Tab.Navigator>`, inserir `<OfflineBanner isOnline={isOnline} />`.
+- `isOnline` vem de `useAppStore((s) => s.isOnline)` — lido no `TopTabNavigator` (ele é um screen, não um componente base/composed, então pode acessar stores).
+- O banner fica entre `<AppHeader />` e `<Tab.Navigator>`, visível em todas as tabs.
+
+---
+
+#### Passo 7 — Atualizar `src/screens/DepotScreen.tsx`
+
+- Importar `RefreshControl` de `react-native`.
+- Importar `useSync` de `@/hooks/useSync`.
+- Substituir `<ScrollView ...>` por `<ScrollView ... refreshControl={<RefreshControl refreshing={isSyncing} onRefresh={onRefresh} ... />}>`.
+- Cores do RefreshControl: `tintColor={theme.colors.headerBg}`, `colors={[theme.colors.headerBg]}`.
+
+---
+
+#### Passo 8 — Atualizar `src/screens/CharsScreen.tsx`
+
+- Importar `useSync` de `@/hooks/useSync`.
+- A tela já usa `FlatList` — adicionar `refreshControl={<RefreshControl refreshing={isSyncing} onRefresh={onRefresh} ... />}` como prop.
+- Importar `RefreshControl` de `react-native`.
+- Mesmas cores do Passo 7.
+
+---
+
+#### Passo 9 — Adicionar `requireOnline()` nas operações de escrita
+
+Guard de conectividade em **todas** as operações que dependem de internet (ver `general-plan.md` seção 6.3).
+
+**9a. `src/stores/useAuthStore.ts`:**
+- Importar `requireOnline` de `@/services/syncService`.
+- Adicionar `requireOnline()` como primeira linha de: `login`, `register`, `loginWithGoogle`, `loginWithApple`, `resetPassword`.
+- O `try/catch` existente captura o erro e exibe a mensagem `"⚠️ Sem conexão..."` ao usuário.
+
+**9b. `src/screens/AddCharScreen.tsx`:**
+- Importar `requireOnline` de `@/services/syncService`.
+- Chamar `requireOnline()` no handler de "Adicionar & Vincular", antes de `checkCharacterExists` / `createCharacter`.
+- O try/catch existente na tela exibe o `error.message` ao usuário.
+
+**9c. `src/screens/VerifyCharScreen.tsx`:**
+- Importar `requireOnline` de `@/services/syncService`.
+- Chamar `requireOnline()` no handler de "Vincular Agora", antes de chamar a API / Firestore.
+
+**9d. `src/screens/EditStoryScreen.tsx`:**
+- Importar `requireOnline` de `@/services/syncService`.
+- Chamar `requireOnline()` no handler de "Salvar História", antes do `updateCharacter`.
+
+> **Padrão:** `requireOnline()` é sempre a PRIMEIRA chamada dentro do `try` — antes de qualquer API call. Se offline, o `throw` é imediato e o `catch` da tela mostra o feedback `"⚠️ Sem conexão..."`.
+
+---
 
 ### Regras
 
 - **Boot flow** segue EXATAMENTE os 10 passos da `architecture.md` seção 12 (incluindo passo 4.5: `startConnectivityListener`).
 - **Listener de conectividade**: `syncService.startConnectivityListener()` usa `@react-native-community/netinfo` para atualizar `useAppStore.isOnline` em tempo real. Iniciado no boot flow (passo 4.5).
-- **Banner "Modo offline"**: `OfflineBanner` (composed/) lê `useAppStore.isOnline` e exibe banner persistente no topo da tela enquanto offline. Desaparece automaticamente ao reconectar. Renderizado no `AppNavigator` ou `TopTabNavigator`, acima do conteúdo.
+- **Banner "Modo offline"**: `OfflineBanner` (composed/) recebe `isOnline` via prop. Renderizado no `TopTabNavigator`, entre `AppHeader` e `Tab.Navigator`.
 - **Sync na abertura**: Firestore → SQLite (upsert por ID, `updated_at` resolve conflitos).
-- **Write-through**: toda escrita vai para Firestore E SQLite.
+- **Write-through**: toda escrita vai para Firestore E SQLite (já implementado nas fases anteriores).
 - **Offline (leitura)**: usa dados locais do SQLite (app funciona sem internet para leitura). Ver `general-plan.md` seção 6.3 e regras RN-16 a RN-20.
-- **Offline (escrita)**: BLOQUEADA. Todo dado deve ser criado no Firebase primeiro. `syncService.requireOnline()` deve ser chamado antes de qualquer operação de escrita. Exibir `"⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."` se offline.
+- **Offline (escrita)**: BLOQUEADA. `syncService.requireOnline()` deve ser chamado antes de qualquer operação de escrita. Mensagem: `"⚠️ Sem conexão com a internet. Conecte-se para realizar esta ação."`.
 - **Sem fila offline**: Não há queue/retry de escritas. O usuário reconecta e tenta novamente.
-- **Pull-to-refresh**: disponível em DepotScreen e CharsScreen para re-sync manual.
-- **Expiração de destaques**: `charsRepository.expireHighlights()` no boot.
+- **Pull-to-refresh**: disponível em DepotScreen e CharsScreen via `useSync` hook. Após sync, recarrega `useCharsStore.loadChars()`.
+- **Sem sync automático ao reconectar**: quando `isOnline` volta a `true`, NÃO faz sync — o usuário puxa pull-to-refresh.
+- **Expiração de destaques**: `charsRepository.expireHighlights()` no boot (passo 9 — já existe).
+- **Zero inline styles** — todo estilo vem de `src/theme/index.ts`.
+- **React.memo** em `OfflineBanner.tsx`.
+- **Componentes nunca acessam stores** — `OfflineBanner` recebe `isOnline` como prop. O `TopTabNavigator` (screen-level) lê a store e passa.
 - Ver estratégia completa em `general-plan.md` seção 6.
 
 ### Critério de "done"
 
-- [ ] Boot flow executa 10 passos na ordem
+- [ ] `@react-native-community/netinfo` instalado e sem erros
+- [ ] `syncService.ts` criado com 5 funções: `syncFromFirestore`, `syncIfOnline`, `checkConnectivity`, `startConnectivityListener`, `requireOnline`
+- [ ] Boot flow executa 10 passos na ordem (incluindo passo 4.5)
 - [ ] App abre com splash até boot completo
-- [ ] Sync Firestore → SQLite funciona na abertura
+- [ ] Sync Firestore → SQLite funciona na abertura (se online)
 - [ ] Dados de chars criados por outros usuários aparecem após sync
 - [ ] App funciona offline para leitura (dados do SQLite)
 - [ ] Listener de conectividade atualiza `isOnline` em tempo real (NetInfo)
-- [ ] Banner "Modo offline" aparece quando sem conexão e desaparece ao reconectar
+- [ ] Banner "📡 Modo offline" aparece quando sem conexão e desaparece ao reconectar
+- [ ] Banner posicionado entre AppHeader e Tab.Navigator no TopTabNavigator
 - [ ] Operações de escrita exibem erro amigável se offline (`requireOnline()`)
+- [ ] `requireOnline()` inserido em: login, register, loginWithGoogle, loginWithApple, resetPassword, adicionar char, vincular char, salvar história
 - [ ] Nenhum dado é criado localmente — tudo passa pelo Firebase primeiro
-- [ ] Destaques expirados são removidos no boot
-- [ ] Pull-to-refresh atualiza dados
+- [ ] Destaques expirados são removidos no boot (passo 9)
+- [ ] Pull-to-refresh funciona em DepotScreen (ScrollView + RefreshControl)
+- [ ] Pull-to-refresh funciona em CharsScreen (FlatList + RefreshControl)
+- [ ] Pull-to-refresh re-sincroniza Firestore → SQLite → store
+- [ ] TypeScript strict sem erros
+- [ ] Nenhum inline style
 
 ---
 

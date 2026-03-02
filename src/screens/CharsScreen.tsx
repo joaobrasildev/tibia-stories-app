@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { theme } from '@/theme';
@@ -13,6 +13,7 @@ import TibiaEmpty from '@/components/base/TibiaEmpty';
 import { APP_TEXTS } from '@/constants/app';
 import type { RootStackParamList } from '@/navigation/AppNavigator';
 import type { CharSort } from '@/types/character';
+import { useSync } from '@/hooks/useSync';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -25,6 +26,7 @@ const SORT_OPTIONS: { key: CharSort; label: string }[] = [
 
 export default function CharsScreen() {
     const navigation = useNavigation<NavigationProp>();
+    const { isSyncing, onRefresh } = useSync();
 
     // Granular selectors
     const filteredChars = useCharsStore((s) => s.filteredChars);
@@ -110,6 +112,14 @@ export default function CharsScreen() {
                     <TibiaEmpty message={APP_TEXTS.chars.empty} icon="📖" />
                 }
                 contentContainerStyle={styles.list}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isSyncing}
+                        onRefresh={onRefresh}
+                        tintColor={theme.colors.headerBg}
+                        colors={[theme.colors.headerBg]}
+                    />
+                }
             />
         </View>
     );

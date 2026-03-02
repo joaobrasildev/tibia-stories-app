@@ -10,6 +10,7 @@ import { upsertCharacter, getCharById } from '@/repositories/charsRepository';
 import { isTokenInComment } from '@/rules/verificationRules';
 import { useMyCharsStore } from '@/stores/useMyCharsStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { requireOnline } from '@/services/syncService';
 import { APP_TEXTS } from '@/constants/app';
 
 interface UseCharVerifyReturn {
@@ -35,6 +36,8 @@ export function useCharVerify(): UseCharVerifyReturn {
             setIsSuccess(false);
 
             try {
+                requireOnline();
+
                 if (!userToken) {
                     setError('Token de usuário não encontrado. Faça login novamente.');
                     setIsVerifying(false);

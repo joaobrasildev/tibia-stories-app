@@ -5,6 +5,7 @@ import { getCharsByUserToken, upsertCharacter, getCharById } from '@/repositorie
 import { fetchCharacter } from '@/services/tibiaDataService';
 import { isTokenInComment } from '@/rules/verificationRules';
 import { useCharsStore } from '@/stores/useCharsStore';
+import { requireOnline } from '@/services/syncService';
 
 interface MyCharsState {
     myChars: Character[];
@@ -99,6 +100,8 @@ export const useMyCharsStore = create<MyCharsState>((set, get) => ({
     saveStory: async (charId: string, title: string, content: string) => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
+
             const char = getCharById(charId);
             if (!char) {
                 set({ isLoading: false, error: 'Char não encontrado localmente.' });

@@ -22,6 +22,7 @@ import { upsertCharacter } from '@/repositories/charsRepository';
 import { validateCharName } from '@/rules/charRules';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useMyCharsStore } from '@/stores/useMyCharsStore';
+import { requireOnline } from '@/services/syncService';
 import { APP_TEXTS } from '@/constants/app';
 import { theme } from '@/theme';
 import type { RootStackParamList } from '@/navigation/AppNavigator';
@@ -75,6 +76,8 @@ function AddCharScreen() {
         setError(null);
 
         try {
+            requireOnline();
+
             // Verifica se char já existe no Firestore
             const existing = await checkCharacterExists(foundChar.name);
             if (existing) {

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { ScrollView, View, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { theme } from '@/theme';
@@ -12,11 +12,13 @@ import TibiaEmpty from '@/components/base/TibiaEmpty';
 import HighlightedCharCard from '@/components/composed/HighlightedCharCard';
 import CharCard from '@/components/composed/CharCard';
 import type { RootStackParamList } from '@/navigation/AppNavigator';
+import { useSync } from '@/hooks/useSync';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function DepotScreen() {
     const navigation = useNavigation<NavigationProp>();
+    const { isSyncing, onRefresh } = useSync();
 
     // Granular selectors
     const highlightedChars = useCharsStore((s) => s.highlightedChars);
@@ -38,6 +40,14 @@ export default function DepotScreen() {
         <ScrollView
             style={styles.container}
             contentContainerStyle={styles.content}
+            refreshControl={
+                <RefreshControl
+                    refreshing={isSyncing}
+                    onRefresh={onRefresh}
+                    tintColor={theme.colors.headerBg}
+                    colors={[theme.colors.headerBg]}
+                />
+            }
         >
             {/* ⭐ Chars em Destaque */}
             <TibiaPanel>

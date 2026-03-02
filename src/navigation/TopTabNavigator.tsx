@@ -2,12 +2,14 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppHeader from '@/components/composed/AppHeader';
+import OfflineBanner from '@/components/composed/OfflineBanner';
 import TibiaIcon from '@/components/base/TibiaIcon';
 import TibiaText from '@/components/base/TibiaText';
 import DepotScreen from '@/screens/DepotScreen';
 import ItemsScreen from '@/screens/ItemsScreen';
 import CharsScreen from '@/screens/CharsScreen';
 import AccountScreen from '@/screens/AccountScreen';
+import { useAppStore } from '@/stores/useAppStore';
 import { theme } from '@/theme';
 
 const depotIcon = require('../../assets/icons/depot.png');
@@ -17,9 +19,12 @@ const charIcon = require('../../assets/icons/char2.png');
 const Tab = createMaterialTopTabNavigator();
 
 function TopTabNavigator() {
+    const isOnline = useAppStore((s) => s.isOnline);
+
     return (
         <View style={styles.container}>
             <AppHeader />
+            <OfflineBanner isOnline={isOnline} />
             <Tab.Navigator
                 tabBarPosition="bottom"
                 screenOptions={{

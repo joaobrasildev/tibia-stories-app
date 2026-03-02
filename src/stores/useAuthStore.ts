@@ -14,6 +14,7 @@ import {
     subscribeToAuthState,
 } from '@/services/authService';
 import { getFirebaseAuthErrorMessage } from '@/rules/authRules';
+import { requireOnline } from '@/services/syncService';
 import { getUserToken, setUserToken as saveUserTokenLocally } from '@/repositories/userConfigRepository';
 
 interface AuthState {
@@ -49,6 +50,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
             const user = await loginWithEmail(email, password);
             const token = await ensureUserToken(user.uid);
             saveUserTokenLocally(token);
@@ -63,6 +65,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     register: async (email, password, displayName?) => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
             const user = await registerWithEmail(email, password, displayName);
             const token = await ensureUserToken(user.uid);
             saveUserTokenLocally(token);
@@ -77,6 +80,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     loginWithGoogle: async (idToken: string) => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
             const user = await loginWithGoogleCredential(idToken);
             const token = await ensureUserToken(user.uid);
             saveUserTokenLocally(token);
@@ -91,6 +95,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     loginWithApple: async () => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
             const nonce = Math.random().toString(36).substring(2, 10);
             const hashedNonce = await Crypto.digestStringAsync(
                 Crypto.CryptoDigestAlgorithm.SHA256,
@@ -138,6 +143,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     resetPassword: async (email) => {
         set({ isLoading: true, error: null });
         try {
+            requireOnline();
             await authResetPassword(email);
             set({ isLoading: false });
         } catch (err: any) {
