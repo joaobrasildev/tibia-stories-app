@@ -6,6 +6,8 @@ import ItemDetailScreen from '@/screens/ItemDetailScreen';
 import CharStoryScreen from '@/screens/CharStoryScreen';
 import LoginScreen from '@/screens/LoginScreen';
 import RegisterScreen from '@/screens/RegisterScreen';
+import AddCharScreen from '@/screens/AddCharScreen';
+import VerifyCharScreen from '@/screens/VerifyCharScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
@@ -15,8 +17,8 @@ export type RootStackParamList = {
     Login: undefined;
     Register: undefined;
     AddChar: undefined;
-    // Future stack screens (Fase 9+):
-    // VerifyChar: { charId: string };
+    VerifyChar: { charId: string; charName: string };
+    // Future stack screens (Fase 10+):
     // EditStory: { charId: string };
     // Highlight: { charId: string };
 };
@@ -87,6 +89,38 @@ function AppNavigator() {
                     options={{
                         headerShown: true,
                         headerTitle: 'Criar Conta',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="AddChar"
+                    component={AddCharScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Exiva — Localizar Char',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="VerifyChar"
+                    component={VerifyCharScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Quest de Vínculo',
                         headerStyle: {
                             backgroundColor: theme.colors.headerBg,
                         },

@@ -19,8 +19,8 @@
 | 5    | Feature: Chars (leitura)      | 3          | 9        | ✅     |
 | 6    | Feature: Depot (Home)         | 4, 5       | 4        | ✅     |
 | 7    | Firebase + Auth               | 3          | 9+       | ✅     |
-| 8    | Feature: Conta + Meus Chars   | 7          | 7        | ⬜     |
-| 9    | Feature: Exiva + Vínculo      | 8          | 6        | ⬜     |
+| 8    | Feature: Conta + Meus Chars   | 7          | 7        | ✅     |
+| 9    | Feature: Exiva + Vínculo      | 8          | 6        | ✅     |
 | 10   | Feature: Editar História      | 9          | 3        | ⬜     |
 | 11   | Sync Firebase ↔ SQLite        | 10         | 4        | ⬜     |
 | 12   | Feature: Destaque + Compra    | 11         | 5        | ⬜     |

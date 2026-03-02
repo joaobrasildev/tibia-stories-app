@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import type { Character } from '@/types/character';
-import { fetchCharactersByUser } from '@/services/firestoreService';
-import { getCharsByUserToken, upsertCharacter } from '@/repositories/charsRepository';
+import { fetchCharactersByUser, createCharacter, checkCharacterExists, updateCharacter } from '@/services/firestoreService';
+import { getCharsByUserToken, upsertCharacter, getCharById } from '@/repositories/charsRepository';
+import { fetchCharacter } from '@/services/tibiaDataService';
+import { isTokenInComment } from '@/rules/verificationRules';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface MyCharsState {
     myChars: Character[];
@@ -33,25 +36,114 @@ export const useMyCharsStore = create<MyCharsState>((set, get) => ({
             }
 
             set({ myChars: chars, isLoading: false });
-        } catch {
+        } catch (err) {
+            console.error('[loadMyChars] Firestore query failed:', err);
             // Fallback: lê do SQLite local
             try {
                 const localChars = getCharsByUserToken(userToken);
                 set({ myChars: localChars, isLoading: false });
-            } catch {
+            } catch (localErr) {
+                console.error('[loadMyChars] SQLite fallback failed:', localErr);
                 set({ myChars: [], isLoading: false, error: 'Erro ao carregar seus chars.' });
             }
         }
     },
 
-    // Stub — será implementado na Fase 9 (Exiva + TibiaData API)
-    addChar: async (_name: string) => {
-        throw new Error('Será implementado na Fase 9');
+    // Busca char na TibiaData API, cria no Firestore e sincroniza localmente
+    addChar: async (name: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const tibiaChar = await fetchCharacter(name);
+            if (!tibiaChar) {
+                set({ isLoading: false, error: 'Char não encontrado na API.' });
+                throw new Error('Char não encontrado');
+            }
+
+            // Verifica existência no Firestore
+            const existing = await checkCharacterExists(tibiaChar.name);
+            if (existing?.is_verified) {
+                set({ isLoading: false, error: 'Este char já está vinculado a outra conta.' });
+                throw new Error('Char já vinculado');
+            }
+
+            const now = new Date().toISOString();
+            const currentUserToken = useAuthStore.getState().userToken;
+            const charData = {
+                user_token: currentUserToken,
+                name: tibiaChar.name,
+                world: tibiaChar.world,
+                vocation: tibiaChar.vocation,
+                level: tibiaChar.level,
+                is_verified: false,
+                is_highlighted: false,
+                highlight_until: null,
+                story_title: null,
+                story_content: null,
+                avatar_url: null,
+                created_at: now,
+                updated_at: now,
+            };
+
+            const docId = await createCharacter(charData);
+            const char: Character = { id: docId, ...charData };
+            upsertCharacter(char);
+
+            set((state) => ({
+                myChars: [...state.myChars, char],
+                isLoading: false,
+            }));
+            return char;
+        } catch (err) {
+            set({ isLoading: false });
+            throw err;
+        }
     },
 
-    // Stub — será implementado na Fase 9 (Quest de Vínculo)
-    verifyChar: async (_charId: string) => {
-        throw new Error('Será implementado na Fase 9');
+    // Quest de Vínculo: verifica token no comment via TibiaData API
+    verifyChar: async (charId: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const char = getCharById(charId);
+            if (!char) {
+                set({ isLoading: false, error: 'Char não encontrado localmente.' });
+                return false;
+            }
+
+            const tibiaChar = await fetchCharacter(char.name);
+            if (!tibiaChar) {
+                set({ isLoading: false, error: 'Não foi possível buscar o char na API.' });
+                return false;
+            }
+
+            const userToken = char.user_token;
+            if (!userToken) {
+                set({ isLoading: false, error: 'Token de usuário não encontrado.' });
+                return false;
+            }
+
+            const found = isTokenInComment(tibiaChar.comment, userToken);
+            if (!found) {
+                set({ isLoading: false, error: '❌ Token não encontrado no comment.' });
+                return false;
+            }
+
+            // Atualiza Firestore + SQLite
+            const now = new Date().toISOString();
+            await updateCharacter(charId, { is_verified: true, updated_at: now });
+            upsertCharacter({ ...char, is_verified: true, updated_at: now });
+
+            // Atualiza store local
+            set((state) => ({
+                myChars: state.myChars.map((c) =>
+                    c.id === charId ? { ...c, is_verified: true, updated_at: now } : c,
+                ),
+                isLoading: false,
+            }));
+            return true;
+        } catch {
+            set({ isLoading: false, error: 'Erro ao verificar o char.' });
+            return false;
+        }
     },
 
     // Stub — será implementado na Fase 10 (Editar História)

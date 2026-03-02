@@ -44,12 +44,12 @@ function AccountScreen() {
     }, [logout]);
 
     const handleAddChar = useCallback(() => {
-        // Fase 9: navigation.navigate('AddChar');
-    }, []);
+        navigation.navigate('AddChar');
+    }, [navigation]);
 
-    const handleVerify = useCallback((_charId: string) => {
-        // Fase 9: navigation.navigate('VerifyChar', { charId });
-    }, []);
+    const handleVerify = useCallback((charId: string, charName: string) => {
+        navigation.navigate('VerifyChar', { charId, charName });
+    }, [navigation]);
 
     const handleWrite = useCallback((_charId: string) => {
         // Fase 10: navigation.navigate('EditStory', { charId });
@@ -118,7 +118,7 @@ function AccountScreen() {
                                 isVerified={char.is_verified}
                                 hasStory={!!char.story_content}
                                 isAlternate={index % 2 === 1}
-                                onVerifyPress={() => handleVerify(char.id)}
+                                onVerifyPress={() => handleVerify(char.id, char.name)}
                                 onWritePress={() => handleWrite(char.id)}
                                 onEditPress={() => handleEdit(char.id)}
                                 onHighlightPress={() => handleHighlight(char.id)}

@@ -1,0 +1,47 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "characters",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "user_token",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "created_at",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "characters",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "is_verified",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "updated_at",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "characters",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "is_highlighted",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "highlight_until",
+                    "order": "DESCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}
