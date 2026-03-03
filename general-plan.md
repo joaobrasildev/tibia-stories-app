@@ -221,11 +221,15 @@ O campo **`comment`** contém exatamente o texto que o jogador escreve no commen
   "user_token": "TS-a1b2c3d4",
   "platform": "android|ios",
   "transaction_id": "google-play-or-apple-transaction-id",
+  "plan": "7d|30d|365d",
   "amount_brl": 5.00,
+  "duration_days": 7,
   "purchased_at": "2026-02-23T00:00:00Z",
   "expires_at": "2026-03-02T00:00:00Z",
   "status": "active|expired"
 }
+```
+> `amount_brl` e `duration_days` variam conforme o plano: 5.00/7, 15.00/30, ou 100.00/365.
 ```
 
 ---
@@ -440,7 +444,7 @@ Tab Navigator (Bottom Tabs)
 - **Rota:** `/(tabs)/home`
 - **Conteúdo:**
   - Header decorativo com ⚔ ornamentais e título "Tibia Stories".
-  - Painel **"⭐ Chars em Destaque"** com cards de chars que pagaram R$5.
+  - Painel **"⭐ Chars em Destaque"** com cards de chars que compraram destaque.
   - Cada card exibe: nome, nível, vocação (badge), mundo, título da história, avatar emoji.
   - Se não houver destaques, exibe mensagem: *"Nenhum char em destaque no momento..."*
   - Seção **"Histórias Recentes"** abaixo dos destaques, com 3 chars mais recentes.
@@ -599,14 +603,20 @@ Tab Navigator (Bottom Tabs)
 - **Rota:** `/account/highlight/[id]`
 - **Conteúdo:**
   - Painel **"⭐ Destacar ${charName}"**.
-  - Explicação: *"Ao destacar seu personagem, ele aparecerá na página principal do app por 7 dias, visível para todos os usuários!"*
-  - Preço: **R$ 5,00** (destaque por 7 dias na Home).
+  - Explicação: *"Ao destacar seu personagem, ele aparecerá na página principal do app, visível para todos os usuários!"*
+  - **Planos de destaque (3 opções):**
+    | Plano       | Preço       | Duração  |
+    | ----------- | ----------- | -------- |
+    | 7 dias      | R$ 5,00     | 7 dias   |
+    | 30 dias     | R$ 15,00    | 30 dias  |
+    | 365 dias    | R$ 100,00   | 365 dias |
+  - O usuário seleciona um plano antes de clicar no botão de compra.
+  - Botões com glow dourado para cada plano (ou seletor + botão único).
   - Detalhes: destaque dourado com estrela, compra via App Store/Google Play, ativação imediata.
-  - Botão **"⭐ Comprar Destaque — R$ 5,00"** (com glow dourado).
   - Nota: *"ℹ️ Requisitos: personagem verificado e com história escrita."*
-  - **Feedback:** *"✅ Compra realizada com sucesso! Seu personagem está em destaque na Home por 7 dias."*
+  - **Feedback:** *"✅ Compra realizada com sucesso! Seu personagem está em destaque na Home por {N} dias."* (onde {N} é a duração do plano comprado).
 - **Validação:** Char deve estar vinculado e ter uma história escrita.
-- Após confirmação → atualiza `is_highlighted = 1` e `highlight_until = now + 7 dias` no Firestore.
+- Após confirmação → atualiza `is_highlighted = 1` e `highlight_until = now + {duração do plano}` no Firestore.
 
 ---
 
@@ -624,12 +634,16 @@ Tab Navigator (Bottom Tabs)
 
 ### 9.2 Destaque Pago (In-App Purchase)
 
-| Item                   | Preço    | Duração | Plataforma                |
-| ---------------------- | -------- | ------- | ------------------------- |
-| Destaque de Char         | R$ 5,00  | 7 dias  | Google Play + Apple Store |
+| Produto                      | Preço      | Duração  | Plataforma                |
+| ---------------------------- | ---------- | -------- | ------------------------- |
+| Destaque de Char — 7 dias    | R$ 5,00    | 7 dias   | Google Play + Apple Store |
+| Destaque de Char — 30 dias   | R$ 15,00   | 30 dias  | Google Play + Apple Store |
+| Destaque de Char — 365 dias  | R$ 100,00  | 365 dias | Google Play + Apple Store |
 
-- Implementado como **produto consumível** (pode comprar múltiplas vezes).
-- Fluxo: Compra → Confirmação da store → App registra no Firestore → Atualiza local.
+- Implementado como **3 produtos consumíveis** (pode comprar múltiplas vezes).
+- O usuário escolhe o plano desejado na tela de destaque.
+- Se o char já tem destaque ativo, a nova compra **estende** a duração existente (`highlight_until += duração`).
+- Fluxo: Escolhe plano → Compra → Confirmação da store → App registra no Firestore → Atualiza local.
 - Expiração verificada no app ao abrir (compara `highlight_until` com data atual).
 
 ---
@@ -764,7 +778,7 @@ tibia-stories-app/
 | RN-04 | O mesmo char não pode ser cadastrado por dois usuários diferentes. |
 | RN-05 | Para aparecer na aba Chars, o char deve estar vinculado E ter uma história escrita. |
 | RN-06 | Para comprar destaque, o char deve estar vinculado E ter uma história escrita. |
-| RN-07 | O destaque dura exatamente 7 dias a partir do momento da compra. |
+| RN-07 | O destaque dura conforme o plano escolhido: 7 dias (R$ 5), 30 dias (R$ 15) ou 365 dias (R$ 100). Se já houver destaque ativo, a duração é estendida. |
 | RN-08 | Destaques expirados são removidos automaticamente na abertura do app (verificação local). |
 
 ### 11.2 Usuário
@@ -846,11 +860,11 @@ tibia-stories-app/
 1. Vai em Conta → Meus Chars
 2. Seleciona um char vinculado e com história escrita
 3. Clica no botão "⭐"
-4. Tela exibe informações do destaque (7 dias, R$5)
-5. Clica em "⭐ Comprar Destaque — R$ 5,00"
+4. Tela exibe informações do destaque (3 planos: 7/30/365 dias)
+5. Seleciona um plano e clica no botão de compra correspondente
 6. In-App Purchase da store é acionado
 7. Após confirmação: Firestore atualizado (is_highlighted, highlight_until)
-8. Char aparece na aba Depot (destaques) por 7 dias
+8. Char aparece na aba Depot (destaques) pela duração do plano escolhido
 ```
 
 ---
@@ -1103,7 +1117,7 @@ O app utiliza termos autênticos do universo de Tibia em todos os textos visíve
 | **Design**           | Medieval pergaminho claro (#FFF2DB), header/tab #8B2020       |
 | **Fontes**           | MedievalSharp (títulos) + Martel (corpo)                      |
 | **Ícones tabs**      | Flaticon PNGs (castle, armor, history-book)                   |
-| **Monetização**      | AdMob (banner) + In-App Purchase (destaque R$5/7 dias)        |
+| **Monetização**      | AdMob (banner) + In-App Purchase (destaque: R$5/7d, R$15/30d, R$100/365d) |
 | **Publicação**       | Google Play + Apple Store via EAS Build/Submit                |
 | **Autenticação**     | Firebase Auth (e-mail/senha + Google Sign-In + Apple Sign-In) |
 | **Terminologia**     | Imersiva/Tibia (char, exiva, quest de vínculo, mainland)      |

@@ -953,22 +953,30 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 
 - **⚠️ Seguir os padrões da seção "Ajustes de Tema"** — headers com `headerBg` + `textOnHeader`, backgrounds com `theme.colors.panel`.
 - **Elegibilidade** (`highlightRules.canHighlight`): char vinculado + tem história (RN-06).
-- **Preço**: R$ 5,00 por 7 dias.
-- **Produto consumível** (pode comprar múltiplas vezes).
-- Botão com glow dourado: `"⭐ Comprar Destaque — R$ 5,00"`.
-- Após compra: `is_highlighted = 1`, `highlight_until = now + 7 dias`.
-- Registra em `highlight_payments` no Firestore.
-- Feedback: `"✅ Compra realizada com sucesso! Seu personagem está em destaque na Home por 7 dias."`.
+- **3 planos de destaque** (produtos consumíveis, pode comprar múltiplas vezes):
+  | Plano     | Preço      | Duração  | Product ID (store)              |
+  | --------- | ---------- | -------- | ------------------------------- |
+  | 7 dias    | R$ 5,00    | 7 dias   | `ts_highlight_7d`               |
+  | 30 dias   | R$ 15,00   | 30 dias  | `ts_highlight_30d`              |
+  | 365 dias  | R$ 100,00  | 365 dias | `ts_highlight_365d`             |
+- O usuário seleciona o plano desejado na tela antes de comprar.
+- Se o char já tem destaque ativo, a nova compra **estende** a duração (`highlight_until += duração`).
+- Botão com glow dourado: `"⭐ Comprar Destaque"` (texto atualiza com plano selecionado).
+- Após compra: `is_highlighted = 1`, `highlight_until = now (ou existente) + duração do plano`.
+- Registra em `highlight_payments` no Firestore (com `amount_brl` do plano escolhido).
+- Feedback: `"✅ Compra realizada com sucesso! Seu personagem está em destaque na Home por {N} dias."`.
 - Textos exatos: `general-plan.md` seção 8.2 (Tela 4.4).
 - Fluxo: `architecture.md` seção 13.7.
 
 ### Critério de "done"
 
-- [ ] Tela exibe info do destaque + preço
+- [ ] Tela exibe 3 planos de destaque com preços e durações
 - [ ] Validação de elegibilidade (vinculado + história)
-- [ ] IAP da store é acionado ao clicar no botão
+- [ ] Usuário pode selecionar entre os 3 planos
+- [ ] IAP da store é acionado ao clicar no botão do plano selecionado
 - [ ] Após compra: char aparece na Depot com glow
-- [ ] Pagamento registrado no Firestore
+- [ ] Se já tinha destaque ativo, duração é estendida (não sobrescrita)
+- [ ] Pagamento registrado no Firestore (com amount_brl correto do plano)
 - [ ] Botão desabilitado se não elegível (com mensagem)
 
 ---

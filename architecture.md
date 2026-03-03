@@ -37,7 +37,7 @@ Toda a arquitetura segue os mesmos princípios do compensa-app:
 | Autenticação         | **Firebase Auth** (e-mail/senha + Google + Apple)       | 🆕 Não existe no compensa-app                            |
 | API Externa          | **TibiaData API v4** (pública, sem chave)               | 🆕 Endpoint `/v4/character/{name}`                       |
 | Anúncios             | **react-native-google-mobile-ads**                      | Mesmo do compensa-app                                     |
-| Pagamento In-App     | **expo-in-app-purchases**                               | 🆕 Produto consumível (destaque R$5/7dias)               |
+| Pagamento In-App     | **expo-in-app-purchases**                               | 🆕 3 produtos consumíveis (destaque: R$5/7d, R$15/30d, R$100/365d) |
 | Fontes               | **expo-font** (MedievalSharp + Martel)                  | Carregadas no boot flow                                   |
 | Build/Deploy         | **EAS Build + EAS Submit**                              | Google Play + Apple Store                                 |
 
@@ -507,8 +507,8 @@ export function canStartVerification(char: TibiaCharacter, existingChars: Charac
 // Verifica se char é elegível para destaque
 export function canHighlight(char: Character): { eligible: boolean; reason?: string };
 
-// Calcula data de expiração (now + 7 dias)
-export function calculateHighlightExpiry(purchaseDate: Date): Date;
+// Calcula data de expiração (purchaseDate + durationDays)
+export function calculateHighlightExpiry(purchaseDate: Date, durationDays: number): Date;
 
 // Verifica se destaque ainda é válido
 export function isHighlightActive(highlightUntil: string | null): boolean;
@@ -746,14 +746,28 @@ export function getBannerAdUnitId(): string;
 ### 7.9 `purchaseService.ts` 🆕
 
 ```typescript
+// Planos de destaque disponíveis
+export type HighlightPlan = '7d' | '30d' | '365d';
+
+export interface HighlightPlanInfo {
+  plan: HighlightPlan;
+  durationDays: number;
+  priceBrl: number;
+  label: string;            // Ex: "7 dias — R$ 5,00"
+  productId: string;        // ID do produto na store
+}
+
+// Retorna os 3 planos disponíveis
+export function getHighlightPlans(): HighlightPlanInfo[];
+
 // Inicializa IAP
 export async function initializePurchases(): Promise<void>;
 
-// Busca produto de destaque
-export async function getHighlightProduct(): Promise<Product>;
+// Busca produto de destaque por plano
+export async function getHighlightProduct(plan: HighlightPlan): Promise<Product>;
 
-// Executa compra
-export async function purchaseHighlight(): Promise<PurchaseResult>;
+// Executa compra do plano selecionado
+export async function purchaseHighlight(plan: HighlightPlan): Promise<PurchaseResult>;
 
 // Valida receipt
 export async function validateReceipt(receipt: string): Promise<boolean>;
@@ -1378,7 +1392,9 @@ export interface HighlightPayment {
   user_token: string;
   platform: 'android' | 'ios';
   transaction_id: string;
+  plan: '7d' | '30d' | '365d';
   amount_brl: number;
+  duration_days: number;
   purchased_at: string;
   expires_at: string;
   status: 'active' | 'expired';
@@ -1562,16 +1578,19 @@ EditStoryScreen
 HighlightScreen
   → highlightRules.canHighlight(char) → verifica: vinculado + tem história
   → syncService.requireOnline()  ← BLOQUEIA se offline (RN-18)
-  → Botão "Comprar Destaque — R$5"
-    → purchaseService.purchaseHighlight()
+  → Exibe 3 planos: 7 dias (R$5), 30 dias (R$15), 365 dias (R$100)
+  → Usuário seleciona um plano
+  → Botão "⭐ Comprar Destaque"
+    → purchaseService.purchaseHighlight(selectedPlan)
       → IAP da store (Google Play / Apple)
     → Se sucesso:
-      → highlightRules.calculateHighlightExpiry(now) → +7 dias
+      → highlightRules.calculateHighlightExpiry(now, plan.durationDays)
+      → Se já tem destaque ativo: highlight_until = max(existente, now) + durationDays
       → firestoreService.updateCharacter(id, { is_highlighted: true, highlight_until })
-      → firestoreService.createHighlightPayment({...})
+      → firestoreService.createHighlightPayment({... amount_brl: plan.priceBrl })
       → charsRepository.upsertCharacter({...})
       → useCharsStore.loadChars()
-      → Feedback: "✅ Seu personagem está em destaque!"
+      → Feedback: "✅ Seu personagem está em destaque por {N} dias!"
 ```
 
 ---
@@ -1677,7 +1696,7 @@ module.exports = function (api) {
 | Autenticação          | ❌ Não tem                              | ✅ Firebase Auth (e-mail + Google + Apple)           |
 | API externa           | ❌ Market data local/cache              | ✅ TibiaData API v4 + Firebase                      |
 | Sync remoto           | ❌ Tudo local                           | ✅ Firestore ↔ SQLite (abertura + write-through)    |
-| In-App Purchase       | ❌ Não tem                              | ✅ Destaque pago (R$5/7 dias)                       |
+| In-App Purchase       | ❌ Não tem                              | ✅ Destaque pago (R$5/7d, R$15/30d, R$100/365d)    |
 | Login social          | ❌ Não tem                              | ✅ Google Sign-In + Apple Sign-In                   |
 | Rules                 | 4 arquivos                             | 6 arquivos (+authRules, +itemRules)                  |
 | Services              | 4 arquivos                             | 8 arquivos (+firebase, +auth, +sync, +purchase, +tibiaData) |
@@ -1776,7 +1795,7 @@ service cloud.firestore {
 | **Rules**              | 6 arquivos de funções puras. Zero React/Zustand/Firebase.                  |
 | **Services**           | 8 arquivos. Firebase, Auth, Sync, TibiaData, IAP, Ads.                    |
 | **Boot flow**          | 10 passos sequenciais no initService.ts.                                   |
-| **Monetização**        | AdMob banner + IAP consumível (destaque R$5/7 dias).                       |
+| **Monetização**        | AdMob banner + 3 IAP consumíveis (destaque: R$5/7d, R$15/30d, R$100/365d). |
 | **Path alias**         | `@/` → `src/` via babel-plugin-module-resolver.                            |
 | **Naming**             | PascalCase.tsx (componentes), camelCase.ts (lógica), useXxxStore.ts.       |
 
