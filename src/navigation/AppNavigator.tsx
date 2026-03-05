@@ -9,6 +9,7 @@ import RegisterScreen from '@/screens/RegisterScreen';
 import AddCharScreen from '@/screens/AddCharScreen';
 import VerifyCharScreen from '@/screens/VerifyCharScreen';
 import EditStoryScreen from '@/screens/EditStoryScreen';
+import HighlightScreen from '@/screens/HighlightScreen';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
@@ -20,8 +21,7 @@ export type RootStackParamList = {
     AddChar: undefined;
     VerifyChar: { charId: string; charName: string };
     EditStory: { charId: string };
-    // Future stack screens (Fase 12+):
-    // Highlight: { charId: string };
+    Highlight: { charId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -138,6 +138,22 @@ function AppNavigator() {
                     options={{
                         headerShown: true,
                         headerTitle: 'Editar História',
+                        headerStyle: {
+                            backgroundColor: theme.colors.headerBg,
+                        },
+                        headerTintColor: theme.colors.textOnHeader,
+                        headerTitleStyle: {
+                            fontFamily: theme.fonts.title,
+                            fontSize: theme.fontSizes.lg,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="Highlight"
+                    component={HighlightScreen}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Destacar Personagem',
                         headerStyle: {
                             backgroundColor: theme.colors.headerBg,
                         },

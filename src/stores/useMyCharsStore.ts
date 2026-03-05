@@ -136,9 +136,17 @@ export const useMyCharsStore = create<MyCharsState>((set, get) => ({
         }
     },
 
-    // Stub — será implementado na Fase 12 (Destaque + Compra)
-    purchaseHighlight: async (_charId: string) => {
-        throw new Error('Será implementado na Fase 12');
+    // Fase 12: Compra de destaque é tratada diretamente na HighlightScreen
+    // (purchaseService + firestoreService + charsRepository).
+    // Esta action apenas recarrega os chars após a compra.
+    purchaseHighlight: async (charId: string) => {
+        const char = getCharById(charId);
+        if (!char) return;
+        set((state) => ({
+            myChars: state.myChars.map((c) =>
+                c.id === charId ? { ...getCharById(charId)!, ...c } : c,
+            ),
+        }));
     },
 
     clearError: () => set({ error: null }),

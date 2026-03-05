@@ -23,7 +23,7 @@
 | 9    | Feature: Exiva + Vínculo      | 8          | 6        | ✅     |
 | 10   | Feature: Editar História      | 9          | 3        | ✅     |
 | 11   | Sync Firebase ↔ SQLite        | 10         | 4        | ✅     |
-| 12   | Feature: Destaque + Compra    | 11         | 5        | ⬜     |
+| 12   | Feature: Destaque + Compra    | 11         | 5        | ✅     |
 | 13   | Anúncios (AdMob)              | 3          | 2        | ⬜     |
 | 14   | Polimento & Build             | 1–13       | 5+       | ⬜     |
 

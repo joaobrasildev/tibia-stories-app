@@ -59,9 +59,9 @@ function AccountScreen() {
         navigation.navigate('EditStory', { charId });
     }, [navigation]);
 
-    const handleHighlight = useCallback((_charId: string) => {
-        // Fase 12: navigation.navigate('Highlight', { charId });
-    }, []);
+    const handleHighlight = useCallback((charId: string) => {
+        navigation.navigate('Highlight', { charId });
+    }, [navigation]);
 
     // ── Não logado ──────────────────────────────────────
     if (!isLoggedIn) {

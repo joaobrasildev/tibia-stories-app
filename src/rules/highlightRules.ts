@@ -1,10 +1,9 @@
 import type { Character } from '@/types/character';
 
-const HIGHLIGHT_DURATION_DAYS = 7;
-
 /**
  * Verifica se char é elegível para destaque.
- * Requisitos: verificado, com história publicada, não já em destaque ativo.
+ * Requisitos: verificado e com história publicada (RN-06).
+ * Chars já em destaque podem comprar novamente para estender (RN-07).
  */
 export function canHighlight(char: Character): { eligible: boolean; reason?: string } {
     if (!char.is_verified) {
@@ -13,19 +12,35 @@ export function canHighlight(char: Character): { eligible: boolean; reason?: str
     if (!char.story_content) {
         return { eligible: false, reason: 'Char não possui história publicada.' };
     }
-    if (isHighlightActive(char.highlight_until)) {
-        return { eligible: false, reason: 'Char já está em destaque.' };
-    }
     return { eligible: true };
 }
 
 /**
- * Calcula data de expiração (purchaseDate + 7 dias).
+ * Calcula data de expiração (purchaseDate + durationDays).
  */
-export function calculateHighlightExpiry(purchaseDate: Date): Date {
+export function calculateHighlightExpiry(purchaseDate: Date, durationDays: number): Date {
     const expiry = new Date(purchaseDate.getTime());
-    expiry.setDate(expiry.getDate() + HIGHLIGHT_DURATION_DAYS);
+    expiry.setDate(expiry.getDate() + durationDays);
     return expiry;
+}
+
+/**
+ * Calcula data de expiração considerando destaque existente.
+ * Se já tem destaque ativo, estende a partir do max(highlight_until, now).
+ * Se não tem, soma a partir de now.
+ */
+export function calculateExtendedExpiry(currentHighlightUntil: string | null, durationDays: number): Date {
+    const now = new Date();
+    let baseDate = now;
+
+    if (currentHighlightUntil) {
+        const existingUntil = new Date(currentHighlightUntil);
+        if (existingUntil.getTime() > now.getTime()) {
+            baseDate = existingUntil;
+        }
+    }
+
+    return calculateHighlightExpiry(baseDate, durationDays);
 }
 
 /**
