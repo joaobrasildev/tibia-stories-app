@@ -7,8 +7,8 @@ const TEST_BANNER_IOS = 'ca-app-pub-3940256099942544/2934735716';
 
 // IDs de produção (hardcoded — não são dados sensíveis)
 // TODO: Substituir pelos Ad Unit IDs reais criados no AdMob Console
-const PROD_BANNER_ANDROID = 'ca-app-pub-9302632754670115/XXXXXXXXXX';
-const PROD_BANNER_IOS = 'ca-app-pub-9302632754670115/XXXXXXXXXX';
+const PROD_BANNER_ANDROID = 'ca-app-pub-9302632754670115/8512014714';
+const PROD_BANNER_IOS = 'ca-app-pub-9302632754670115/9521844058';
 
 const IS_DEV = __DEV__;
 
