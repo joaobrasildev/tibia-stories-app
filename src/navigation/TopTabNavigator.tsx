@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator, MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import AppHeader from '@/components/composed/AppHeader';
 import OfflineBanner from '@/components/composed/OfflineBanner';
+import AdBanner from '@/components/composed/AdBanner';
 import TibiaIcon from '@/components/base/TibiaIcon';
 import TibiaText from '@/components/base/TibiaText';
 import DepotScreen from '@/screens/DepotScreen';
@@ -27,6 +28,12 @@ function TopTabNavigator() {
             <OfflineBanner isOnline={isOnline} />
             <Tab.Navigator
                 tabBarPosition="bottom"
+                tabBar={(props: MaterialTopTabBarProps) => (
+                    <>
+                        <AdBanner />
+                        <MaterialTopTabBar {...props} />
+                    </>
+                )}
                 screenOptions={{
                     swipeEnabled: true,
                     tabBarStyle: {

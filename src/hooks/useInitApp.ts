@@ -9,6 +9,7 @@ import { useItemsStore } from '@/stores/useItemsStore';
 import { useCharsStore } from '@/stores/useCharsStore';
 import { expireHighlights } from '@/repositories/charsRepository';
 import { startConnectivityListener, syncIfOnline } from '@/services/syncService';
+import { initializeAds } from '@/services/adService';
 import { generateToken } from '@/utils/tokenGenerator';
 
 /**
@@ -52,6 +53,13 @@ export function useInitApp(): { isReady: boolean } {
 
                 // Passo 6: Sync Firebase → SQLite (se online)
                 await syncIfOnline();
+
+                // Passo 6.5: Inicializar SDK de anúncios (AdMob)
+                try {
+                    await initializeAds();
+                } catch (adError) {
+                    console.warn('[useInitApp] AdMob init failed (non-blocking):', adError);
+                }
 
                 // Passo 7: Carregar itens do SQLite → store
                 useItemsStore.getState().loadItems();

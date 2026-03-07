@@ -14,7 +14,21 @@
     },
     "plugins": [
       "expo-apple-authentication",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-9302632754670115~6500897228",
+          "iosAppId": "ca-app-pub-9302632754670115~6990658878",
+          "delay_app_measurement_init": true
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Este app utiliza identificadores para exibir anúncios relevantes. Seus dados não são compartilhados com terceiros."
+        }
+      ]
     ],
     "android": {
       "package": "com.tibiastories.app",
@@ -22,7 +36,10 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#8B2020"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.tibiastories.app",
@@ -31,6 +48,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1b2e9243-381b-4cf8-9f8d-f800214c9016"
+      }
     }
   }
 }
