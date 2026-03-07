@@ -61,7 +61,7 @@
    npm install @react-native-google-signin/google-signin expo-apple-authentication
 
    # Monetização
-   npm install react-native-google-mobile-ads expo-in-app-purchases
+   npm install react-native-google-mobile-ads react-native-iap
 
    # UI
    npm install expo-font expo-splash-screen expo-linear-gradient react-native-reanimated react-native-gesture-handler expo-clipboard

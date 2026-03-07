@@ -37,7 +37,7 @@ Toda a arquitetura segue os mesmos princípios do compensa-app:
 | Autenticação         | **Firebase Auth** (e-mail/senha + Google + Apple)       | 🆕 Não existe no compensa-app                            |
 | API Externa          | **TibiaData API v4** (pública, sem chave)               | 🆕 Endpoint `/v4/character/{name}`                       |
 | Anúncios             | **react-native-google-mobile-ads**                      | Mesmo do compensa-app                                     |
-| Pagamento In-App     | **expo-in-app-purchases**                               | 🆕 3 produtos consumíveis (destaque: R$5/7d, R$15/30d, R$100/365d) |
+| Pagamento In-App     | **react-native-iap**                                    | 🆕 3 produtos consumíveis (destaque: R$5/7d, R$15/30d, R$100/365d) |
 | Fontes               | **expo-font** (MedievalSharp + Martel)                  | Carregadas no boot flow                                   |
 | Build/Deploy         | **EAS Build + EAS Submit**                              | Google Play + Apple Store                                 |
 
@@ -74,7 +74,7 @@ expo-apple-authentication
 
 # Monetização
 react-native-google-mobile-ads
-expo-in-app-purchases
+react-native-iap
 
 # UI & Fonts
 expo-font

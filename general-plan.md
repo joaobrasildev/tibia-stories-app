@@ -29,7 +29,7 @@
 | Autenticação      | **Firebase Auth** (e-mail/senha + Login Social Google & Apple) |
 | API Externa       | **TibiaData API v4** (gratuita, sem chave de API)   |
 | Anúncios          | **Google AdMob** via `expo-ads-admob` ou `react-native-google-mobile-ads` |
-| Pagamento In-App  | **expo-in-app-purchases** (Google Play / Apple IAP) |
+| Pagamento In-App  | **react-native-iap** (Google Play / Apple IAP)   |
 | Publicação        | **EAS Build + EAS Submit** (Google Play e App Store) |
 
 ### 2.1 Dependências Principais (package.json)
@@ -44,7 +44,7 @@ expo-sqlite ~15
 @react-native-google-signin/google-signin
 expo-apple-authentication
 react-native-google-mobile-ads
-expo-in-app-purchases
+react-native-iap
 expo-font (para fontes customizadas)
 react-native-reanimated
 ```

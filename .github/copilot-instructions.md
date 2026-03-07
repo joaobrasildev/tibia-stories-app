@@ -35,4 +35,4 @@ O app usa termos autênticos de Tibia. Siga exatamente o que o protótipo (`prot
 - Na dúvida, **consulte o protótipo** (`prototype/app.js`) como referência final para o texto exato.
 
 ## Stack
-React Native ~0.76, Expo SDK 52+, TypeScript strict, React Navigation 7, Zustand 5.x, expo-sqlite (sync API, WAL), Firebase Firestore + Auth, TibiaData API v4, react-native-google-mobile-ads, expo-in-app-purchases.
+React Native ~0.76, Expo SDK 52+, TypeScript strict, React Navigation 7, Zustand 5.x, expo-sqlite (sync API, WAL), Firebase Firestore + Auth, TibiaData API v4, react-native-google-mobile-ads, react-native-iap.
