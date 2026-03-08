@@ -26,7 +26,8 @@ function TopTabNavigator() {
 
     return (
         <View style={styles.container}>
-            <AppHeader />
+            <View style={{ paddingTop: insets.top, backgroundColor: theme.colors.headerBg }} />
+            {/* <AppHeader /> */}
             <OfflineBanner isOnline={isOnline} />
             <Tab.Navigator
                 tabBarPosition="top"

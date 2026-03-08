@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import TibiaText from '@/components/base/TibiaText';
 import TibiaBadge from '@/components/base/TibiaBadge';
-import { getVocationColor, getVocationAbbr, getVocationOutfitUrl } from '@/constants/vocations';
+import { getVocationColor, getVocationAbbr, getVocationOutfitSource } from '@/constants/vocations';
 
 interface CharCardProps {
     name: string;
@@ -30,9 +30,8 @@ function CharCard({
 }: CharCardProps) {
     const vocAbbr = getVocationAbbr(vocation);
     const vocColor = getVocationColor(vocation);
-    const [imageError, setImageError] = useState(false);
-    const displayUrl = avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : getVocationOutfitUrl(vocation);
-    const hasImage = !!displayUrl && !imageError;
+    const [remoteError, setRemoteError] = useState(false);
+    const hasRemoteAvatar = !!avatarUrl && avatarUrl.startsWith('http') && !remoteError;
 
     return (
         <TouchableOpacity
@@ -41,17 +40,19 @@ function CharCard({
             activeOpacity={0.7}
         >
             <View style={styles.avatar}>
-                {hasImage ? (
+                {hasRemoteAvatar ? (
                     <Image
-                        source={{ uri: displayUrl }}
+                        source={{ uri: avatarUrl! }}
                         style={styles.avatarImage}
                         resizeMode="contain"
-                        onError={() => setImageError(true)}
+                        onError={() => setRemoteError(true)}
                     />
-                ) : avatarEmoji ? (
-                    <TibiaText style={styles.avatarEmoji}>{avatarEmoji}</TibiaText>
                 ) : (
-                    <TibiaText style={styles.avatarEmoji}>🛡️</TibiaText>
+                    <Image
+                        source={getVocationOutfitSource(vocation)}
+                        style={styles.avatarImage}
+                        resizeMode="contain"
+                    />
                 )}
             </View>
             <View style={styles.info}>

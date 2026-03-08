@@ -36,16 +36,18 @@ export function getVocationColor(vocation: string): string {
     return info?.color ?? theme.colors.badgeMO;
 }
 
-// Imagens de outfit (male, addon 1+2) do Tibia Wiki — uma por vocação
-const VOCATION_OUTFIT_URLS: Record<VocationAbbr, string> = {
-    EK: 'https://tibia.fandom.com/wiki/Special:FilePath/Outfit_Warrior_Male_Addon_3.gif',
-    RP: 'https://tibia.fandom.com/wiki/Special:FilePath/Outfit_Assassin_Male_Addon_3.gif',
-    ED: 'https://tibia.fandom.com/wiki/Special:FilePath/Outfit_Druid_Male_Addon_3.gif',
-    MS: 'https://tibia.fandom.com/wiki/Special:FilePath/Outfit_Mage_Male_Addon_3.gif',
-    MO: 'https://tibia.fandom.com/wiki/Special:FilePath/Outfit_Monk_Male_Addon_3.gif',
+// Imagens de outfit (male, addon 1+2) — assets locais (animated GIF, 4 frames)
+import type { ImageSourcePropType } from 'react-native';
+
+const VOCATION_OUTFIT_ASSETS: Record<VocationAbbr, ImageSourcePropType> = {
+    EK: require('../../assets/outfits/ek.gif'),
+    RP: require('../../assets/outfits/rp.gif'),
+    ED: require('../../assets/outfits/ed.gif'),
+    MS: require('../../assets/outfits/ms.gif'),
+    MO: require('../../assets/outfits/mo.gif'),
 };
 
-export function getVocationOutfitUrl(vocation: string): string {
+export function getVocationOutfitSource(vocation: string): ImageSourcePropType {
     const abbr = getVocationAbbr(vocation);
-    return VOCATION_OUTFIT_URLS[abbr];
+    return VOCATION_OUTFIT_ASSETS[abbr];
 }

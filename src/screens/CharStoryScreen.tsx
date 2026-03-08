@@ -4,7 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { theme } from '@/theme';
 import { getCharById } from '@/repositories/charsRepository';
-import { getVocationColor, getVocationAbbr, getVocationOutfitUrl } from '@/constants/vocations';
+import { getVocationColor, getVocationAbbr, getVocationOutfitSource } from '@/constants/vocations';
 import { APP_TEXTS } from '@/constants/app';
 import { formatRelativeDate } from '@/rules/formatRules';
 import TibiaText from '@/components/base/TibiaText';
@@ -15,21 +15,24 @@ import type { RootStackParamList } from '@/navigation/AppNavigator';
 type CharStoryRouteProp = RouteProp<RootStackParamList, 'CharStory'>;
 
 function HeroAvatar({ avatarUrl, vocation }: { avatarUrl: string | null; vocation: string }) {
-    const [imageError, setImageError] = useState(false);
-    const displayUrl = avatarUrl && avatarUrl.startsWith('http') ? avatarUrl : getVocationOutfitUrl(vocation);
-    const hasImage = !!displayUrl && !imageError;
+    const [remoteError, setRemoteError] = useState(false);
+    const hasRemoteAvatar = !!avatarUrl && avatarUrl.startsWith('http') && !remoteError;
 
     return (
         <View style={styles.heroImage}>
-            {hasImage ? (
+            {hasRemoteAvatar ? (
                 <Image
-                    source={{ uri: displayUrl }}
+                    source={{ uri: avatarUrl! }}
                     style={styles.heroAvatarImage}
                     resizeMode="contain"
-                    onError={() => setImageError(true)}
+                    onError={() => setRemoteError(true)}
                 />
             ) : (
-                <TibiaText style={styles.heroEmoji}>🛡️</TibiaText>
+                <Image
+                    source={getVocationOutfitSource(vocation)}
+                    style={styles.heroAvatarImage}
+                    resizeMode="contain"
+                />
             )}
         </View>
     );
