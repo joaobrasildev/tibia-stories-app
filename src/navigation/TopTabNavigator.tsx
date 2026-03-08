@@ -2,9 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import AppHeader from '@/components/composed/AppHeader';
 import OfflineBanner from '@/components/composed/OfflineBanner';
-import AdBanner from '@/components/composed/AdBanner';
 import TibiaIcon from '@/components/base/TibiaIcon';
 import TibiaText from '@/components/base/TibiaText';
 import DepotScreen from '@/screens/DepotScreen';
@@ -27,7 +25,6 @@ function TopTabNavigator() {
     return (
         <View style={styles.container}>
             <View style={{ paddingTop: insets.top, backgroundColor: theme.colors.headerBg }} />
-            {/* <AppHeader /> */}
             <OfflineBanner isOnline={isOnline} />
             <Tab.Navigator
                 tabBarPosition="top"
@@ -95,8 +92,6 @@ function TopTabNavigator() {
                     }}
                 />
             </Tab.Navigator>
-            <AdBanner />
-            <View style={{ paddingBottom: insets.bottom }} />
         </View>
     );
 }

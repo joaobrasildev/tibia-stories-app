@@ -211,7 +211,7 @@ Criar arquivos mínimos para as 4 telas de tab:
 - Tab bar com `backgroundColor: theme.colors.headerBg` (#8B2020).
 - Ícones: usar os PNGs de `assets/icons/` (copiar de `prototype/icons/`). Conta usa emoji ⚙️.
 - Indicador dourado na parte inferior da tab bar.
-- AdBanner fixo no rodapé, abaixo do conteúdo das tabs.
+- AdBanner fixo no rodapé, renderizado no `AppNavigator` (visível em todas as telas do app).
 - Swipe entre tabs habilitado.
 - AppNavigator: NativeStack com TopTabNavigator como tela principal + stacks para detalhe.
 - Ver layout ASCII em `architecture.md` seção 4.3.
@@ -922,7 +922,7 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 - [ ] Listener de conectividade atualiza `isOnline` em tempo real (NetInfo)
 - [ ] Banner "📡 Modo offline" aparece quando sem conexão e desaparece ao reconectar
 - [ ] OfflineBanner posicionado entre AppHeader e Tab.Navigator no TopTabNavigator
-- [ ] AdBanner posicionado no rodapé, após o Tab.Navigator no TopTabNavigator
+- [x] AdBanner posicionado no rodapé do AppNavigator (visível em todas as telas, incluindo detalhe)
 - [ ] Operações de escrita exibem erro amigável se offline (`requireOnline()`)
 - [ ] `requireOnline()` inserido em: login, register, loginWithGoogle, loginWithApple, resetPassword, adicionar char, vincular char, salvar história
 - [ ] Nenhum dado é criado localmente — tudo passa pelo Firebase primeiro
@@ -985,7 +985,7 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 
 ## Fase 13 — Anúncios (AdMob)
 
-**Objetivo:** Adicionar banner AdMob fixo no rodapé (abaixo do conteúdo das tabs).
+**Objetivo:** Adicionar banner AdMob fixo no rodapé, visível em **todas** as telas do app.
 
 **Depende de:** Fase 3 (shell de navegação).
 
@@ -1001,16 +1001,16 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 ### Regras
 
 - Banner **adaptive** (tamanho se ajusta à largura).
-- Posição: rodapé, abaixo do conteúdo das tabs (a tab bar fica no topo).
+- Posição: rodapé do `AppNavigator`, abaixo do `Stack.Navigator` — visível em **todas** as telas (tabs, detalhe, login, etc.).
 - IDs de teste durante desenvolvimento. IDs de produção no build final.
 - `AdBanner` encapsula `react-native-google-mobile-ads` — nenhuma outra parte do app importa a lib diretamente.
-- Renderizado no `TopTabNavigator`, após o `<Tab.Navigator>` (último elemento visual antes do safe area bottom).
+- Renderizado no `AppNavigator` (não no `TopTabNavigator`), garantindo persistência durante navegação entre stacks.
 - Ver `general-plan.md` seção 9.1.
 
 ### Critério de "done"
 
-- [ ] Banner de teste visível em todas as telas
-- [ ] Posição correta (rodapé, abaixo do conteúdo)
+- [x] Banner de teste visível em todas as telas (incluindo telas de detalhe via Stack)
+- [x] Posição correta (rodapé do AppNavigator, abaixo do Stack.Navigator)
 - [ ] Não atrapalha scroll do conteúdo
 
 ---

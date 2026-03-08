@@ -1,6 +1,8 @@
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TopTabNavigator from '@/navigation/TopTabNavigator';
 import ItemDetailScreen from '@/screens/ItemDetailScreen';
 import CharStoryScreen from '@/screens/CharStoryScreen';
@@ -10,6 +12,7 @@ import AddCharScreen from '@/screens/AddCharScreen';
 import VerifyCharScreen from '@/screens/VerifyCharScreen';
 import EditStoryScreen from '@/screens/EditStoryScreen';
 import HighlightScreen from '@/screens/HighlightScreen';
+import AdBanner from '@/components/composed/AdBanner';
 import { theme } from '@/theme';
 
 export type RootStackParamList = {
@@ -27,146 +30,159 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
+    const insets = useSafeAreaInsets();
+
     return (
         <NavigationContainer>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: theme.colors.panel },
-                }}
-            >
-                <Stack.Screen name="MainTabs" component={TopTabNavigator} />
-                <Stack.Screen
-                    name="ItemDetail"
-                    component={ItemDetailScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Detalhe do Item',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
+            <View style={styles.root}>
+                <Stack.Navigator
+                    screenOptions={{
+                        headerShown: false,
+                        contentStyle: { backgroundColor: theme.colors.panel },
                     }}
-                />
-                <Stack.Screen
-                    name="CharStory"
-                    component={CharStoryScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'História do Char',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="Login"
-                    component={LoginScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Login',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="Register"
-                    component={RegisterScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Criar Conta',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="AddChar"
-                    component={AddCharScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Exiva — Localizar Char',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="VerifyChar"
-                    component={VerifyCharScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Quest de Vínculo',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="EditStory"
-                    component={EditStoryScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Editar História',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-                <Stack.Screen
-                    name="Highlight"
-                    component={HighlightScreen}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Destacar Personagem',
-                        headerStyle: {
-                            backgroundColor: theme.colors.headerBg,
-                        },
-                        headerTintColor: theme.colors.textOnHeader,
-                        headerTitleStyle: {
-                            fontFamily: theme.fonts.title,
-                            fontSize: theme.fontSizes.lg,
-                        },
-                    }}
-                />
-            </Stack.Navigator>
+                >
+                    <Stack.Screen name="MainTabs" component={TopTabNavigator} />
+                    <Stack.Screen
+                        name="ItemDetail"
+                        component={ItemDetailScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Detalhe do Item',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="CharStory"
+                        component={CharStoryScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'História do Char',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Login"
+                        component={LoginScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Login',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Register"
+                        component={RegisterScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Criar Conta',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="AddChar"
+                        component={AddCharScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Exiva — Localizar Char',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="VerifyChar"
+                        component={VerifyCharScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Quest de Vínculo',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="EditStory"
+                        component={EditStoryScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Editar História',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Highlight"
+                        component={HighlightScreen}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Destacar Personagem',
+                            headerStyle: {
+                                backgroundColor: theme.colors.headerBg,
+                            },
+                            headerTintColor: theme.colors.textOnHeader,
+                            headerTitleStyle: {
+                                fontFamily: theme.fonts.title,
+                                fontSize: theme.fontSizes.lg,
+                            },
+                        }}
+                    />
+                </Stack.Navigator>
+                <AdBanner />
+                <View style={{ paddingBottom: insets.bottom }} />
+            </View>
         </NavigationContainer>
     );
 }
+
+const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+        backgroundColor: theme.colors.panel,
+    },
+});
 
 export default AppNavigator;

@@ -288,25 +288,26 @@ AppNavigator (NativeStackNavigator)
 
 ### 4.3 TopTabNavigator — Posicionamento
 
-As tabs usam `tabBarPosition: 'top'` logo abaixo do header. O AdBanner fica fixo no rodapé:
+As tabs usam `tabBarPosition: 'top'` logo abaixo do header. O `AdBanner` fica fixo no rodapé **no nível do `AppNavigator`** (não no `TopTabNavigator`), garantindo visibilidade em **todas** as telas do app (tabs, detalhe de item, história do char, login, etc.):
 
 > **Nota:** O protótipo HTML5 (`prototype/index.html`) usa tabs no rodapé com ad banner acima.
 > No React Native, a tab bar foi movida para o topo (abaixo do header) para melhor UX,
-> e o ad banner permanece sozinho no rodapé.
+> e o ad banner permanece sozinho no rodapé, renderizado no `AppNavigator`.
 
 ```
-┌──────────────────────────────┐
-│  ⚔ ═══ TIBIA STORIES ═══ ⚔ │  ← AppHeader (fixo, #8B2020)
+┌──────────────────────────────┐  ← AppNavigator (View root)
+│  ┌────────────────────────┐  │
+│  │  ⚔ TIBIA STORIES ⚔    │  │  ← AppHeader (fixo, #8B2020)
+│  ├────────────────────────┤  │
+│  │ 🏰Depot ⚔Itens 📖 ⚙  │  │  ← TopTabs (top, #8B2020)
+│  ├────────────────────────┤  │
+│  │                        │  │
+│  │   Conteúdo da Tab      │  │  ← Screen content (scroll)
+│  │   ou Tela de Detalhe   │  │     (qualquer Stack Screen)
+│  │                        │  │
+│  └────────────────────────┘  │  ← Stack.Navigator (flex: 1)
 ├──────────────────────────────┤
-│ 🏰Depot  ⚔Itens  📖Chars ⚙ │  ← TopTabs (top, #8B2020)
-├──────────────────────────────┤
-│                              │
-│      Conteúdo da Tab         │  ← Screen content (scroll)
-│      (Depot/Itens/Chars/     │
-│       Conta)                 │
-│                              │
-├──────────────────────────────┤
-│   [═══ BANNER ADMOB ═════]  │  ← AdBanner (rodapé)
+│   [═══ BANNER ADMOB ═════]  │  ← AdBanner (rodapé, AppNavigator)
 └──────────────────────────────┘
 ```
 

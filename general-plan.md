@@ -393,10 +393,11 @@ O layout segue estética medieval com paleta de pergaminho claro, inspirado no u
 │  ║  Antica • "Tempestade"        ║  │
 │  ╚═══════════════════════════════╝  │
 │                                     │
-│  [═══════ BANNER ADMOB ═══════════] │  ← Anúncio (rodapé)
+│  [═══════ BANNER ADMOB ═══════════] │  ← Anúncio (rodapé, AppNavigator)
 └─────────────────────────────────────┘
 
-> **Nota:** A tab bar fica no topo, abaixo do header (ver `architecture.md` seção 4.3).
+> **Nota:** A tab bar fica no topo, abaixo do header. O AdBanner é renderizado no `AppNavigator`
+> (não no `TopTabNavigator`), garantindo visibilidade em todas as telas do app (ver `architecture.md` seção 4.3).
 ```
 
 ### 7.5 Ícones das Tabs (Flaticon)
