@@ -59,8 +59,8 @@ function TopTabNavigator() {
                     name="Depot"
                     component={DepotScreen}
                     options={{
-                        tabBarIcon: ({ color }) => (
-                            <TibiaIcon source={depotIcon} size={20} tintColor={color} />
+                        tabBarIcon: ({ focused }) => (
+                            <TibiaIcon source={depotIcon} size={20} style={{ opacity: focused ? 1 : 0.5 }} />
                         ),
                     }}
                 />
@@ -68,8 +68,8 @@ function TopTabNavigator() {
                     name="Itens"
                     component={ItemsScreen}
                     options={{
-                        tabBarIcon: ({ color }) => (
-                            <TibiaIcon source={itemIcon} size={20} tintColor={color} />
+                        tabBarIcon: ({ focused }) => (
+                            <TibiaIcon source={itemIcon} size={20} style={{ opacity: focused ? 1 : 0.5 }} />
                         ),
                     }}
                 />
@@ -77,8 +77,8 @@ function TopTabNavigator() {
                     name="Chars"
                     component={CharsScreen}
                     options={{
-                        tabBarIcon: ({ color }) => (
-                            <TibiaIcon source={charIcon} size={20} tintColor={color} />
+                        tabBarIcon: ({ focused }) => (
+                            <TibiaIcon source={charIcon} size={20} style={{ opacity: focused ? 1 : 0.5 }} />
                         ),
                     }}
                 />
