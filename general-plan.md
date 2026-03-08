@@ -393,9 +393,10 @@ O layout segue estética medieval com paleta de pergaminho claro, inspirado no u
 │  ║  Antica • "Tempestade"        ║  │
 │  ╚═══════════════════════════════╝  │
 │                                     │
-│  [═══════ BANNER ADMOB ═══════════] │  ← Anúncio
-│  [🏰Depot][⚔Itens][📖Chars][⚙Conta]│  ← Tab bar (#8B2020)
+│  [═══════ BANNER ADMOB ═══════════] │  ← Anúncio (rodapé)
 └─────────────────────────────────────┘
+
+> **Nota:** A tab bar fica no topo, abaixo do header (ver `architecture.md` seção 4.3).
 ```
 
 ### 7.5 Ícones das Tabs (Flaticon)
@@ -416,7 +417,7 @@ As tabs utilizam ícones PNG 128×128 do Flaticon em vez de emojis:
 ### 8.1 Mapa de Navegação
 
 ```
-Tab Navigator (Bottom Tabs)
+Tab Navigator (Top Tabs — abaixo do header)
 │
 ├── � Depot (Home — Chars em Destaque)
 │   └── CharacterStoryScreen (história de um char)

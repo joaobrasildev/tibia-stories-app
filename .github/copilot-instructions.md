@@ -14,7 +14,7 @@ Antes de criar ou modificar qualquer arquivo, **leia os documentos abaixo** na r
 - **NÃO toque na pasta `prototype/`** — é o protótipo HTML5 de referência.
 - **Sempre consulte o protótipo antes de criar qualquer tela** — O `prototype/app.js` é a referência visual definitiva. Antes de implementar um layout, leia a função `render` correspondente no protótipo (ex: `renderHome`, `renderItems`, `renderAccount`) e replique a estrutura, ordem dos elementos, textos e hierarquia visual. O `prototype/styles.css` é a referência para cores, espaçamentos e bordas.
 - **NÃO mude as cores do header/tab bar** — `#8B2020` (gradiente `#A02828 → #8B2020 → #6E1818`). Foram ajustadas manualmente pelo usuário.
-- **NÃO use Expo Router** — o projeto usa React Navigation 7 (Material Top Tabs + NativeStack). As tabs ficam na parte **inferior** da tela (`tabBarPosition: 'bottom'`), igual ao protótipo.
+- **NÃO use Expo Router** — o projeto usa React Navigation 7 (Material Top Tabs + NativeStack). As tabs ficam na parte **superior** da tela, abaixo do header (`tabBarPosition: 'top'`). O ad banner fica sozinho no rodapé.
 - **Zero inline styles** — todo estilo vem de `src/theme/index.ts`.
 - **React.memo** em todo componente base/ e composed/.
 - **Componentes nunca acessam stores** — recebem apenas props primitivas.

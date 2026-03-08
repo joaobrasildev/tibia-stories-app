@@ -284,15 +284,21 @@ AppNavigator (NativeStackNavigator)
 | Material Top Tabs swipe  | Suporte parcial           | Suporte nativo completo               |
 | Padrão compensa-app      | ❌                         | ✅ Mesmo padrão                       |
 | Customização de header   | Via config                | Via `screenOptions` com total controle |
-| Tab bar no rodapé + swipe| Workaround                | Nativo                                |
+| Tab bar no topo + swipe  | Workaround                | Nativo                                |
 
 ### 4.3 TopTabNavigator — Posicionamento
 
-As tabs usam `tabBarPosition: 'bottom'` com o AdBanner renderizado logo acima:
+As tabs usam `tabBarPosition: 'top'` logo abaixo do header. O AdBanner fica fixo no rodapé:
+
+> **Nota:** O protótipo HTML5 (`prototype/index.html`) usa tabs no rodapé com ad banner acima.
+> No React Native, a tab bar foi movida para o topo (abaixo do header) para melhor UX,
+> e o ad banner permanece sozinho no rodapé.
 
 ```
 ┌──────────────────────────────┐
 │  ⚔ ═══ TIBIA STORIES ═══ ⚔ │  ← AppHeader (fixo, #8B2020)
+├──────────────────────────────┤
+│ 🏰Depot  ⚔Itens  📖Chars ⚙ │  ← TopTabs (top, #8B2020)
 ├──────────────────────────────┤
 │                              │
 │      Conteúdo da Tab         │  ← Screen content (scroll)
@@ -300,9 +306,7 @@ As tabs usam `tabBarPosition: 'bottom'` com o AdBanner renderizado logo acima:
 │       Conta)                 │
 │                              │
 ├──────────────────────────────┤
-│   [═══ BANNER ADMOB ═════]  │  ← AdBanner
-├──────────────────────────────┤
-│ 🏰Depot  ⚔Itens  📖Chars ⚙ │  ← TopTabs (bottom, #8B2020)
+│   [═══ BANNER ADMOB ═════]  │  ← AdBanner (rodapé)
 └──────────────────────────────┘
 ```
 
@@ -314,18 +318,20 @@ As tabs usam `tabBarPosition: 'bottom'` com o AdBanner renderizado logo acima:
 const Tab = createMaterialTopTabNavigator();
 
 <Tab.Navigator
-  tabBarPosition="bottom"
+  tabBarPosition="top"
   screenOptions={{
     swipeEnabled: true,
     tabBarStyle: {
       backgroundColor: theme.colors.headerBg,  // #8B2020
+      borderBottomWidth: 2,
+      borderBottomColor: theme.colors.textDark,
     },
     tabBarActiveTintColor: theme.colors.tabActive,
     tabBarInactiveTintColor: theme.colors.tabInactive,
     tabBarIndicatorStyle: {
       backgroundColor: theme.colors.gold,
       height: 3,
-      top: 0,  // indicador no topo da tab bar
+      // indicador fica na parte inferior da tab bar (padrão do top position)
     },
     tabBarShowIcon: true,
     tabBarShowLabel: true,

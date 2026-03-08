@@ -207,10 +207,11 @@ Criar arquivos mínimos para as 4 telas de tab:
 
 ### Regras
 
-- Tabs na posição **bottom** com `tabBarPosition: 'bottom'`.
+- Tabs na posição **top** com `tabBarPosition: 'top'` (abaixo do header).
 - Tab bar com `backgroundColor: theme.colors.headerBg` (#8B2020).
 - Ícones: usar os PNGs de `assets/icons/` (copiar de `prototype/icons/`). Conta usa emoji ⚙️.
-- Indicador dourado no topo da tab bar.
+- Indicador dourado na parte inferior da tab bar.
+- AdBanner fixo no rodapé, abaixo do conteúdo das tabs.
 - Swipe entre tabs habilitado.
 - AppNavigator: NativeStack com TopTabNavigator como tela principal + stacks para detalhe.
 - Ver layout ASCII em `architecture.md` seção 4.3.
@@ -218,7 +219,7 @@ Criar arquivos mínimos para as 4 telas de tab:
 ### Critério de "done"
 
 - [ ] App abre e mostra header "⚔ TIBIA STORIES ⚔" em vermelho escuro
-- [ ] 4 tabs visíveis no rodapé: Depot, Itens, Chars, Conta
+- [ ] 4 tabs visíveis no topo (abaixo do header): Depot, Itens, Chars, Conta
 - [ ] Cada tab com ícone correto (PNG para 3 primeiras, emoji para Conta)
 - [ ] Swipe entre tabs funciona
 - [ ] Tab ativa com destaque visual (indicador dourado)
@@ -920,7 +921,8 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 - [ ] App funciona offline para leitura (dados do SQLite)
 - [ ] Listener de conectividade atualiza `isOnline` em tempo real (NetInfo)
 - [ ] Banner "📡 Modo offline" aparece quando sem conexão e desaparece ao reconectar
-- [ ] Banner posicionado entre AppHeader e Tab.Navigator no TopTabNavigator
+- [ ] OfflineBanner posicionado entre AppHeader e Tab.Navigator no TopTabNavigator
+- [ ] AdBanner posicionado no rodapé, após o Tab.Navigator no TopTabNavigator
 - [ ] Operações de escrita exibem erro amigável se offline (`requireOnline()`)
 - [ ] `requireOnline()` inserido em: login, register, loginWithGoogle, loginWithApple, resetPassword, adicionar char, vincular char, salvar história
 - [ ] Nenhum dado é criado localmente — tudo passa pelo Firebase primeiro
@@ -983,7 +985,7 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 
 ## Fase 13 — Anúncios (AdMob)
 
-**Objetivo:** Adicionar banner AdMob fixo na parte inferior (acima da tab bar).
+**Objetivo:** Adicionar banner AdMob fixo no rodapé (abaixo do conteúdo das tabs).
 
 **Depende de:** Fase 3 (shell de navegação).
 
@@ -999,16 +1001,16 @@ Guard de conectividade em **todas** as operações que dependem de internet (ver
 ### Regras
 
 - Banner **adaptive** (tamanho se ajusta à largura).
-- Posição: acima da tab bar, abaixo do conteúdo.
+- Posição: rodapé, abaixo do conteúdo das tabs (a tab bar fica no topo).
 - IDs de teste durante desenvolvimento. IDs de produção no build final.
 - `AdBanner` encapsula `react-native-google-mobile-ads` — nenhuma outra parte do app importa a lib diretamente.
-- Renderizado no `AppNavigator` ou `TopTabNavigator`, entre conteúdo e tabs.
+- Renderizado no `TopTabNavigator`, após o `<Tab.Navigator>` (último elemento visual antes do safe area bottom).
 - Ver `general-plan.md` seção 9.1.
 
 ### Critério de "done"
 
 - [ ] Banner de teste visível em todas as telas
-- [ ] Posição correta (acima da tab bar)
+- [ ] Posição correta (rodapé, abaixo do conteúdo)
 - [ ] Não atrapalha scroll do conteúdo
 
 ---
