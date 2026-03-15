@@ -33,7 +33,7 @@ export default function ItemsScreen() {
         loadItems();
     }, [loadItems]);
 
-    const handleItemPress = useCallback((itemId: number) => {
+    const handleItemPress = useCallback((itemId: string) => {
         navigation.navigate('ItemDetail', { id: itemId });
     }, [navigation]);
 

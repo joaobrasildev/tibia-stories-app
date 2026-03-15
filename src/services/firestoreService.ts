@@ -22,6 +22,7 @@ import {
 import { getFirestoreInstance } from '@/services/firebaseService';
 import { FIREBASE_COLLECTIONS } from '@/constants/firebase';
 import type { Character } from '@/types/character';
+import type { Item } from '@/types/item';
 import type { HighlightPayment } from '@/types/market';
 
 // ── Helpers ────────────────────────────────────────────────
@@ -52,6 +53,34 @@ function mapDocToCharacter(docSnap: any): Character {
         created_at: data.created_at ?? '',
         updated_at: data.updated_at ?? '',
     };
+}
+
+function mapDocToItem(docSnap: any): Item {
+    const data = docSnap.data();
+    return {
+        id: docSnap.id,
+        name: data.name ?? '',
+        image_url: data.image_url ?? null,
+        rarity: data.rarity ?? 'Rare',
+        summary: data.summary ?? null,
+        origin: data.origin ?? null,
+        lore: data.lore ?? null,
+        myths: data.myths ?? null,
+        sources: data.sources ?? null,
+        created_at: data.created_at ?? '',
+        updated_at: data.updated_at ?? '',
+    };
+}
+
+// ── Items ──────────────────────────────────────────────────
+
+export async function fetchAllItems(): Promise<Item[]> {
+    const q = query(
+        getCollection(FIREBASE_COLLECTIONS.items),
+        orderBy('name', 'asc'),
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(mapDocToItem);
 }
 
 // ── Characters ─────────────────────────────────────────────

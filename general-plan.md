@@ -157,12 +157,15 @@ O campo **`comment`** contém exatamente o texto que o jogador escreve no commen
 #### Tabela: `items`
 | Campo           | Tipo     | Descrição                                    |
 | --------------- | -------- | -------------------------------------------- |
-| `id`            | INTEGER  | PK, autoincrement                            |
+| `id`            | TEXT     | PK (slug, ex: "golden-armor")                |
 | `name`          | TEXT     | Nome do item (ex: "Golden Armor")            |
 | `image_url`     | TEXT     | Caminho da imagem do item (asset local)      |
 | `rarity`        | TEXT     | Classificação (Legendary, Rare, Very Rare)   |
-| `history`       | TEXT     | Texto da história real do item               |
+| `summary`       | TEXT     | Resumo curto do item (1-2 frases)            |
+| `origin`        | TEXT     | Texto da origem e história real do item      |
+| `lore`          | TEXT     | Lore in-game (flavor text, conexões lore)    |
 | `myths`         | TEXT     | Texto dos mitos relacionados ao item         |
+| `sources`       | TEXT     | Fontes de pesquisa (ex: "TibiaWiki, TibiaQA")|
 | `created_at`    | TEXT     | Data de criação do registro                  |
 | `updated_at`    | TEXT     | Data da última atualização                   |
 
@@ -471,8 +474,11 @@ Tab Navigator (Top Tabs — abaixo do header)
   - Imagem/emoji do item (centralizada).
   - Nome do item como título principal.
   - Badge de raridade.
+  - **Resumo** — Texto curto sem header, contextualiza o item (1-2 frases).
   - **Seção "📜 Origem"** — Texto sobre a origem e história real do item no jogo.
+  - **Seção "📖 Lore"** — Flavor text e conexões com a lore in-game do Tibia.
   - **Seção "🔮 Mitos & Lendas"** — Texto dos mitos/lendas populares do item.
+  - **Seção "📚 Fontes"** — Lista de fontes de pesquisa utilizadas.
   - Layout simples: tudo em scroll vertical, com títulos separando as seções.
 - **Dados:** SQLite local (tabela `items` por ID).
 

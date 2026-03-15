@@ -6,8 +6,9 @@
  */
 
 import NetInfo from '@react-native-community/netinfo';
-import { fetchAllCharacters } from '@/services/firestoreService';
+import { fetchAllCharacters, fetchAllItems } from '@/services/firestoreService';
 import { upsertCharacter } from '@/repositories/charsRepository';
+import { upsertItem } from '@/repositories/itemsRepository';
 import { useAppStore } from '@/stores/useAppStore';
 
 // ── Sync ───────────────────────────────────────────────────
@@ -22,10 +23,17 @@ export async function syncFromFirestore(): Promise<void> {
     setSyncing(true);
 
     try {
-        const characters = await fetchAllCharacters();
+        const [characters, items] = await Promise.all([
+            fetchAllCharacters(),
+            fetchAllItems(),
+        ]);
 
         for (const char of characters) {
             upsertCharacter(char);
+        }
+
+        for (const item of items) {
+            upsertItem(item);
         }
 
         setLastSync(new Date().toISOString());

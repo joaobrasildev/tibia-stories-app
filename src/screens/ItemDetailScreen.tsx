@@ -59,8 +59,15 @@ export default function ItemDetailScreen() {
                 </View>
             </View>
 
+            {/* Summary */}
+            {item.summary ? (
+                <View style={styles.summaryContainer}>
+                    <TibiaText style={styles.summaryText}>{item.summary}</TibiaText>
+                </View>
+            ) : null}
+
             {/* Origem Section */}
-            {item.history ? (
+            {item.origin ? (
                 <View style={styles.section}>
                     <View style={styles.sectionTitle}>
                         <TibiaText style={styles.sectionTitleText}>
@@ -68,12 +75,36 @@ export default function ItemDetailScreen() {
                         </TibiaText>
                     </View>
                     <View style={styles.sectionBody}>
-                        {item.history.split('\n\n').map((paragraph, index) => (
+                        {item.origin.split('\n\n').map((paragraph, index) => (
                             <TibiaText
                                 key={`origin-${index}`}
                                 style={[
                                     styles.paragraph,
-                                    index === item.history!.split('\n\n').length - 1 && styles.paragraphLast,
+                                    index === item.origin!.split('\n\n').length - 1 && styles.paragraphLast,
+                                ]}
+                            >
+                                {paragraph}
+                            </TibiaText>
+                        ))}
+                    </View>
+                </View>
+            ) : null}
+
+            {/* Lore Section */}
+            {item.lore ? (
+                <View style={styles.section}>
+                    <View style={styles.sectionTitle}>
+                        <TibiaText style={styles.sectionTitleText}>
+                            {APP_TEXTS.itemDetail.loreTitle}
+                        </TibiaText>
+                    </View>
+                    <View style={styles.sectionBody}>
+                        {item.lore.split('\n\n').map((paragraph, index) => (
+                            <TibiaText
+                                key={`lore-${index}`}
+                                style={[
+                                    styles.paragraph,
+                                    index === item.lore!.split('\n\n').length - 1 && styles.paragraphLast,
                                 ]}
                             >
                                 {paragraph}
@@ -104,6 +135,15 @@ export default function ItemDetailScreen() {
                             </TibiaText>
                         ))}
                     </View>
+                </View>
+            ) : null}
+
+            {/* Sources */}
+            {item.sources ? (
+                <View style={styles.sourcesContainer}>
+                    <TibiaText style={styles.sourcesText}>
+                        {APP_TEXTS.itemDetail.sourcesTitle}: {item.sources}
+                    </TibiaText>
                 </View>
             ) : null}
         </ScrollView>
@@ -161,6 +201,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexWrap: 'wrap',
     },
+    // Summary
+    summaryContainer: {
+        marginTop: theme.spacing.md,
+        padding: theme.spacing.md,
+        backgroundColor: theme.colors.panelAlt,
+        ...theme.borders.panel,
+        borderColor: theme.colors.borderInner,
+        borderRadius: theme.radius.sm,
+    },
+    summaryText: {
+        fontFamily: theme.fonts.body,
+        fontSize: theme.fontSizes.paragraph,
+        color: theme.colors.textPrimary,
+        lineHeight: theme.lineHeights.body,
+    },
     // Sections
     section: {
         marginTop: theme.spacing.md,
@@ -198,5 +253,18 @@ const styles = StyleSheet.create({
     },
     paragraphLast: {
         marginBottom: 0,
+    },
+    // Sources
+    sourcesContainer: {
+        marginTop: theme.spacing.lg,
+        paddingTop: theme.spacing.md,
+        borderTopWidth: 1,
+        borderTopColor: theme.colors.borderInner,
+    },
+    sourcesText: {
+        fontFamily: theme.fonts.body,
+        fontSize: theme.fontSizes.sm,
+        color: theme.colors.textSecondary,
+        lineHeight: theme.lineHeights.body,
     },
 });

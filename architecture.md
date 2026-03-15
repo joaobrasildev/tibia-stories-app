@@ -680,6 +680,9 @@ export async function createCharacter(char: Omit<Character, 'id'>): Promise<stri
 export async function updateCharacter(id: string, data: Partial<Character>): Promise<void>;
 export async function checkCharacterExists(name: string): Promise<Character | null>;
 
+// Items
+export async function fetchAllItems(): Promise<Item[]>;
+
 // Highlight Payments
 export async function createHighlightPayment(payment: Omit<HighlightPayment, 'id'>): Promise<string>;
 export async function fetchActiveHighlights(): Promise<Character[]>;
@@ -704,7 +707,7 @@ export async function verifyCharacterToken(name: string, token: string): Promise
 ### 7.7 `syncService.ts` 🆕
 
 ```typescript
-// Sync completo: Firestore → SQLite
+// Sync completo: Firestore → SQLite (characters + items em paralelo)
 export async function syncFromFirestore(): Promise<void>;
 
 // Sync incremental: só registros alterados desde lastSync
@@ -818,15 +821,18 @@ export { db as database };
 
 ```typescript
 export function runMigrations(): void {
-  // Tabela items (somente leitura, seed pelo dev)
+  // Tabela items (seed local + sync do Firestore)
   database.execSync(`
     CREATE TABLE IF NOT EXISTS items (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       image_url TEXT,
       rarity TEXT NOT NULL,
-      history TEXT,
+      summary TEXT,
+      origin TEXT,
+      lore TEXT,
       myths TEXT,
+      sources TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )

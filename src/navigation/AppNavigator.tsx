@@ -17,7 +17,7 @@ import { theme } from '@/theme';
 
 export type RootStackParamList = {
     MainTabs: undefined;
-    ItemDetail: { id: number };
+    ItemDetail: { id: string };
     CharStory: { charId: string };
     Login: undefined;
     Register: undefined;

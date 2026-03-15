@@ -245,12 +245,12 @@ Criar arquivos mínimos para as 4 telas de tab:
 | 06 | `src/components/composed/ItemSearchBar.tsx`      | Busca + filtro raridade + ordenação           |
 | 07 | `src/components/composed/RarityFilter.tsx`       | Botões toggle: Todos / Legendary / Very Rare / Rare |
 | 08 | `src/screens/ItemsScreen.tsx`                    | `architecture.md` seção 10.3 (template) + `general-plan.md` seção 8.2 (Tela 2) |
-| 09 | `src/screens/ItemDetailScreen.tsx`               | `general-plan.md` seção 8.2 (Tela 2.1) — Origem + Mitos |
+| 09 | `src/screens/ItemDetailScreen.tsx`               | `general-plan.md` seção 8.2 (Tela 2.1) — Resumo + Origem + Lore + Mitos + Fontes |
 
 ### Seed de dados
 
 Adicionar em `src/repositories/migrations.ts` (função `seedItemsIfEmpty`):
-- Os 12 itens do `prototype/data.js` com nome, raridade, história e mitos.
+- Os 13 itens do `prototype/data.js` com nome, raridade, summary, origin, lore, myths e sources.
 - Ver `general-plan.md` seção 14 para a lista completa.
 
 ### Regras
@@ -262,7 +262,7 @@ Adicionar em `src/repositories/migrations.ts` (função `seedItemsIfEmpty`):
 - Ordenação: A→Z, Z→A, Raridade ↓, Raridade ↑.
 - Estado vazio: `"Nenhum item encontrado..."`.
 - Navegação: clicar no card → push para `ItemDetailScreen`.
-- `ItemDetailScreen`: imagem, nome, badge raridade, seção Origem, seção Mitos.
+- `ItemDetailScreen`: imagem, nome, badge raridade, resumo (sem header), seção Origem, seção Lore, seção Mitos, seção Fontes.
 
 ### Critério de "done"
 
@@ -271,7 +271,7 @@ Adicionar em `src/repositories/migrations.ts` (função `seedItemsIfEmpty`):
 - [ ] Filtro por raridade funciona (toggle buttons)
 - [ ] Ordenação funciona (4 opções)
 - [ ] Estado vazio exibe mensagem imersiva
-- [ ] Clicar em item → abre tela de detalhe com Origem e Mitos
+- [ ] Clicar em item → abre tela de detalhe com Resumo, Origem, Lore, Mitos e Fontes
 - [ ] Botão voltar no detalhe → retorna para lista
 - [ ] Dados vêm do SQLite (seed)
 

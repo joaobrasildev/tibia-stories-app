@@ -10,6 +10,7 @@ import { Alert } from 'react-native';
 import { syncFromFirestore } from '@/services/syncService';
 import { useAppStore } from '@/stores/useAppStore';
 import { useCharsStore } from '@/stores/useCharsStore';
+import { useItemsStore } from '@/stores/useItemsStore';
 
 export function useSync(): { isSyncing: boolean; onRefresh: () => Promise<void> } {
     const isSyncing = useAppStore((s) => s.isSyncing);
@@ -18,6 +19,7 @@ export function useSync(): { isSyncing: boolean; onRefresh: () => Promise<void> 
         try {
             await syncFromFirestore();
             useCharsStore.getState().loadChars();
+            useItemsStore.getState().loadItems();
         } catch {
             Alert.alert(
                 'Erro de sincronização',

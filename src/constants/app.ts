@@ -24,7 +24,9 @@ export const APP_TEXTS = {
     // ── Tela 2.1: Detalhe do Item ─────────────────────────
     itemDetail: {
         originTitle: '📜 Origem',
+        loreTitle: '📖 Lore',
         mythsTitle: '🔮 Mitos & Lendas',
+        sourcesTitle: '📚 Fontes',
     },
 
     // ── Tela 3: Chars ─────────────────────────────────────

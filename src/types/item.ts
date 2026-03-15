@@ -1,12 +1,15 @@
 export type ItemRarity = 'Legendary' | 'Very Rare' | 'Rare';
 
 export interface Item {
-    id: number;
+    id: string;
     name: string;
     image_url: string | null;
     rarity: ItemRarity;
-    history: string | null;
+    summary: string | null;
+    origin: string | null;
+    lore: string | null;
     myths: string | null;
+    sources: string | null;
     created_at: string;
     updated_at: string;
 }

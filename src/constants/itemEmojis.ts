@@ -15,4 +15,5 @@ export const ITEM_EMOJIS: Record<string, string> = {
     'Great Shield': '🛡️',
     'Pair of Soft Boots': '👢',
     'Winged Helmet': '🪽',
+    "Chayenne's Magical Key": '🔑',
 };

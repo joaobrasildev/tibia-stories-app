@@ -5,146 +5,146 @@
 
 // ===== ESTADO GLOBAL =====
 const state = {
-    currentScreen: 'home',
-    currentTab: 'home',
-    history: [],             // pilha de navegação para o botão voltar
-    itemFilter: 'all',       // filtro de itens: all, legendary, very-rare, rare
-    itemSort: 'alpha-asc',    // ordenação de itens: alpha-asc, alpha-desc, rarity-asc, rarity-desc
-    charSort: 'alpha-asc',    // ordenação de chars: alpha-asc, alpha-desc, level-desc, level-asc
-    charFilterVoc: 'all',     // filtro vocação: all, EK, RP, ED, MS
-    charFilterWorld: 'all',   // filtro servidor: all, <world>
-    searchQuery: '',          // busca
+  currentScreen: 'home',
+  currentTab: 'home',
+  history: [],             // pilha de navegação para o botão voltar
+  itemFilter: 'all',       // filtro de itens: all, legendary, very-rare, rare
+  itemSort: 'alpha-asc',    // ordenação de itens: alpha-asc, alpha-desc, rarity-asc, rarity-desc
+  charSort: 'alpha-asc',    // ordenação de chars: alpha-asc, alpha-desc, level-desc, level-asc
+  charFilterVoc: 'all',     // filtro vocação: all, EK, RP, ED, MS
+  charFilterWorld: 'all',   // filtro servidor: all, <world>
+  searchQuery: '',          // busca
 };
 
 // ===== NAVEGAÇÃO =====
 function navigateTo(screen, params = {}) {
-    // Se é uma tab, limpa o histórico
-    const isTabs = ['home', 'items', 'characters', 'account'].includes(screen);
+  // Se é uma tab, limpa o histórico
+  const isTabs = ['home', 'items', 'characters', 'account'].includes(screen);
 
-    if (isTabs) {
-        state.history = [];
-        state.currentTab = screen;
-        updateTabBar();
-    } else {
-        // Push tela atual no histórico antes de navegar
-        state.history.push({ screen: state.currentScreen, params: state.currentParams });
-    }
+  if (isTabs) {
+    state.history = [];
+    state.currentTab = screen;
+    updateTabBar();
+  } else {
+    // Push tela atual no histórico antes de navegar
+    state.history.push({ screen: state.currentScreen, params: state.currentParams });
+  }
 
-    state.currentScreen = screen;
-    state.currentParams = params;
-    renderScreen();
-    scrollToTop();
+  state.currentScreen = screen;
+  state.currentParams = params;
+  renderScreen();
+  scrollToTop();
 }
 
 function goBack() {
-    if (state.history.length > 0) {
-        const prev = state.history.pop();
-        state.currentScreen = prev.screen;
-        state.currentParams = prev.params;
-        renderScreen();
-        scrollToTop();
-    }
+  if (state.history.length > 0) {
+    const prev = state.history.pop();
+    state.currentScreen = prev.screen;
+    state.currentParams = prev.params;
+    renderScreen();
+    scrollToTop();
+  }
 }
 
 function scrollToTop() {
-    document.getElementById('content-area').scrollTop = 0;
+  document.getElementById('content-area').scrollTop = 0;
 }
 
 function updateTabBar() {
-    document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.tab === state.currentTab);
-    });
+  document.querySelectorAll('.tab-item').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.tab === state.currentTab);
+  });
 }
 
 // ===== RENDERIZADOR PRINCIPAL =====
 function renderScreen() {
-    const content = document.getElementById('content-area');
-    const subtitle = document.getElementById('page-subtitle');
-    const backBtn = document.getElementById('btn-back');
+  const content = document.getElementById('content-area');
+  const subtitle = document.getElementById('page-subtitle');
+  const backBtn = document.getElementById('btn-back');
 
-    const isSubScreen = state.history.length > 0;
-    backBtn.style.display = isSubScreen ? 'block' : 'none';
+  const isSubScreen = state.history.length > 0;
+  backBtn.style.display = isSubScreen ? 'block' : 'none';
 
-    let html = '';
-    let title = '';
+  let html = '';
+  let title = '';
 
-    switch (state.currentScreen) {
-        case 'home':
-            title = '';
-            html = renderHome();
-            break;
-        case 'items':
-            title = '';
-            html = renderItems();
-            break;
-        case 'item-detail':
-            const item = ITEMS.find(i => i.id === state.currentParams.id);
-            title = '';
-            html = renderItemDetail(item);
-            break;
-        case 'characters':
-            title = '';
-            html = renderCharacters();
-            break;
-        case 'character-story':
-            const char = ALL_CHARACTERS.find(c => c.id === state.currentParams.id);
-            title = '';
-            html = renderCharacterStory(char);
-            break;
-        case 'account':
-            title = '';
-            html = renderAccount();
-            break;
-        case 'add-character':
-            title = 'Adicionar Char';
-            html = renderAddCharacter();
-            break;
-        case 'verify-character':
-            title = 'Quest de Vínculo';
-            html = renderVerifyCharacter();
-            break;
-        case 'edit-story':
-            title = 'Editar História';
-            html = renderEditStory();
-            break;
-        case 'highlight':
-            title = 'Destacar char';
-            html = renderHighlight();
-            break;
-        case 'login':
-            title = '';
-            html = renderLogin();
-            break;
-        case 'register':
-            title = '';
-            html = renderRegister();
-            break;
-        default:
-            title = 'Tibia Stories';
-            html = '<div class="empty-state"><div class="empty-state-icon">❓</div><div class="empty-state-text">Esse TP não leva a lugar algum...</div></div>';
-    }
+  switch (state.currentScreen) {
+    case 'home':
+      title = '';
+      html = renderHome();
+      break;
+    case 'items':
+      title = '';
+      html = renderItems();
+      break;
+    case 'item-detail':
+      const item = ITEMS.find(i => i.id === state.currentParams.id);
+      title = '';
+      html = renderItemDetail(item);
+      break;
+    case 'characters':
+      title = '';
+      html = renderCharacters();
+      break;
+    case 'character-story':
+      const char = ALL_CHARACTERS.find(c => c.id === state.currentParams.id);
+      title = '';
+      html = renderCharacterStory(char);
+      break;
+    case 'account':
+      title = '';
+      html = renderAccount();
+      break;
+    case 'add-character':
+      title = 'Adicionar Char';
+      html = renderAddCharacter();
+      break;
+    case 'verify-character':
+      title = 'Quest de Vínculo';
+      html = renderVerifyCharacter();
+      break;
+    case 'edit-story':
+      title = 'Editar História';
+      html = renderEditStory();
+      break;
+    case 'highlight':
+      title = 'Destacar char';
+      html = renderHighlight();
+      break;
+    case 'login':
+      title = '';
+      html = renderLogin();
+      break;
+    case 'register':
+      title = '';
+      html = renderRegister();
+      break;
+    default:
+      title = 'Tibia Stories';
+      html = '<div class="empty-state"><div class="empty-state-icon">❓</div><div class="empty-state-text">Esse TP não leva a lugar algum...</div></div>';
+  }
 
-    subtitle.textContent = title;
-    subtitle.style.display = title ? '' : 'none';
-    content.innerHTML = `<div class="fade-in">${html}</div>`;
+  subtitle.textContent = title;
+  subtitle.style.display = title ? '' : 'none';
+  content.innerHTML = `<div class="fade-in">${html}</div>`;
 
-    // Attach event listeners para inputs de busca
-    attachSearchListeners();
+  // Attach event listeners para inputs de busca
+  attachSearchListeners();
 }
 
 // ===== TELA HOME (DESTAQUES) =====
 function renderHome() {
-    const highlighted = HIGHLIGHTED_CHARACTERS.filter(c => c.isHighlighted);
+  const highlighted = HIGHLIGHTED_CHARACTERS.filter(c => c.isHighlighted);
 
-    if (highlighted.length === 0) {
-        return `
+  if (highlighted.length === 0) {
+    return `
       <div class="empty-state">
         <div class="empty-state-icon">🏰</div>
         <div class="empty-state-text">Nenhum char em destaque no momento...</div>
       </div>`;
-    }
+  }
 
-    let html = `
+  let html = `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>⭐</span>
@@ -152,18 +152,18 @@ function renderHome() {
       </div>
       <div class="tibia-panel-body">`;
 
-    highlighted.forEach(char => {
-        html += renderCharCard(char, true);
-    });
+  highlighted.forEach(char => {
+    html += renderCharCard(char, true);
+  });
 
-    html += `
+  html += `
       </div>
     </div>`;
 
-    // Seção de últimas histórias
-    const recent = ALL_CHARACTERS.filter(c => !c.isHighlighted).slice(0, 3);
-    if (recent.length > 0) {
-        html += `
+  // Seção de últimas histórias
+  const recent = ALL_CHARACTERS.filter(c => !c.isHighlighted).slice(0, 3);
+  if (recent.length > 0) {
+    html += `
       <div class="tibia-divider"><span>✦ ✦ ✦</span></div>
       <div class="tibia-panel">
         <div class="tibia-panel-header">
@@ -172,21 +172,21 @@ function renderHome() {
         </div>
         <div class="tibia-panel-body">`;
 
-        recent.forEach(char => {
-            html += renderCharCard(char, false);
-        });
+    recent.forEach(char => {
+      html += renderCharCard(char, false);
+    });
 
-        html += `
+    html += `
         </div>
       </div>`;
-    }
+  }
 
-    return html;
+  return html;
 }
 
 // ===== TELA ITENS RAROS =====
 function renderItems() {
-    let html = `
+  let html = `
     <div class="search-bar">
       <input type="text" id="items-search" placeholder="Buscar item por nome..." value="${state.searchQuery}">
     </div>
@@ -206,45 +206,45 @@ function renderItems() {
       </select>
     </div>`;
 
-    let filtered = ITEMS;
+  let filtered = ITEMS;
 
-    // Filtro por raridade
-    if (state.itemFilter !== 'all') {
-        const rarityMap = { 'legendary': 'Legendary', 'very-rare': 'Very Rare', 'rare': 'Rare' };
-        filtered = filtered.filter(i => i.rarity === rarityMap[state.itemFilter]);
+  // Filtro por raridade
+  if (state.itemFilter !== 'all') {
+    const rarityMap = { 'legendary': 'Legendary', 'very-rare': 'Very Rare', 'rare': 'Rare' };
+    filtered = filtered.filter(i => i.rarity === rarityMap[state.itemFilter]);
+  }
+
+  // Filtro por busca
+  if (state.searchQuery) {
+    const q = state.searchQuery.toLowerCase();
+    filtered = filtered.filter(i => i.name.toLowerCase().includes(q));
+  }
+
+  // Ordenação
+  const rarityOrder = { 'Legendary': 3, 'Very Rare': 2, 'Rare': 1 };
+  filtered = [...filtered].sort((a, b) => {
+    switch (state.itemSort) {
+      case 'alpha-asc': return a.name.localeCompare(b.name);
+      case 'alpha-desc': return b.name.localeCompare(a.name);
+      case 'rarity-desc': return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
+      case 'rarity-asc': return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
+      default: return 0;
     }
+  });
 
-    // Filtro por busca
-    if (state.searchQuery) {
-        const q = state.searchQuery.toLowerCase();
-        filtered = filtered.filter(i => i.name.toLowerCase().includes(q));
-    }
-
-    // Ordenação
-    const rarityOrder = { 'Legendary': 3, 'Very Rare': 2, 'Rare': 1 };
-    filtered = [...filtered].sort((a, b) => {
-        switch (state.itemSort) {
-            case 'alpha-asc': return a.name.localeCompare(b.name);
-            case 'alpha-desc': return b.name.localeCompare(a.name);
-            case 'rarity-desc': return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
-            case 'rarity-asc': return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
-            default: return 0;
-        }
-    });
-
-    if (filtered.length === 0) {
-        html += `
+  if (filtered.length === 0) {
+    html += `
       <div class="empty-state">
         <div class="empty-state-icon">📦</div>
         <div class="empty-state-text">Nenhum item encontrado...</div>
       </div>`;
-    } else {
-        html += `<div class="tibia-panel"><div class="tibia-panel-header"><span>📦</span><h2>Itens Lendários & Raros (${filtered.length})</h2></div><div class="tibia-panel-body" style="padding:6px 8px;">`;
-        filtered.forEach(item => {
-            const rarityClass = item.rarity === 'Legendary' ? 'rarity-legendary'
-                : item.rarity === 'Very Rare' ? 'rarity-very-rare' : 'rarity-rare';
-            html += `
-        <div class="item-card" onclick="navigateTo('item-detail', {id: ${item.id}})">
+  } else {
+    html += `<div class="tibia-panel"><div class="tibia-panel-header"><span>📦</span><h2>Itens Lendários & Raros (${filtered.length})</h2></div><div class="tibia-panel-body" style="padding:6px 8px;">`;
+    filtered.forEach(item => {
+      const rarityClass = item.rarity === 'Legendary' ? 'rarity-legendary'
+        : item.rarity === 'Very Rare' ? 'rarity-very-rare' : 'rarity-rare';
+      html += `
+        <div class="item-card" onclick="navigateTo('item-detail', {id: '${item.id}'})">
           <div class="item-sprite">${item.emoji}</div>
           <div class="item-info">
             <div class="item-name">${item.name}</div>
@@ -252,31 +252,31 @@ function renderItems() {
           </div>
           <div class="item-arrow">›</div>
         </div>`;
-        });
-        html += `</div></div>`;
-    }
+    });
+    html += `</div></div>`;
+  }
 
-    return html;
+  return html;
 }
 
 function filterItems(filter) {
-    state.itemFilter = filter;
-    renderScreen();
+  state.itemFilter = filter;
+  renderScreen();
 }
 
 function sortItems(sort) {
-    state.itemSort = sort;
-    renderScreen();
+  state.itemSort = sort;
+  renderScreen();
 }
 
 // ===== TELA DETALHE DO ITEM =====
 function renderItemDetail(item) {
-    if (!item) return '<div class="empty-state"><div class="empty-state-text">Item não encontrado</div></div>';
+  if (!item) return '<div class="empty-state"><div class="empty-state-text">Item não encontrado</div></div>';
 
-    const rarityClass = item.rarity === 'Legendary' ? 'rarity-legendary'
-        : item.rarity === 'Very Rare' ? 'rarity-very-rare' : 'rarity-rare';
+  const rarityClass = item.rarity === 'Legendary' ? 'rarity-legendary'
+    : item.rarity === 'Very Rare' ? 'rarity-very-rare' : 'rarity-rare';
 
-    return `
+  return `
     <div class="detail-hero">
       <div class="detail-hero-image">${item.emoji}</div>
       <h2>${item.name}</h2>
@@ -285,22 +285,36 @@ function renderItemDetail(item) {
       </div>
     </div>
 
+    <div class="section-body">
+      <p>${item.summary}</p>
+    </div>
+
     <div class="section-title">📜 Origem</div>
     <div class="section-body">
-      ${item.history.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+      ${item.origin.split('\n\n').map(p => `<p>${p}</p>`).join('')}
     </div>
+
+    ${item.lore ? `<div class="section-title">📖 Lore</div>
+    <div class="section-body">
+      ${item.lore.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+    </div>` : ''}
 
     <div class="section-title">🔮 Mitos & Lendas</div>
     <div class="section-body">
       ${item.myths.split('\n\n').map(p => `<p>${p}</p>`).join('')}
-    </div>`;
+    </div>
+
+    ${item.sources ? `<div class="section-title">📚 Fontes</div>
+    <div class="section-body">
+      <p>${item.sources}</p>
+    </div>` : ''}`;
 }
 
 // ===== TELA PERSONAGENS =====
 function renderCharacters() {
-    const worlds = [...new Set(ALL_CHARACTERS.map(c => c.world))].sort();
+  const worlds = [...new Set(ALL_CHARACTERS.map(c => c.world))].sort();
 
-    let html = `
+  let html = `
     <div class="search-bar">
       <input type="text" id="chars-search" placeholder="exiva \"nome\"..." value="${state.searchQuery}">
     </div>
@@ -327,76 +341,76 @@ function renderCharacters() {
       </select>
     </div>`;
 
-    let chars = ALL_CHARACTERS;
+  let chars = ALL_CHARACTERS;
 
-    // Filtro por busca
-    if (state.searchQuery) {
-        const q = state.searchQuery.toLowerCase();
-        chars = chars.filter(c => c.name.toLowerCase().includes(q) || c.world.toLowerCase().includes(q));
+  // Filtro por busca
+  if (state.searchQuery) {
+    const q = state.searchQuery.toLowerCase();
+    chars = chars.filter(c => c.name.toLowerCase().includes(q) || c.world.toLowerCase().includes(q));
+  }
+
+  // Filtro por vocação
+  if (state.charFilterVoc !== 'all') {
+    chars = chars.filter(c => c.vocShort === state.charFilterVoc);
+  }
+
+  // Filtro por servidor
+  if (state.charFilterWorld !== 'all') {
+    chars = chars.filter(c => c.world === state.charFilterWorld);
+  }
+
+  // Ordenação
+  chars = [...chars].sort((a, b) => {
+    switch (state.charSort) {
+      case 'alpha-asc': return a.name.localeCompare(b.name);
+      case 'alpha-desc': return b.name.localeCompare(a.name);
+      case 'level-desc': return b.level - a.level;
+      case 'level-asc': return a.level - b.level;
+      default: return 0;
     }
+  });
 
-    // Filtro por vocação
-    if (state.charFilterVoc !== 'all') {
-        chars = chars.filter(c => c.vocShort === state.charFilterVoc);
-    }
-
-    // Filtro por servidor
-    if (state.charFilterWorld !== 'all') {
-        chars = chars.filter(c => c.world === state.charFilterWorld);
-    }
-
-    // Ordenação
-    chars = [...chars].sort((a, b) => {
-        switch (state.charSort) {
-            case 'alpha-asc': return a.name.localeCompare(b.name);
-            case 'alpha-desc': return b.name.localeCompare(a.name);
-            case 'level-desc': return b.level - a.level;
-            case 'level-asc': return a.level - b.level;
-            default: return 0;
-        }
-    });
-
-    if (chars.length === 0) {
-        html += `
+  if (chars.length === 0) {
+    html += `
       <div class="empty-state">
         <div class="empty-state-icon"><img src="icons/history-book.png" alt="" style="width:48px;height:48px;"></div>
         <div class="empty-state-text">Nenhum char encontrado...</div>
       </div>`;
-    } else {
-        html += `<div class="tibia-panel"><div class="tibia-panel-header"><span><img src="icons/history-book.png" alt="" style="width:18px;height:18px;vertical-align:middle;"></span><h2>Todas as Histórias (${chars.length})</h2></div><div class="tibia-panel-body">`;
-        chars.forEach(char => {
-            html += renderCharCard(char, char.isHighlighted);
-        });
-        html += `</div></div>`;
-    }
+  } else {
+    html += `<div class="tibia-panel"><div class="tibia-panel-header"><span><img src="icons/history-book.png" alt="" style="width:18px;height:18px;vertical-align:middle;"></span><h2>Todas as Histórias (${chars.length})</h2></div><div class="tibia-panel-body">`;
+    chars.forEach(char => {
+      html += renderCharCard(char, char.isHighlighted);
+    });
+    html += `</div></div>`;
+  }
 
-    return html;
+  return html;
 }
 
 function filterCharsVoc(voc) {
-    state.charFilterVoc = voc;
-    renderScreen();
+  state.charFilterVoc = voc;
+  renderScreen();
 }
 
 function filterCharsWorld(world) {
-    state.charFilterWorld = world;
-    renderScreen();
+  state.charFilterWorld = world;
+  renderScreen();
 }
 
 function sortChars(sort) {
-    state.charSort = sort;
-    renderScreen();
+  state.charSort = sort;
+  renderScreen();
 }
 
 // ===== TELA HISTÓRIA DO PERSONAGEM =====
 function renderCharacterStory(char) {
-    if (!char) return '<div class="empty-state"><div class="empty-state-text">Char não encontrado</div></div>';
+  if (!char) return '<div class="empty-state"><div class="empty-state-text">Char não encontrado</div></div>';
 
-    const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
-        : char.vocShort === 'RP' ? 'badge-rp'
-            : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
+  const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
+    : char.vocShort === 'RP' ? 'badge-rp'
+      : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
 
-    return `
+  return `
     <div class="detail-hero">
       <div class="detail-hero-image">${char.avatarEmoji}</div>
       <h2>${char.name}</h2>
@@ -419,7 +433,7 @@ function renderCharacterStory(char) {
 
 // ===== TELA MINHA CONTA =====
 function renderAccount() {
-    let html = `
+  let html = `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>🔑</span>
@@ -444,19 +458,19 @@ function renderAccount() {
       </div>
       <div class="tibia-panel-body">`;
 
-    if (MY_CHARACTERS.length === 0) {
-        html += `
+  if (MY_CHARACTERS.length === 0) {
+    html += `
         <div class="empty-state" style="padding:20px 0;">
           <div class="empty-state-icon">🛡️</div>
           <div class="empty-state-text">Nenhum char vinculado</div>
         </div>`;
-    } else {
-        MY_CHARACTERS.forEach(char => {
-            const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
-                : char.vocShort === 'RP' ? 'badge-rp'
-                    : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
+  } else {
+    MY_CHARACTERS.forEach(char => {
+      const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
+        : char.vocShort === 'RP' ? 'badge-rp'
+          : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
 
-            html += `
+      html += `
         <div class="my-char-item">
           <div class="char-info" style="flex:1;">
             <div class="char-name">${char.name}</div>
@@ -464,8 +478,8 @@ function renderAccount() {
               <span class="badge ${vocBadgeClass}" style="font-size:9px;padding:1px 5px;">${char.vocShort}</span>
               Level ${char.level} • ${char.world}
               ${char.isVerified
-                    ? '<span class="badge badge-verified" style="font-size:9px;padding:1px 5px;">✅ Vinculado</span>'
-                    : '<span class="badge badge-pending" style="font-size:9px;padding:1px 5px;">⏳ Pendente</span>'}
+          ? '<span class="badge badge-verified" style="font-size:9px;padding:1px 5px;">✅ Vinculado</span>'
+          : '<span class="badge badge-pending" style="font-size:9px;padding:1px 5px;">⏳ Pendente</span>'}
             </div>
           </div>
           <div class="my-char-actions">
@@ -475,10 +489,10 @@ function renderAccount() {
             ${char.isVerified ? `<button onclick="navigateTo('highlight', {id: ${char.id}})">⭐</button>` : ''}
           </div>
         </div>`;
-        });
-    }
+    });
+  }
 
-    html += `
+  html += `
       </div>
     </div>
 
@@ -504,10 +518,10 @@ function renderAccount() {
       <button class="btn-logout" onclick="navigateTo('login')">Sair</button>
     </div>`;
 
-    return html;
+  return html;
 }
 function renderAddCharacter() {
-    return `
+  return `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>🔍</span>
@@ -558,29 +572,29 @@ function renderAddCharacter() {
 }
 
 function mockSearchCharacter() {
-    const input = document.getElementById('char-name-input');
-    const name = input.value.trim();
+  const input = document.getElementById('char-name-input');
+  const name = input.value.trim();
 
-    document.getElementById('search-error').style.display = 'none';
-    document.getElementById('search-result').style.display = 'none';
+  document.getElementById('search-error').style.display = 'none';
+  document.getElementById('search-result').style.display = 'none';
 
-    if (!name) {
-        document.getElementById('search-error').style.display = 'block';
-        return;
-    }
+  if (!name) {
+    document.getElementById('search-error').style.display = 'block';
+    return;
+  }
 
-    // Simula busca (no protótipo sempre encontra)
-    document.getElementById('found-char-name').textContent = name;
-    document.getElementById('found-char-details').textContent = `Knight • Level 273 • Refugia`;
-    document.getElementById('search-result').style.display = 'block';
-    document.getElementById('search-result').classList.add('fade-in');
+  // Simula busca (no protótipo sempre encontra)
+  document.getElementById('found-char-name').textContent = name;
+  document.getElementById('found-char-details').textContent = `Knight • Level 273 • Refugia`;
+  document.getElementById('search-result').style.display = 'block';
+  document.getElementById('search-result').classList.add('fade-in');
 }
 
 // ===== TELA VERIFICAR PERSONAGEM =====
 function renderVerifyCharacter() {
-    const charName = state.currentParams?.name || 'Wild Hunter';
+  const charName = state.currentParams?.name || 'Wild Hunter';
 
-    return `
+  return `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>🔐</span>
@@ -646,9 +660,9 @@ function renderVerifyCharacter() {
 }
 
 function mockVerify() {
-    const result = document.getElementById('verify-result');
-    result.style.display = 'block';
-    result.innerHTML = `
+  const result = document.getElementById('verify-result');
+  result.style.display = 'block';
+  result.innerHTML = `
     <div class="tibia-notice success fade-in">
       ✅ <strong>Personagem vinculado com sucesso!</strong><br>
       O token foi encontrado no comment do personagem. Agora você pode escrever sua história!
@@ -657,10 +671,10 @@ function mockVerify() {
 
 // ===== TELA EDITAR HISTÓRIA =====
 function renderEditStory() {
-    const char = MY_CHARACTERS.find(c => c.id === state.currentParams?.id);
-    const charName = char ? char.name : 'Personagem';
+  const char = MY_CHARACTERS.find(c => c.id === state.currentParams?.id);
+  const charName = char ? char.name : 'Personagem';
 
-    return `
+  return `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>✏️</span>
@@ -690,9 +704,9 @@ function renderEditStory() {
 }
 
 function mockSaveStory() {
-    const result = document.getElementById('save-result');
-    result.style.display = 'block';
-    result.innerHTML = `
+  const result = document.getElementById('save-result');
+  result.style.display = 'block';
+  result.innerHTML = `
     <div class="tibia-notice success fade-in">
       ✅ <strong>História salva com sucesso!</strong><br>
       Seu char agora aparece nas Histórias dos Aventureiros.
@@ -701,10 +715,10 @@ function mockSaveStory() {
 
 // ===== TELA DESTACAR PERSONAGEM =====
 function renderHighlight() {
-    const char = MY_CHARACTERS.find(c => c.id === state.currentParams?.id);
-    const charName = char ? char.name : 'Personagem';
+  const char = MY_CHARACTERS.find(c => c.id === state.currentParams?.id);
+  const charName = char ? char.name : 'Personagem';
 
-    return `
+  return `
     <div class="tibia-panel">
       <div class="tibia-panel-header">
         <span>⭐</span>
@@ -740,9 +754,9 @@ function renderHighlight() {
 }
 
 function mockPurchase() {
-    const result = document.getElementById('purchase-result');
-    result.style.display = 'block';
-    result.innerHTML = `
+  const result = document.getElementById('purchase-result');
+  result.style.display = 'block';
+  result.innerHTML = `
     <div class="tibia-notice success fade-in">
       ✅ <strong>Compra realizada com sucesso!</strong><br>
       Seu personagem está em destaque na Home por 7 dias a partir de agora. Parabéns!
@@ -751,7 +765,7 @@ function mockPurchase() {
 
 // ===== TELA LOGIN =====
 function renderLogin() {
-    return `
+  return `
     <div style="text-align:center; padding: 20px 0 16px;">
       <div style="font-size:48px; margin-bottom:8px;">�</div>
       <h2 style="font-family:var(--font-body); font-size:22px; font-weight:bold; color:#5A2800; margin-bottom:4px;">Tibia Stories</h2>
@@ -805,19 +819,19 @@ function renderLogin() {
 }
 
 function mockLogin() {
-    const result = document.getElementById('login-result');
-    result.style.display = 'block';
-    result.innerHTML = `
+  const result = document.getElementById('login-result');
+  result.style.display = 'block';
+  result.innerHTML = `
     <div class="tibia-notice success fade-in">
       ✅ <strong>Login realizado com sucesso!</strong><br>
       Entrando em mainland...
     </div>`;
-    setTimeout(() => navigateTo('account'), 1500);
+  setTimeout(() => navigateTo('account'), 1500);
 }
 
 // ===== TELA CRIAR CONTA =====
 function renderRegister() {
-    return `
+  return `
     <div style="text-align:center; padding: 20px 0 16px;">
       <div style="font-size:48px; margin-bottom:8px;">🛡️</div>
       <h2 style="font-family:var(--font-body); font-size:22px; font-weight:bold; color:#5A2800; margin-bottom:4px;">Criar Conta</h2>
@@ -876,23 +890,23 @@ function renderRegister() {
 }
 
 function mockRegister() {
-    const result = document.getElementById('register-result');
-    result.style.display = 'block';
-    result.innerHTML = `
+  const result = document.getElementById('register-result');
+  result.style.display = 'block';
+  result.innerHTML = `
     <div class="tibia-notice success fade-in">
       ✅ <strong>Conta criada com sucesso!</strong><br>
       Seu token foi gerado. Redirecionando...
     </div>`;
-    setTimeout(() => navigateTo('account'), 1500);
+  setTimeout(() => navigateTo('account'), 1500);
 }
 
 // ===== COMPONENTES REUTILIZÁVEIS =====
 function renderCharCard(char, highlighted) {
-    const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
-        : char.vocShort === 'RP' ? 'badge-rp'
-            : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
+  const vocBadgeClass = char.vocShort === 'EK' ? 'badge-ek'
+    : char.vocShort === 'RP' ? 'badge-rp'
+      : char.vocShort === 'MS' ? 'badge-ms' : 'badge-ed';
 
-    return `
+  return `
     <div class="char-card ${highlighted ? 'highlighted' : ''}" onclick="navigateTo('character-story', {id: ${char.id}})">
       <div class="char-avatar">${char.avatarEmoji}</div>
       <div class="char-info">
@@ -909,65 +923,65 @@ function renderCharCard(char, highlighted) {
 
 // ===== UTILITÁRIOS =====
 function copyToken(btn) {
-    navigator.clipboard?.writeText(USER_TOKEN).then(() => {
-        btn.textContent = '✅ Copiado!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '📋 Copiar Token';
-            btn.classList.remove('copied');
-        }, 2000);
-    }).catch(() => {
-        // Fallback para ambientes sem clipboard API
-        btn.textContent = '✅ Copiado!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '📋 Copiar Token';
-            btn.classList.remove('copied');
-        }, 2000);
-    });
+  navigator.clipboard?.writeText(USER_TOKEN).then(() => {
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copiar Token';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback para ambientes sem clipboard API
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copiar Token';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
 }
 
 function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 function attachSearchListeners() {
-    const itemsSearch = document.getElementById('items-search');
-    if (itemsSearch) {
-        itemsSearch.addEventListener('input', (e) => {
-            state.searchQuery = e.target.value;
-            // Re-render apenas o conteúdo dos itens
-            const content = document.getElementById('content-area');
-            content.innerHTML = `<div class="fade-in">${renderItems()}</div>`;
-            // Re-focus no input
-            const newInput = document.getElementById('items-search');
-            if (newInput) {
-                newInput.focus();
-                newInput.setSelectionRange(newInput.value.length, newInput.value.length);
-            }
-            attachSearchListeners();
-        });
-    }
+  const itemsSearch = document.getElementById('items-search');
+  if (itemsSearch) {
+    itemsSearch.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      // Re-render apenas o conteúdo dos itens
+      const content = document.getElementById('content-area');
+      content.innerHTML = `<div class="fade-in">${renderItems()}</div>`;
+      // Re-focus no input
+      const newInput = document.getElementById('items-search');
+      if (newInput) {
+        newInput.focus();
+        newInput.setSelectionRange(newInput.value.length, newInput.value.length);
+      }
+      attachSearchListeners();
+    });
+  }
 
-    const charsSearch = document.getElementById('chars-search');
-    if (charsSearch) {
-        charsSearch.addEventListener('input', (e) => {
-            state.searchQuery = e.target.value;
-            const content = document.getElementById('content-area');
-            content.innerHTML = `<div class="fade-in">${renderCharacters()}</div>`;
-            const newInput = document.getElementById('chars-search');
-            if (newInput) {
-                newInput.focus();
-                newInput.setSelectionRange(newInput.value.length, newInput.value.length);
-            }
-            attachSearchListeners();
-        });
-    }
+  const charsSearch = document.getElementById('chars-search');
+  if (charsSearch) {
+    charsSearch.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      const content = document.getElementById('content-area');
+      content.innerHTML = `<div class="fade-in">${renderCharacters()}</div>`;
+      const newInput = document.getElementById('chars-search');
+      if (newInput) {
+        newInput.focus();
+        newInput.setSelectionRange(newInput.value.length, newInput.value.length);
+      }
+      attachSearchListeners();
+    });
+  }
 }
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', () => {
-    state.searchQuery = '';
-    renderScreen();
+  state.searchQuery = '';
+  renderScreen();
 });
