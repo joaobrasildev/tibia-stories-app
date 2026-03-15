@@ -1,4 +1,9 @@
 {
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9302632754670115~1587513719",
+    "ios_app_id": "ca-app-pub-9302632754670115~9789437362",
+    "delay_app_measurement_init": true
+  },
   "expo": {
     "name": "Tibia Stories",
     "slug": "tibia-stories",

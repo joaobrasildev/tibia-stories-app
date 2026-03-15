@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Characters collection
+    match /characters/{charId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null
+        && resource.data.user_token == request.auth.token.user_token
+        || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userToken == resource.data.user_token;
+      allow delete: if false;
+    }
+
+    // Highlight payments collection
+    match /highlight_payments/{paymentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+  }
+}
