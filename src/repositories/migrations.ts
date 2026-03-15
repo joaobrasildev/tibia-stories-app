@@ -1,48 +1,25 @@
 import { database } from './database';
 
 // Bump para forçar reseed quando os dados de desenvolvimento mudarem
-const ITEMS_SEED_VERSION = '3';
-const CHARS_SEED_VERSION = '3';
+const ITEMS_SEED_VERSION = '5';
+const CHARS_SEED_VERSION = '4';
 
-export function runMigrations(): void {
-  // Tabela items (somente leitura, seed pelo dev)
-  database.execSync(`
-    CREATE TABLE IF NOT EXISTS items (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      image_url TEXT,
-      rarity TEXT NOT NULL,
-      summary TEXT,
-      origin TEXT,
-      lore TEXT,
-      myths TEXT,
-      sources TEXT,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    )
-  `);
+// Bump quando o schema mudar (ALTER TABLEs incrementais)
+const SCHEMA_VERSION = 2;
 
-  // Tabela characters (sincronizada do Firestore)
-  database.execSync(`
-    CREATE TABLE IF NOT EXISTS characters (
-      id TEXT PRIMARY KEY,
-      user_token TEXT,
-      name TEXT NOT NULL,
-      world TEXT,
-      vocation TEXT,
-      level INTEGER DEFAULT 0,
-      is_verified INTEGER DEFAULT 0,
-      is_highlighted INTEGER DEFAULT 0,
-      highlight_until TEXT,
-      story_title TEXT,
-      story_content TEXT,
-      avatar_url TEXT,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    )
-  `);
+function getTableColumns(table: string): Set<string> {
+  const rows = database.getAllSync<{ name: string }>(`PRAGMA table_info(${table})`);
+  return new Set(rows.map((r) => r.name));
+}
 
-  // Tabela user_config (chave-valor)
+function addColumnIfMissing(table: string, column: string, definition: string, existing: Set<string>): void {
+  if (!existing.has(column)) {
+    database.execSync(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
+function runSchemaMigrations(): void {
+  // user_config precisa existir antes de tudo
   database.execSync(`
     CREATE TABLE IF NOT EXISTS user_config (
       key TEXT PRIMARY KEY,
@@ -50,11 +27,74 @@ export function runMigrations(): void {
     )
   `);
 
-  // Seed de itens (somente se tabela estiver vazia)
-  seedItemsIfEmpty();
+  const stored = database.getFirstSync<{ value: string }>(
+    "SELECT value FROM user_config WHERE key = 'schema_version'",
+  );
+  const currentVersion = stored ? parseInt(stored.value, 10) : 0;
+  if (currentVersion >= SCHEMA_VERSION) return;
 
-  // Seed de chars (desenvolvimento — será removido na Fase 11)
-  seedCharsIfEmpty();
+  // --- Tabela items ---
+  database.execSync(`
+    CREATE TABLE IF NOT EXISTS items (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      image_url TEXT,
+      rarity TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
+
+  const itemCols = getTableColumns('items');
+  addColumnIfMissing('items', 'summary', 'TEXT', itemCols);
+  addColumnIfMissing('items', 'origin', 'TEXT', itemCols);
+  addColumnIfMissing('items', 'lore', 'TEXT', itemCols);
+  addColumnIfMissing('items', 'myths', 'TEXT', itemCols);
+  addColumnIfMissing('items', 'sources', 'TEXT', itemCols);
+
+  // --- Tabela characters ---
+  database.execSync(`
+    CREATE TABLE IF NOT EXISTS characters (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
+
+  const charCols = getTableColumns('characters');
+  addColumnIfMissing('characters', 'user_token', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'world', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'vocation', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'level', 'INTEGER DEFAULT 0', charCols);
+  addColumnIfMissing('characters', 'is_verified', 'INTEGER DEFAULT 0', charCols);
+  addColumnIfMissing('characters', 'is_highlighted', 'INTEGER DEFAULT 0', charCols);
+  addColumnIfMissing('characters', 'highlight_until', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'story_title', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'story_content', 'TEXT', charCols);
+  addColumnIfMissing('characters', 'avatar_url', 'TEXT', charCols);
+
+  // Salva versão do schema
+  database.runSync(
+    "INSERT OR REPLACE INTO user_config (key, value) VALUES ('schema_version', ?)",
+    [String(SCHEMA_VERSION)],
+  );
+}
+
+export function runMigrations(): void {
+  try {
+    runSchemaMigrations();
+    seedItemsIfEmpty();
+    seedCharsIfEmpty();
+  } catch {
+    // DB corrompido — recria tudo do zero
+    database.execSync('DROP TABLE IF EXISTS items');
+    database.execSync('DROP TABLE IF EXISTS characters');
+    database.execSync('DROP TABLE IF EXISTS user_config');
+    runSchemaMigrations();
+    seedItemsIfEmpty();
+    seedCharsIfEmpty();
+  }
 }
 
 function seedItemsIfEmpty(): void {
@@ -73,9 +113,9 @@ function seedItemsIfEmpty(): void {
       image_url: 'https://tibia.fandom.com/wiki/Special:FilePath/Thunder_Hammer.gif',
       rarity: 'Legendary',
       summary: `Uma das armas mais icônicas da história de Tibia. Introduzido na versão 6.4 (2001), foi considerado a club mais poderosa de uma mão. Seus atributos — attack 49, defense 35 (+1) — o tornaram extremamente desejado e raro.`,
-      origin: `Durante os primeiros anos do Tibia, existiam apenas alguns Thunder Hammers. A história desses primeiros martelos envolve eventos especiais, recompensas da CipSoft e até exploits.\n\nEm 2002, ocorreu uma convenção de Tibia em Viena. O jogador Patryn, que ajudou a organizar o evento, recebeu um Thunder Hammer como presente dos desenvolvedores. Posteriormente, o martelo foi dado de presente para Pytru como presente de Natal no mesmo ano.\n\nOutro Thunder Hammer foi entregue pela CipSoft ao jogador Krin, no servidor Eternia, como recompensa por reportar bugs importantes de segurança do jogo.\n\nUm episódio controverso envolveu o jogador Warrax, de Antica, que utilizou um exploit na Behemoth Quest com auxílio de um GM comprado chamado Ender Speaker of the Dead. Após a descoberta, Warrax foi deletado e o Thunder Hammer confiscado.\n\nNo servidor Premia, quando foi criado, a CipSoft realizou um evento especial em 16 de junho de 2002. Um demon apareceu em Darashia e um grupo de aventureiros o derrotou. O loot incluía um Thunder Hammer, que foi posteriormente vendido em Antica por uma enorme coleção de itens raros.\n\nEm 26 de agosto de 2005, o boss mundial Orshabaal apareceu no servidor Elysia. O jogador Elahrion Avessar conseguiu lootar um Thunder Hammer — o primeiro de um boss mundial. Segundo relato dele: "Gritei na vida real quando vi o loot."\n\nDesde então, o item passou a dropar raramente de bosses como Orshabaal, Morgaroth, Ghazbaran e Ferumbras. O Thunder Hammer tornou-se símbolo de status e peça de coleção, com exemplares exibidos em casas famosas no Tibia. Seu valor de mercado gira entre 60,000,000 e 70,000,000 gold coins.`,
-      lore: `Seu flavor text diz: "It is blessed by the gods of Tibia." Existe uma lore associada ao martelo que remonta aos anões de Tibia.\n\nSegundo a narrativa preservada em wikis da comunidade: nos tempos de pavor, os melhores ferreiros anões foram mantidos cativos pelas forças do mal. Um herói anão chamado Kazrad Rockfist os libertou. Seu martelo foi abençoado pelos deuses, e com um único golpe poderoso ele destruiu as portas de aço da prisão.\n\nOs anões chamam este artefato de Khundahamar — "libertador". Entre os humanos, ficou conhecido como Thunder Hammer.`,
-      myths: `📜 Quest Secreta da Basilisk: Um dos maiores mitos dizia que existia uma quest secreta envolvendo uma Basilisk gigante. Segundo a lenda, o martelo de Thor teria sido roubado e jogado nas profundezas do subsolo, guardado por uma serpente gigantesca. Jogadores passaram anos tentando encontrar essa sala secreta. Nunca foi comprovada.\n\n📜 Ligação com Thor: Por causa do nome "Thunder Hammer", muitos acreditavam que o item era inspirado no Mjölnir, o martelo de Thor, e seria parte de uma quest mitológica. Embora a inspiração seja plausível, nunca houve confirmação oficial.\n\n📜 O Martelo Perdido nas Minas: Outro mito dizia que o Thunder Hammer estava escondido em alguma mina subterrânea protegida por cyclops ou dwarves, baseado na história do Khundahamar. Nunca foi encontrada quest ligada a isso.\n\n📜 Fake da Sala da Cobra: Uma das fakes mais famosas da comunidade mostrou um jogador supostamente entrando em uma sala secreta guardada por uma cobra gigante. A imagem circulou por anos, mas foi confirmada como fake.`,
+      origin: `Durante os primeiros anos do Tibia, existiam apenas alguns Thunder Hammers. A história desses primeiros martelos envolve eventos especiais, recompensas da CipSoft e até exploits.\n\nEm 2002, ocorreu uma convenção de Tibia em Viena. O jogador Patryn, que ajudou a organizar o evento, recebeu um Thunder Hammer como presente dos desenvolvedores. Posteriormente, o martelo foi dado de presente para Pytru como presente de Natal no mesmo ano.\n\nOutro Thunder Hammer foi entregue pela CipSoft ao jogador Krin, no servidor Eternia, como recompensa por reportar bugs importantes de segurança do jogo.\n\nUm episódio controverso envolveu o jogador Warrax, de Antica, que utilizou um exploit na Behemoth Quest com auxílio de um GM comprado chamado Ender Speaker of the Dead. Após a descoberta, Warrax foi deletado e o Thunder Hammer confiscado.\n\nNo servidor Premia, quando foi criado, a CipSoft realizou um evento especial em 16 de junho de 2002. Um demon apareceu em Darashia e um grupo de aventureiros o derrotou. Segundo relato de Karrchaos (Morak em Premia), vários jogadores morreram durante a batalha. O loot incluía um Thunder Hammer, que foi posteriormente vendido em Antica por uma coleção de itens raros incluindo Golden Helmet, E-Plate, Giant Swords, Steel Boots, Demon Shield, grandes quantidades de runas e dinheiro.\n\nEm 26 de agosto de 2005, o boss mundial Orshabaal apareceu no servidor Elysia. O jogador Elahrion Avessar conseguiu lootar um Thunder Hammer — o primeiro de um boss mundial. Segundo relato dele: "Gritei na vida real quando vi o loot."\n\nDesde então, o item passou a dropar raramente de bosses como Orshabaal, Morgaroth, Ghazbaran e Ferumbras. O Thunder Hammer tornou-se símbolo de status e peça de coleção, com exemplares exibidos em casas famosas no Tibia — incluindo uma residência em Thais onde o item ficou exposto junto com uma Silver Mace. Seu valor de mercado gira entre 60,000,000 e 70,000,000 gold coins.`,
+      lore: `Seu flavor text diz: "It is blessed by the gods of Tibia." Existe uma lore associada ao martelo que remonta aos anões de Tibia.\n\nSegundo a narrativa preservada em wikis da comunidade: nos tempos de pavor, anões mestres ferreiros foram capturados por forças ligadas aos cyclops e forçados a ensinar seus segredos de metalurgia. Um herói anão chamado Kazrad Rockfist libertou os prisioneiros. Durante a fuga, ele recebeu ajuda divina — seu martelo foi abençoado pelos deuses, e com um único golpe poderoso ele destruiu as portas de aço da prisão.\n\nOs anões chamam este artefato de Khundahamar — "libertador". Entre os humanos, ficou conhecido como Thunder Hammer.`,
+      myths: `📜 Quest Secreta da Basilisk: Um dos maiores mitos dizia que existia uma quest secreta envolvendo uma Basilisk gigante. Segundo a lenda, o martelo de Thor teria sido roubado e jogado nas profundezas do subsolo, guardado por uma serpente gigantesca. Jogadores passaram anos tentando encontrar essa sala secreta. Nunca foi comprovada.\n\n📜 Ligação com Thor: Por causa do nome "Thunder Hammer", muitos acreditavam que o item era inspirado diretamente no Mjölnir, o martelo do deus Thor. A teoria dizia que o item seria parte de uma quest mitológica ligada a divindades nórdicas dentro do universo de Tibia. Embora a inspiração seja plausível, nunca houve confirmação oficial.\n\n📜 O Martelo Perdido nas Minas: Outro mito dizia que o Thunder Hammer estava escondido em alguma mina subterrânea protegida por cyclops ou dwarves, baseado na história do Khundahamar. Nunca foi encontrada quest ligada a isso.\n\n📜 Fake da Sala da Cobra: Uma das fakes mais famosas da comunidade mostrou um jogador supostamente entrando em uma sala secreta guardada por uma cobra gigante. A imagem circulou por anos, mas foi confirmada como fake.`,
       sources: 'TibiaWiki (Fandom), TibiaWiki Brasil, Portal Tibia, Tibia Mistérios Database, TibiaQA',
     },
     {
@@ -86,7 +126,7 @@ function seedItemsIfEmpty(): void {
       summary: `Introduzido no início do Tibia (1999). Não possui drop de criatura e nunca teve método de obtenção via gameplay. Foi concedido manualmente pela CipSoft ao jogador Elleshar como recompensa por contribuição gráfica ao jogo.`,
       origin: `Nos primeiros anos do Tibia (1997–2000), a CipSoft contou com ajuda da comunidade para produzir gráficos do jogo. Jogadores com habilidades de design ajudavam a criar equipamentos, criaturas e elementos de cenário. Como recompensa, alguns receberam itens únicos.\n\nO Blessed Shield foi entregue ao jogador Elleshar por sua contribuição significativa na criação de gráficos. Esse foi o primeiro Blessed Shield existente no jogo.\n\nOriginalmente o escudo tinha defense 50, reduzido para 40 no patch 7.0 (2002). Mesmo após o nerf, permaneceu durante anos como o escudo com maior defesa do Tibia.\n\nElleshar vendeu o escudo para Muecil por aproximadamente 130k gold — uma quantia absurda na época — com a condição de que nunca fosse revendido.\n\nAnos depois, Muecil quebrou a promessa e colocou o Blessed Shield em leilão público. O preço subiu para 5 milhões de gold + itens raros. O vencedor foi Lightbringer, um dos maiores colecionadores de rares da época.\n\nLightbringer manteve o escudo em sua coleção, mas posteriormente o vendeu. O comprador teria feito uma oferta "que ninguém poderia superar" — esse episódio se tornou uma das histórias mais famosas do Tibia.\n\nCom o passar dos anos, o escudo mudou de mãos várias vezes. Entre os donos documentados estão: Elleshar → Muecil → Lightbringer → Gryphee → Lost Planegazer, entre outros colecionadores. Em determinado momento, o dono foi banido, gerando medo de que o item desaparecesse — mas foi transferido antes da exclusão da conta.\n\nEm 15 de junho de 2022, um Blessed Shield foi vendido via Market por Karr Chaos (Nathquata) para Rei de Lutabra por 12 bilhões de gold coins — uma das maiores transações da história de Tibia.\n\nO Blessed Shield se tornou um símbolo de raridade extrema, história do Tibia, economia do jogo e colecionismo de rares.`,
       lore: `Seu flavor text diz: "The shield grants divine protection." A descrição sugere uma conexão com o deus Banor e o conceito de proteção divina dentro do universo de Tibia. O significado mítico do escudo vai além de seus atributos — representa a bênção dos próprios deuses criadores.`,
-      myths: `📜 Drop de Monstros: Alguns jogadores acreditavam que o Blessed Shield poderia dropar de Morgaroth, Demon ou Ferumbras. Na realidade, nenhuma criatura dropa o item.\n\n📜 Quest Secreta de Banor: Outro mito dizia que o escudo poderia ser obtido em uma quest secreta ligada ao deus Banor. Nunca houve confirmação dessa quest.\n\n📜 Existência de Vários Blessed Shields: Rumores afirmam que existem 2 ou 3 Blessed Shields, mas historicamente a comunidade considera que apenas um foi confirmado publicamente.\n\n📜 Proteção Divina: A descrição "The shield grants divine protection" levou jogadores a acreditar que o item poderia reduzir dano mágico, proteger contra ataques de demon ou impedir morte em PvP. Nunca houve evidência disso.\n\n📜 O Blessed Shield em Hellgate: Screenshots dentro da Hellgate Treasure Room levaram muitos a acreditar que existia uma quest secreta ligada ao lugar. Na verdade, eram apenas exibições feitas por jogadores.`,
+      myths: `📜 Drop de Monstros: Alguns jogadores acreditavam que o Blessed Shield poderia dropar de Morgaroth, Demon ou Ferumbras. Na realidade, nenhuma criatura dropa o item.\n\n📜 Quest Secreta de Banor: Outro mito dizia que o escudo poderia ser obtido em uma quest secreta ligada ao deus Banor. Nunca houve confirmação dessa quest.\n\n📜 Existência de Vários Blessed Shields: Rumores afirmam que existem 2 ou 3 Blessed Shields, mas historicamente a comunidade considera que apenas um foi confirmado publicamente.\n\n📜 Proteção Divina: A descrição "The shield grants divine protection" levou jogadores a acreditar que o item poderia reduzir dano mágico, proteger contra ataques de demon ou impedir morte em PvP. Nunca houve evidência disso.\n\n📜 Escudo Sagrado contra Demônios: Outra crença popular era que o escudo era especialmente eficaz contra criaturas demoníacas, oferecendo proteção adicional em combate contra demons. Nunca foi confirmado.\n\n📜 O Blessed Shield em Hellgate: Screenshots dentro da Hellgate Treasure Room levaram muitos a acreditar que existia uma quest secreta ligada ao lugar. Na verdade, eram apenas exibições feitas por jogadores.`,
       sources: 'TibiaWiki (Fandom), Tibia Light, TibiaQA, TibiaWiki Brasil, Portal Tibia',
     },
     {
@@ -95,8 +135,8 @@ function seedItemsIfEmpty(): void {
       image_url: "https://tibia.fandom.com/wiki/Special:FilePath/Chayenne's_Magical_Key.gif",
       rarity: 'Very Rare',
       summary: `Adicionada na versão 9.44 (janeiro de 2012), distribuída durante as comemorações do 15º aniversário do Tibia. Sua utilidade foi publicamente revelada em agosto de 2012, com o jogador Dragenas (Secura) entre os primeiros a desvendar o mistério.`,
-      origin: `Em 13 de janeiro de 2012, a Chayenne's Magical Key foi adicionada ao jogo na versão 9.44, obtida como loot do monstro especial Chayenne durante o evento do 15º aniversário.\n\nEm agosto de 2012, a Community Manager Chayenne anunciou sua saída da equipe e confirmou que a chave "leva a algum lugar", reacendendo as buscas. Em 19 de agosto de 2012, o jogador Dragenas (Secura) foi um dos primeiros a desvendar o local e postou screenshots da descoberta.\n\nEm 20 de agosto de 2012, a CipSoft anunciou o Chayenne's Farewell Contest. Três vencedores — Abiston, Azurai e Jinxz — receberam uma chave cada.\n\nA comunidade criou threads massivas de cooperação (uma no Otland chegou a 1.900+ posts) para dividir pistas e hipóteses. A investigação foi um dos eventos comunitários mais marcantes da história de Tibia.\n\nPor ser rara e existir apenas em Yellow BattlEye worlds originalmente, a chave é altamente valorizada no mercado, com preços históricos na casa de dezenas de milhões de gold coins.`,
-      lore: `A descrição do item diz: "No one really knows where it leads to, but the dragon graveyard might reveal the secret — or not." Essa pista levou jogadores a focarem em áreas dracônicas de Ankrahmun e Draconia.\n\nOs jogadores encontraram um livro chamado "Key to Magic" dentro de uma caixa no topo da pirâmide em Draconia, cujos versos continham pistas para manipular paredes mágicas e switches. A mecânica exigia ir ao dragon lair de Ankrahmun, limpar todo o respawn, usar Destroy Field para remover um Fire Field, e ativar uma alavanca escondida que revelava um teleporte para o Chayenne's Realm.\n\nA quest concede uma Beach Backpack contendo itens como Music Box, Blue Rose e Dracoyle Statue, além de desbloquear acesso ao Chayenne's Realm. A Music Box é usada para domar certos mounts com 100% de sucesso.`,
+      origin: `Em 13 de janeiro de 2012, a Chayenne's Magical Key foi adicionada ao jogo na versão 9.44, obtida como loot do monstro especial Chayenne durante o evento do 15º aniversário.\n\nEm 16 de agosto de 2012, a Community Manager Chayenne anunciou sua saída da equipe e confirmou que a chave "leva a algum lugar", reacendendo as buscas. Em 19 de agosto de 2012, o jogador Dragenas (Secura) foi um dos primeiros a desvendar o local e postou screenshots da descoberta.\n\nEm 20 de agosto de 2012, a CipSoft anunciou o Chayenne's Farewell Contest. Três vencedores — Abiston, Azurai e Jinxz — receberam uma chave cada.\n\nA comunidade criou threads massivas de cooperação (uma no Otland chegou a 1.900+ posts) para dividir pistas e hipóteses. Ao contrário de quests lineares, a busca pela utilidade da chave exigiu leitura de textos in-game, teste de hipóteses e sincronização de condições de mapa — o que a transformou numa caça intelectual e colaborativa que marcou a comunidade. Alguns relatos no Otland afirmam que "levou 9 meses para resolver", embora os registros datados indiquem que a solução pública veio poucos dias após a despedida de Chayenne.\n\nPor ser rara e existir apenas em Yellow BattlEye worlds originalmente, a chave é altamente valorizada no mercado, com preços históricos na casa de dezenas de milhões de gold coins.`,
+      lore: `A descrição do item diz: "No one really knows where it leads to, but the dragon graveyard might reveal the secret — or not." Essa pista levou jogadores a focarem em áreas dracônicas de Ankrahmun e Draconia.\n\nOs jogadores encontraram um livro chamado "Key to Magic" dentro de uma caixa no topo da pirâmide em Draconia, cujos versos continham pistas para manipular paredes mágicas e switches. A mecânica exigia ir ao dragon lair mais ao norte de Ankrahmun, limpar todo o respawn (Dragons, Dragon Lords, Fire Elementals), encontrar o piso cinza com um Fire Field sobre ele e pedras escondendo uma alavanca. Usando Destroy Field para remover o Fire Field e ativando a alavanca, uma magic wall ao sul desaparecia revelando um teleporte para o Chayenne's Realm. Era necessário ter tanto o livro Key to Magic quanto a Chayenne's Magical Key no inventário.\n\nA quest concede uma Beach Backpack contendo itens como Music Box, Blue Rose e Dracoyle Statue, além de desbloquear acesso ao Chayenne's Realm. A Music Box é usada para domar certos mounts com 100% de sucesso.`,
       myths: `📜 A Chave Não Teria Propósito: Muitos jogadores acreditavam que a chave era apenas um item decorativo sem utilidade. Esse mito foi desmentido pela própria Chayenne, que confirmou que havia uso.\n\n📜 Music Box Domestica Qualquer Criatura: Meio-mito — a Music Box funciona somente em uma lista específica de criaturas (montarias favoritas de Chayenne) e é consumida no processo, mas tem taxa de sucesso 100% nas que suporta.`,
       sources: 'TibiaWiki (Fandom), TibiaWiki Brasil, OTLand, Tibia.com, TibiaPedia',
     },
