@@ -1,0 +1,174 @@
+Amazon Helmet — pesquisa completa
+
+Vou direto ao ponto: o Amazon Helmet segue o mesmo padrão estrutural do Amazon Armor — não é um rare clássico, nunca foi unobtainable, e não possui quest documentada. Ainda assim, ele tem valor histórico por conta de contexto de gameplay antigo, estética e comportamento da comunidade.
+
+A diferença aqui é que o Amazon Helmet aparece com mais frequência em discussões antigas, o que permite reconstruir melhor a percepção histórica.
+
+Introdução
+
+O Amazon Helmet é um capacete leve associado às criaturas Amazons.
+
+Características gerais documentadas:
+
+Armor: 3
+Peso: ~19 oz
+Drop: Amazons
+Vocação: todas
+
+Ele sempre foi um item de baixo nível, sem propriedades especiais ocultas.
+
+Existe ou existiu quest para o Amazon Helmet?
+
+➡️ Não existe nenhuma quest documentada (nem atual nem histórica)
+
+Não aparece em listas de recompensas
+Não há registros em changelogs
+Não há relatos consistentes de descoberta de quest
+
+Conclusão objetiva:
+➡️ Sempre foi obtido exclusivamente via loot
+
+Origem do item
+
+O Amazon Helmet foi introduzido junto com as criaturas Amazons nas versões antigas do Tibia.
+
+Isso significa:
+
+não foi criado como item especial
+não foi distribuído por GM
+não teve evento associado
+
+➡️ Ele nasceu como item comum de criatura
+
+Como era obtido no passado
+
+Desde sua introdução, a forma de obtenção sempre foi:
+
+➡️ drop de Amazons
+
+Mas o contexto histórico muda a percepção:
+
+Nos primeiros anos do Tibia
+poucas áreas com Amazons
+jogadores evitavam essas áreas por risco (grupos, poison, distância)
+loot tables não eram conhecidas
+
+Resultado:
+
+➡️ o item parecia mais raro do que realmente era
+
+Quem “descobriu” o item
+
+Não existe registro de “descoberta” como em quests ou rares.
+
+Motivo simples:
+
+➡️ o item sempre foi drop comum
+
+Então:
+
+não há primeiro descobridor documentado
+não há evento de descoberta
+Quando se tornou raro (ou não)
+
+Aqui está o ponto crítico:
+
+➡️ o Amazon Helmet nunca se tornou raro por mecânica do jogo
+
+Mas existe o mesmo fenômeno do Amazon Armor:
+
+Raridade por desuso
+
+Com o passar dos anos:
+
+O item perdeu completamente relevância de combate
+Novos equipamentos substituíram seu uso
+Jogadores pararam de caçar Amazons
+
+Resultado:
+
+➡️ menos circulação no mercado
+
+Por que ele ganhou valor (mesmo sendo comum)
+
+O valor do Amazon Helmet vem de fatores indiretos:
+
+1. Nostalgia
+
+Foi equipamento comum de jogadores iniciantes em versões antigas.
+
+2. Estética
+
+Faz parte de um dos poucos sets temáticos do jogo clássico.
+
+3. Colecionismo
+
+Jogadores começaram a colecionar:
+
+sets completos
+itens “esquecidos”
+Forma de obtenção hoje
+
+Hoje o item ainda é:
+
+➡️ obtido normalmente via loot de Amazons
+
+Ou seja:
+
+continua existindo no jogo
+não foi removido
+não virou unobtainable
+
+Mas:
+
+➡️ aparece pouco no mercado por falta de farm
+
+Mitos sobre o Amazon Helmet
+
+Mesmo sendo um item simples, existem alguns mitos históricos.
+
+Mito 1 — Set com bônus oculto
+
+Acreditava-se que usar:
+
+Amazon Helmet
+Amazon Armor
+Amazon Shield
+
+poderia dar algum bônus secreto.
+
+➡️ Nunca houve evidência
+
+Mito 2 — Quest secreta das Amazons
+
+Alguns jogadores acreditavam que o set fazia parte de:
+
+uma quest escondida
+possivelmente envolvendo NPCs femininas
+
+➡️ Nenhuma quest foi encontrada
+
+Mito 3 — Drop especial
+
+Rumores antigos sugeriam que:
+
+certas Amazons tinham chance especial
+ou existiam variações do item
+
+➡️ Não confirmado
+
+Fontes utilizadas
+Tibia Wiki Brasil — Amazon Helmet
+https://www.tibiawiki.com.br/wiki/Amazon_Helmet
+
+Tibia Fandom — Amazon Helmet
+https://tibia.fandom.com/wiki/Amazon_Helmet
+
+Tibia Wiki Brasil — Amazon
+https://www.tibiawiki.com.br/wiki/Amazon
+
+TibiaQA — Discussões sobre itens antigos
+https://www.tibiaqa.com
+
+TibiaWiki Fandom — Rares
+https://tibia.fandom.com/wiki/Rares

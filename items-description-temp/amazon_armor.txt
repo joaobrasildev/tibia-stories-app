@@ -1,0 +1,158 @@
+Amazon Armor — pesquisa completa
+
+Vou direto ao ponto: o Amazon Armor não é um “rare clássico” no sentido tradicional como Golden Helmet ou Blessed Shield. Ele ocupa uma zona interessante: item comum em termos de mecânica, mas que ganhou valor histórico e simbólico ao longo do tempo — e isso vem exclusivamente da comunidade, não de mudanças oficiais raras.
+
+Introdução
+
+O Amazon Armor é um armor leve, tradicionalmente associado às criaturas Amazons. Ele sempre foi um item simples, sem atributos especiais ocultos, e com foco mais estético/temático do que poder.
+
+Armor: 8
+Peso: 20 oz
+Drop: Amazons
+Stackable: não
+Vocação: todas
+
+(tibiawiki.com.br
+)
+
+Existe ou existiu quest para o Amazon Armor?
+
+Não há nenhuma quest documentada — atual ou histórica — que conceda o Amazon Armor.
+
+Não aparece como recompensa de quest em nenhuma wiki consolidada
+Não há relatos confiáveis de quest descoberta
+Nenhum registro em changelogs ou documentação oficial
+
+Conclusão objetiva:
+➡️ Sempre foi obtido via loot direto de criatura
+
+Origem do item
+
+O Amazon Armor existe desde versões antigas do Tibia (pré-7.x), ligado diretamente à introdução das criaturas Amazons no jogo.
+
+Ele nunca teve:
+
+distribuição por GM
+recompensa especial
+evento exclusivo
+
+Ou seja, diferente dos rares clássicos, ele nasceu como item comum.
+
+Como era obtido no passado
+
+Historicamente, o Amazon Armor sempre foi obtido da mesma forma:
+
+➡️ dropado por Amazons
+
+Mas aqui entra um ponto importante:
+
+Nos primeiros anos do Tibia
+o respawn de Amazons era limitado
+poucos jogadores farmavam essas criaturas
+o loot system era menos documentado
+
+Isso fazia com que:
+
+➡️ o item fosse menos comum na prática, mesmo sendo “comum por design”
+
+Quando ele “se tornou raro”
+
+Tecnicamente:
+➡️ nunca se tornou raro por mecânica oficial
+
+Mas existe uma nuance importante:
+
+Raridade social (não mecânica)
+
+Com o passar dos anos:
+
+O item perdeu relevância de gameplay
+Jogadores pararam de farmar Amazons
+Novos sets mais fortes substituíram completamente seu uso
+
+Resultado:
+
+➡️ o Amazon Armor deixou de circular naturalmente
+
+E isso criou um fenômeno:
+
+➡️ “raridade artificial” baseada em desuso
+
+Por que ele ganhou valor histórico
+
+O valor do Amazon Armor vem de 3 fatores:
+
+1. Estética única
+
+O design sempre foi marcante — um dos poucos armors femininos clássicos do jogo.
+
+2. Associação com nostalgia
+
+Era muito usado por jogadores low level nas versões antigas.
+
+3. Colecionismo
+
+Colecionadores começaram a buscar itens “esquecidos” do jogo.
+
+Forma de obtenção hoje
+
+Hoje o item ainda é:
+
+➡️ obtido via loot de Amazons
+
+Ou seja:
+
+continua dropando normalmente
+não foi removido
+não virou unobtainable
+
+Mas:
+
+➡️ é pouco farmado, então aparece menos no mercado
+
+Mitos sobre o Amazon Armor
+
+Apesar de ser um item simples, ele acumulou alguns mitos interessantes.
+
+Mito 1 — Set secreto das Amazons
+
+Alguns jogadores acreditavam que:
+
+usar Amazon Armor + Amazon Shield + Amazon Helmet
+desbloquearia algum bônus oculto
+
+➡️ Nunca houve evidência disso
+
+Mito 2 — Ligação com quest secreta
+
+Havia rumores de que:
+
+o set Amazon fazia parte de uma quest escondida
+possivelmente ligada a ilhas ou NPCs femininas
+
+➡️ Nenhuma quest foi encontrada
+
+Mito 3 — Drop especial raro
+
+Alguns jogadores acreditavam que:
+
+existiam versões “raras” do Amazon Armor
+ou que Amazons específicas tinham drop diferente
+
+➡️ Nunca confirmado
+
+Fontes utilizadas
+Tibia Wiki Brasil — Amazon Armor
+https://www.tibiawiki.com.br/wiki/Amazon_Armor
+
+Tibia Fandom — Amazon Armor
+https://tibia.fandom.com/wiki/Amazon_Armor
+
+Tibia Wiki Brasil — Amazon
+https://www.tibiawiki.com.br/wiki/Amazon
+
+TibiaQA — Items history discussions
+https://www.tibiaqa.com
+
+TibiaWiki Fandom — Rares
+https://tibia.fandom.com/wiki/Rares

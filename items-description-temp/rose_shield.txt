@@ -1,0 +1,24 @@
+ncontrei uma história consistente, mas com um ponto importante: não existe uma “origem descoberta” única e bem documentada para o Rose Shield. O que aparece nas fontes confiáveis é a história de um item honorífico da guild Red Rose, ligado a Antica, criado como presente da CipSoft/Gods para membros da guild, e mantido como raridade desde então. O item em si é listado com Def 27 e 52 oz nas wikis, não vem de criatura e não é vendido por NPC.
+
+Sobre a origem histórica, a versão mais detalhada vem de entrevistas com líderes da Red Rose. Elas dizem que, nos primórdios do Tibia, apenas três guilds receberam itens especiais: Krael/Kaerell, Red Rose e Mercenaries. No caso da Red Rose, o Rose Shield e a Rose Armor teriam sido desenhados por Lightbringer e Genesis SE (hoje Tharanis), enquanto os “Gods”/CipSoft materializavam os itens. A própria Tibia ainda cita a Red Rose entre as guilds mais antigas.
+
+Quest: não encontrei nenhuma fonte séria dizendo que o Rose Shield é reward de quest. Pelo contrário, as entrevistas afirmam explicitamente que ele não virou loot nem recompensa de quest. A história relata que, cerca de um a dois anos depois, os itens especiais das guilds foram reintroduzidos em novas quests, mas o Rose Shield foi o único que não virou recompensa de quest; ele apenas perdeu o antigo marcador “RR” no sprite.
+
+Quando se tornou raro: não há uma data exata confiável. O que dá para afirmar sem inventar é que a raridade nasceu por dois motivos: número muito pequeno de exemplares e fim da distribuição ativa. As fontes históricas colocam a mudança no período em que os outros itens de guild foram convertidos, mas sem um dia/mês oficial para o momento em que o Rose Shield “virou raro”. A versão documental mais antiga que encontrei nas wikis é Beta 5.1, 23 de dezembro de 1999, mas isso é a referência de versão do item na base de dados, não uma prova isolada da data em que a raridade começou.
+
+Quantidade de exemplares: aqui existem fontes divergentes, então o correto é tratar como estimativa histórica, não como número fechado. Uma wiki diz que só 6 foram feitos; outra matéria histórica diz 8 shields em Tibia, com 2 deletados com personagens e 1 perdido em Antica; a entrevista do Halfhigh diz que o número total é um mistério porque o arquivo original foi perdido, mas cita ao menos oito shields nomeados e ainda afirma que há menos de 10 em Antica.
+
+Como era obtido no passado: segundo o relato histórico mais completo, a Red Rose podia receber o item como uma honraria da CipSoft/Gods. O processo descrito pelo Halfhigh era bem específico: Lightbringer chamava os Gods para criar um shield ou armor, e a guild pagava 50 backpacks cheias de gold coins (100k), entregues no porto de Thais. Isso é o que as fontes registram; qualquer detalhe além disso seria especulação.
+
+Como se obtém hoje: pelas fontes que encontrei, a resposta prática é por troca entre jogadores que já possuem um exemplar. A Tibia Wiki PT observa que originalmente ele só existia em Antica, mas que com transferências de personagem ele pode aparecer em outros mundos; a TibiaHome diz que todos os exemplares conhecidos estão em Antica e que o único modo de obter um é comprando de quem já tem. Em resumo: não há rota legítima atual de drop, loot de boss ou quest.
+
+O ponto mais importante, sem enfeite: não existe prova confiável de que alguém “descobriu” o Rose Shield em uma quest ou em um achado padrão do jogo. O que existe é a história de um item de guild, concedido por CipSoft aos membros da Red Rose, com autoria artística atribuída a Lightbringer e Genesis SE e exclusividade mantida até hoje.
+
+Fontes principais usadas:
+
+Tibia Wiki (PT) — https://www.tibiawiki.com.br/wiki/Rose_Shield
+TibiaWiki (Fandom) — https://tibia.fandom.com/wiki/Rose_Shield
+Portal Tibia — https://portaltibia.com.br/pt/73497-2/
+Tibia Home — https://tibiahome.com/interview-with-avora-skyfallen-the-leader-of-red-rose/
+GuildStats.eu — https://guildstats.eu/articles?id=28
+Tibia.com (notícia sobre as guilds mais antigas) — https://www.tibia.com/news/?id=3720&subtopic=latestnews
